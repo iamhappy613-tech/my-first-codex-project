@@ -719,6 +719,44 @@ footer .keyboard-tip>span {
 .list-meaning { font-size:13px; line-height:1.6; overflow-wrap:anywhere; }
 @media(max-width:380px) { .flashcard { height:370px; } }
 @media(max-width:700px) { .word { font-size:clamp(30px,10vw,46px); } .vocabulary { padding:15px; } .vocabulary-total { font-size:10px; } }
+.day-plan { max-width:570px; margin:0 auto 24px; }
+.plan-heading { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; }
+.plan-heading h2 { font-size:15px; font-weight:600; margin:0; }
+#plan-progress { font-size:11px; color:#727f6c; }
+.day-buttons { display:grid; grid-template-columns:repeat(7,minmax(0,1fr)); gap:7px; }
+.day-button { display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; min-height:67px; border:1px solid #dce3d6; border-radius:11px; background:#fffefa; padding:9px 3px; }
+.day-button:hover { background:#edf3e8; }
+.day-button[aria-pressed="true"] { color:white; background:var(--green); border-color:var(--green); }
+.day-button .day-label { font-size:13px; font-weight:600; }
+.day-button .day-status { font-size:10px; opacity:.75; }
+.day-button.completed:not([aria-pressed="true"]) { border-color:#a8c5a4; color:#34765b; background:#eef4e9; }
+.day-description { margin:14px 0 5px; font-size:12px; line-height:1.7; color:#65765d; }
+.save-status { margin:0; font-size:10px; line-height:1.7; color:#87917e; }
+.repeat-day-btn { display:block; width:100%; min-height:44px; border:1px solid #dce3d6; border-radius:10px; background:transparent; margin-top:12px; font-size:14px; }
+#vocabulary-scope { width:100%; border:1px solid #d5ddcf; border-radius:9px; padding:10px 12px; background:#fff; font:inherit; font-size:16px; color:var(--ink); }
+#vocabulary-scope:focus-visible { outline:2px solid #75aa82; outline-offset:2px; }
+@media(max-width:700px) {
+  .intro { margin:26px 0 24px; }
+  h1 { font-size:clamp(19px,5.2vw,28px); }
+  .day-buttons { grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px; }
+  .day-button { min-height:60px; }
+  .day-plan { margin-bottom:20px; }
+  .app.is-studying { padding-bottom:110px; }
+  .actions {
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:614px;
+    z-index:10;
+    margin:0;
+    padding:12px 22px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(246,247,242,.97);
+    border-top:1px solid var(--line);
+    box-shadow:0 -6px 20px #34482b08;
+  }
+}
   </style>
 </head>
 <body>
@@ -732,13 +770,20 @@ footer .keyboard-tip>span {
     <main>
       <section class="intro">
         <div class="eyebrow">A LITTLE EVERY DAY</div>
-        <h1>每一个词，都是新的一步<span>。</span></h1>
-        <p>不用着急，翻开一张卡片，让记忆慢慢发生。</p>
+        <h1>一天一点，7 天记住 300 词<span>。</span></h1>
+        <p>每天 42–43 个词，慢慢学，也能走很远。</p>
+      </section>
+
+      <section class="day-plan" aria-labelledby="plan-title">
+        <div class="plan-heading"><h2 id="plan-title">我的 7 天计划</h2><span id="plan-progress" role="status">已完成 0 / 7 天</span></div>
+        <div class="day-buttons" id="day-buttons" role="group" aria-label="选择学习天数"></div>
+        <p class="day-description" id="day-description"></p>
+        <p class="save-status" id="save-status" role="status"></p>
       </section>
 
       <section class="study" id="study" aria-label="单词学习">
-        <div class="progress-heading"><span class="round-label" id="round-label">今日学习 <span>· 第一轮</span></span><span class="progress-count"><strong id="current">001</strong><span> / </span><span id="total">300</span></span></div>
-        <div class="progress-track" id="progress" role="progressbar" aria-label="本轮已完成" aria-valuemin="0" aria-valuemax="300" aria-valuenow="0"><div id="progress-fill"></div></div>
+        <div class="progress-heading"><span class="round-label" id="round-label">今日学习 <span>· 第一轮</span></span><span class="progress-count"><strong id="current">001</strong><span> / </span><span id="total">43</span></span></div>
+        <div class="progress-track" id="progress" role="progressbar" aria-label="本轮已完成" aria-valuemin="0" aria-valuemax="43" aria-valuenow="0"><div id="progress-fill"></div></div>
 
         <button class="flashcard" id="flashcard" type="button" aria-label="翻开卡片，查看中文释义和例句" aria-pressed="false">
           <span class="card-inner">
@@ -756,24 +801,26 @@ footer .keyboard-tip>span {
         </button>
 
         <div class="actions"><button class="answer-btn unknown" id="unknown"><span class="action-symbol">↺</span><span>不认识<small>待会儿再见</small></span><kbd>←</kbd></button><button class="answer-btn known" id="known"><span class="action-symbol">✓</span><span>认识<small>这个词我记住了</small></span><kbd>→</kbd></button></div>
-        <p class="study-tip"><span>✦</span> 不认识也没关系，第一轮结束后会再复习一遍。</p>
-        <div class="session-stats" aria-live="polite"><span><i class="stat-dot green"></i>已认识 <strong id="known-count">0</strong></span><span><i class="stat-dot orange"></i>待巩固 <strong id="unknown-count">0</strong></span><button id="restart" class="text-button">重新开始 ↗</button></div>
+        <p class="study-tip"><span>✦</span> 不认识也没关系，当天第一轮结束后会再复习一遍。</p>
+        <div class="session-stats" aria-live="polite"><span><i class="stat-dot green"></i>已认识 <strong id="known-count">0</strong></span><span><i class="stat-dot orange"></i>待巩固 <strong id="unknown-count">0</strong></span><button id="restart" class="text-button">重学当天 ↗</button></div>
         <p class="sr-only" id="announcement" role="status"></p>
       </section>
 
       <section class="results" id="results" hidden aria-labelledby="result-title">
-        <span class="result-icon">✦</span><div class="eyebrow">A LITTLE PROGRESS, WELL DONE</div><h2 id="result-title">今天，又进步了一点。</h2><p><span data-word-total>300</span> 个单词，一份认真。给坚持的自己一个赞。</p>
-        <div class="score"><strong id="score">0</strong><span> / <span data-word-total>300</span></span></div><p class="score-caption">第一轮认识的单词</p>
+        <span class="result-icon">✦</span><div class="eyebrow">A LITTLE PROGRESS, WELL DONE</div><h2 id="result-title" tabindex="-1">今天，又进步了一点。</h2><p id="result-description"></p>
+        <div class="score"><strong id="score">0</strong><span> / <span id="score-total">43</span></span></div><p class="score-caption">当天第一轮认识的单词</p>
         <div class="result-details"><span>首次掌握率<strong id="accuracy"></strong></span><span>复习后记住<strong id="review-score"></strong></span><span>仍待巩固<strong id="remaining"></strong></span></div>
-        <p id="remaining-words" class="remaining-words"></p><button class="again-btn" id="again">再学一遍 <span>↗</span></button>
+        <p id="remaining-words" class="remaining-words"></p><button class="again-btn" id="next-day">学习下一天 <span>↗</span></button><button class="repeat-day-btn" id="again">重学当天 ↻</button>
       </section>
       <details class="vocabulary" id="vocabulary">
-        <summary>查看全部词汇 <span class="vocabulary-total">共 <span data-word-total>300</span> 词 · 中英对照</span></summary>
+        <summary>查看词汇清单 <span class="vocabulary-total" id="vocabulary-count">当天 43 词 · 中英对照</span></summary>
         <p class="vocabulary-note">覆盖学习、工作、社会、科技与环境等四级常见话题；按字母排序，非官方频次排名。</p>
+        <label class="search-label" for="vocabulary-scope">查看范围</label>
+        <select id="vocabulary-scope" aria-controls="word-list"><option value="day">当天词汇</option><option value="all">全部 300 词</option></select>
         <label class="search-label" for="word-search">搜索词库</label>
         <input type="search" id="word-search" placeholder="输入英文或中文，如 energy / 能源" autocomplete="off" aria-controls="word-list">
         <p class="search-status" id="search-status" role="status"></p>
-        <ol class="word-list" id="word-list" aria-label="完整中英对照词表"></ol>
+        <ol class="word-list" id="word-list" aria-label="中英对照词表"></ol>
       </details>
     </main>
     <footer><span>小小积累，也有大大的力量。</span><span class="keyboard-tip"><kbd>空格</kbd> 翻面 <span>·</span> <kbd>←</kbd> 不认识 <span>·</span> <kbd>→</kbd> 认识</span><span>词间 · 让学习轻一点</span></footer>
@@ -1085,18 +1132,122 @@ const words = [
 
 const $ = (id) => document.getElementById(id);
 document.querySelectorAll('[data-word-total]').forEach(el => { el.textContent = words.length; });
-let queue;
-let index;
-let round;
-let firstKnown;
-let missed;
-let reviewKnown;
-let remaining;
-let finished;
 
-function renderCard() {
+// 连续分组，不重复、不遗漏；余数依次分给前几天：43 × 6 + 42 = 300。
+const DAY_COUNT = 7;
+const dailyWords = Array.from({ length: DAY_COUNT }, (_, day) => {
+  const base = Math.floor(words.length / DAY_COUNT);
+  const remainder = words.length % DAY_COUNT;
+  const start = day * base + Math.min(day, remainder);
+  return words.slice(start, start + base + (day < remainder ? 1 : 0));
+});
+const STORAGE_KEY = 'wordspace-seven-day-v1';
+const dictionaryId = words.map(entry => entry.word).join('|');
+let storageAvailable = true;
+
+function emptyPlan() {
+  return {
+    version: 1,
+    dictionaryId,
+    activeDay: 0,
+    days: dailyWords.map(() => ({ first: [], review: [] }))
+  };
+}
+
+function loadPlan() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return emptyPlan();
+    const saved = JSON.parse(raw);
+    // 仅恢复与当前词库一致的合法作答记录，避免旧数据或损坏数据导致卡片越界。
+    if (!saved || saved.version !== 1 || saved.dictionaryId !== dictionaryId ||
+        !Number.isInteger(saved.activeDay) || saved.activeDay < 0 || saved.activeDay >= DAY_COUNT ||
+        !Array.isArray(saved.days) || saved.days.length !== DAY_COUNT) return emptyPlan();
+    const valid = saved.days.every((day, i) => {
+      if (!day || !Array.isArray(day.first) || !Array.isArray(day.review)) return false;
+      const missed = day.first.filter(answer => answer === false).length;
+      return day.first.length <= dailyWords[i].length && day.review.length <= missed &&
+        (day.review.length === 0 || day.first.length === dailyWords[i].length) &&
+        [...day.first, ...day.review].every(answer => typeof answer === 'boolean');
+    });
+    return valid ? saved : emptyPlan();
+  } catch (error) {
+    // JSON 损坏可以重新开始；禁止存储时仍可在当前页面完成学习。
+    if (!(error instanceof SyntaxError)) storageAvailable = false;
+    return emptyPlan();
+  }
+}
+
+let plan = loadPlan();
+
+function savePlan() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
+    storageAvailable = true;
+  } catch {
+    storageAvailable = false;
+  }
+  renderSaveStatus();
+}
+
+function renderSaveStatus() {
+  $('save-status').textContent = storageAvailable
+    ? '进度自动保存在当前浏览器，明天打开可继续。天数可自由切换。'
+    : '浏览器未允许保存进度；本次仍可学习，关闭或刷新后进度可能丢失。';
+}
+
+function getSession(day = plan.activeDay) {
+  const group = dailyWords[day];
+  const records = plan.days[day];
+  const missed = group.filter((_, i) => records.first[i] === false);
+  const round = records.first.length < group.length ? 1 : 2;
+  const queue = round === 1 ? group : missed;
+  const index = round === 1 ? records.first.length : records.review.length;
+  return {
+    group, records, missed, round, queue, index,
+    finished: records.first.length === group.length && records.review.length === missed.length,
+    firstKnown: records.first.filter(Boolean).length,
+    reviewKnown: records.review.filter(Boolean).length,
+    remaining: missed.filter((_, i) => records.review[i] === false)
+  };
+}
+
+function renderPlan() {
+  const fragment = document.createDocumentFragment();
+  let completed = 0;
+  dailyWords.forEach((group, day) => {
+    const session = getSession(day);
+    if (session.finished) completed++;
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `day-button${session.finished ? ' completed' : ''}`;
+    button.dataset.day = day;
+    button.setAttribute('aria-pressed', String(day === plan.activeDay));
+    const status = session.finished ? '已完成 ✓' : session.round === 2 ? '复习中' : `${session.records.first.length} / ${group.length} 词`;
+    button.setAttribute('aria-label', `第 ${day + 1} 天，共 ${group.length} 个词，${status}`);
+    const label = document.createElement('span');
+    label.className = 'day-label';
+    label.textContent = `第 ${day + 1} 天`;
+    const detail = document.createElement('span');
+    detail.className = 'day-status';
+    detail.textContent = status;
+    button.append(label, detail);
+    fragment.append(button);
+  });
+  // 更新按钮前记录焦点，切天数后仍可以用键盘继续选择。
+  const focusedDay = document.activeElement.closest('.day-button')?.dataset.day;
+  $('day-buttons').replaceChildren(fragment);
+  if (focusedDay !== undefined) $('day-buttons').querySelector(`[data-day="${focusedDay}"]`).focus({ preventScroll: true });
+  $('plan-progress').textContent = `已完成 ${completed} / ${DAY_COUNT} 天`;
+  const day = plan.activeDay;
+  $('day-description').textContent = `第 ${day + 1} 天 · ${dailyWords[day].length} 个词 · ${dailyWords[day][0].word} — ${dailyWords[day].at(-1).word}`;
+  renderSaveStatus();
+}
+
+function renderCard(session) {
+  const { queue, index, round, firstKnown, reviewKnown, missed } = session;
   const entry = queue[index];
-  // 切换单词时直接回到正面，避免回转动画短暂泄露下一个词的释义。
+  // 切词直接回正面，避免回转动画泄露下一个词的释义。
   const inner = document.querySelector('.card-inner');
   inner.style.transition = 'none';
   $('flashcard').classList.remove('flipped');
@@ -1104,14 +1255,12 @@ function renderCard() {
   $('flashcard').setAttribute('aria-label', `${entry.word}，点击查看中文释义和例句`);
   document.querySelector('.card-front').setAttribute('aria-hidden', 'false');
   document.querySelector('.card-back').setAttribute('aria-hidden', 'true');
-  for (const key of ['word', 'phonetic', 'meaning', 'example', 'translation']) {
-    $(key).textContent = entry[key];
-  }
+  for (const key of ['word', 'phonetic', 'meaning', 'example', 'translation']) $(key).textContent = entry[key];
   $('back-word').textContent = entry.word;
-  $('current').textContent = String(index + 1).padStart(3, '0');
-  $('total').textContent = String(queue.length).padStart(3, '0');
+  $('current').textContent = String(index + 1).padStart(2, '0');
+  $('total').textContent = String(queue.length).padStart(2, '0');
   $('card-number').textContent = `NO. ${String(words.indexOf(entry) + 1).padStart(3, '0')}`;
-  $('round-label').innerHTML = round === 1 ? '今日学习 <span>· 第一轮</span>' : '巩固复习 <span>· 最后一轮</span>';
+  $('round-label').innerHTML = `第 ${plan.activeDay + 1} 天 <span>· ${round === 1 ? '第一轮' : '巩固复习'}</span>`;
   $('progress').setAttribute('aria-valuemax', queue.length);
   $('progress').setAttribute('aria-valuenow', index);
   $('progress-fill').style.width = `${index / queue.length * 100}%`;
@@ -1121,99 +1270,86 @@ function renderCard() {
   inner.style.removeProperty('transition');
 }
 
-function start() {
-  queue = [...words];
-  index = 0;
-  round = 1;
-  firstKnown = 0;
-  missed = [];
-  reviewKnown = 0;
-  remaining = [];
-  finished = false;
-  $('study').hidden = false;
-  $('results').hidden = true;
+function renderResults(session) {
+  const { group, firstKnown, reviewKnown, remaining } = session;
+  $('result-title').textContent = `第 ${plan.activeDay + 1} 天，完成啦。`;
+  $('result-description').textContent = `${group.length} 个单词，一份认真。明天继续，一点也不晚。`;
+  $('score').textContent = firstKnown;
+  $('score-total').textContent = group.length;
+  $('accuracy').textContent = `${Math.round(firstKnown / group.length * 100)}%`;
+  $('review-score').textContent = `${reviewKnown} 个`;
+  $('remaining').textContent = `${remaining.length} 个`;
+  $('remaining-words').textContent = remaining.length
+    ? `下次再加油：${remaining.map(entry => entry.word).join(' · ')}`
+    : '当天的词汇都记住了，继续保持！';
+  $('next-day').hidden = plan.activeDay === DAY_COUNT - 1;
+  if (plan.days.every((_, day) => getSession(day).finished)) {
+    $('result-description').textContent = `7 天计划已完成，${words.length} 个词都已学过！可以自由选择任意一天重学。`;
+  }
+}
+
+function renderStudy() {
+  const session = getSession();
+  document.querySelector('.app').classList.toggle('is-studying', !session.finished);
+  $('study').hidden = session.finished;
+  $('results').hidden = !session.finished;
+  if (session.finished) renderResults(session);
+  else renderCard(session);
+}
+
+function selectDay(day) {
+  if (!Number.isInteger(day) || day < 0 || day >= DAY_COUNT) return;
+  plan.activeDay = day;
+  savePlan();
   $('announcement').textContent = '';
-  renderCard();
+  renderPlan();
+  renderStudy();
+  renderVocabulary();
+}
+
+function restartDay() {
+  plan.days[plan.activeDay] = { first: [], review: [] };
+  savePlan();
+  $('announcement').textContent = '';
+  renderPlan();
+  renderStudy();
+  $('flashcard').focus({ preventScroll: true });
 }
 
 function flip() {
-  if (finished) return;
+  const session = getSession();
+  if (session.finished) return;
+  const entry = session.queue[session.index];
   const flipped = $('flashcard').classList.toggle('flipped');
   $('flashcard').setAttribute('aria-pressed', String(flipped));
-  const entry = queue[index];
-  $('flashcard').setAttribute('aria-label', flipped ? `${entry.word}，${entry.meaning}。例句：${entry.example} ${entry.translation}。点击返回单词正面` : `${entry.word}，点击查看中文释义和例句`);
+  $('flashcard').setAttribute('aria-label', flipped
+    ? `${entry.word}，${entry.meaning}。例句：${entry.example} ${entry.translation}。点击返回单词正面`
+    : `${entry.word}，点击查看中文释义和例句`);
   document.querySelector('.card-front').setAttribute('aria-hidden', String(flipped));
   document.querySelector('.card-back').setAttribute('aria-hidden', String(!flipped));
 }
 
 function answer(known) {
-  if (finished) return;
-  if (round === 1) {
-    if (known) firstKnown++;
-    else missed.push(queue[index]);
-  } else {
-    if (known) reviewKnown++;
-    else remaining.push(queue[index]);
+  const session = getSession();
+  if (session.finished) return;
+  (session.round === 1 ? session.records.first : session.records.review).push(known);
+  savePlan();
+  renderPlan();
+  renderStudy();
+  const updated = getSession();
+  if (updated.finished) {
+    $('result-title').setAttribute('tabindex', '-1');
+    $('result-title').focus({ preventScroll: true });
+  } else if (session.round === 1 && updated.round === 2) {
+    $('announcement').textContent = `当天第一轮结束，现在复习 ${updated.queue.length} 个不认识的单词。`;
   }
-  index++;
-  if (index === queue.length) {
-    if (round === 1 && missed.length) {
-      round = 2;
-      queue = [...missed];
-      index = 0;
-      $('announcement').textContent = `第一轮结束，现在复习 ${queue.length} 个不认识的单词。`;
-    } else {
-      finish();
-      return;
-    }
-  }
-  renderCard();
 }
 
-function finish() {
-  finished = true;
-  $('study').hidden = true;
-  $('results').hidden = false;
-  $('score').textContent = firstKnown;
-  $('accuracy').textContent = `${Math.round(firstKnown / words.length * 100)}%`;
-  $('review-score').textContent = `${reviewKnown} 个`;
-  $('remaining').textContent = `${remaining.length} 个`;
-  $('remaining-words').textContent = remaining.length ? `下次再加油：${remaining.map(entry => entry.word).join(' · ')}` : '这一轮的词汇都记住了，继续保持！';
-  // 把键盘焦点带到结果区，让键盘及读屏用户知道本轮已结束。
-  $('result-title').setAttribute('tabindex', '-1');
-  $('result-title').focus({ preventScroll: true });
-}
-
-$('flashcard').addEventListener('click', flip);
-$('known').addEventListener('click', () => answer(true));
-$('unknown').addEventListener('click', () => answer(false));
-$('restart').addEventListener('click', () => {
-  if (window.confirm('重新开始会清空本轮进度，确定重新开始吗？')) {
-    start();
-    $('flashcard').focus({ preventScroll: true });
-  }
-});
-$('again').addEventListener('click', () => {
-  start();
-  $('flashcard').focus({ preventScroll: true });
-});
-document.addEventListener('keydown', (event) => {
-  if (finished || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
-  // 搜索时保留空格和方向键的原生编辑行为，不改变学习进度。
-  if (event.target.closest('input, textarea, select, [contenteditable]')) return;
-  if (event.code === 'Space') {
-    // 按钮自身已支持空格触发，保留其原生键盘行为。
-    if (document.activeElement.tagName === 'BUTTON' || document.activeElement.tagName === 'A') return;
-    event.preventDefault();
-    flip();
-  } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
-    event.preventDefault();
-    answer(event.key === 'ArrowRight');
-  }
-});
 function renderVocabulary() {
+  const source = $('vocabulary-scope').value === 'all' ? words : dailyWords[plan.activeDay];
   const query = $('word-search').value.trim().toLowerCase();
-  const filtered = words.filter(entry => entry.word.includes(query) || entry.meaning.includes(query));
+  const filtered = source.filter(entry => entry.word.includes(query) || entry.meaning.includes(query));
+  $('vocabulary-count').textContent = `${source === words ? '全部' : '当天'} ${source.length} 词 · 中英对照`;
   const fragment = document.createDocumentFragment();
   for (const entry of filtered) {
     const row = document.createElement('li');
@@ -1230,11 +1366,44 @@ function renderVocabulary() {
     fragment.append(row);
   }
   $('word-list').replaceChildren(fragment);
-  $('search-status').textContent = filtered.length ? `显示 ${filtered.length} / ${words.length} 个单词` : '没有匹配的单词，试试其他英文或中文关键词。';
+  $('search-status').textContent = filtered.length
+    ? `显示 ${filtered.length} / ${source.length} 个单词`
+    : '没有匹配的单词，试试其他英文或中文关键词，或切换查看范围。';
 }
+
+$('day-buttons').addEventListener('click', event => {
+  const button = event.target.closest('[data-day]');
+  if (button) selectDay(Number(button.dataset.day));
+});
+$('flashcard').addEventListener('click', flip);
+$('known').addEventListener('click', () => answer(true));
+$('unknown').addEventListener('click', () => answer(false));
+$('restart').addEventListener('click', () => {
+  if (window.confirm(`重新学习第 ${plan.activeDay + 1} 天？只会清空当天进度，其他天保留。`)) restartDay();
+});
+$('again').addEventListener('click', restartDay);
+$('next-day').addEventListener('click', () => {
+  selectDay(plan.activeDay + 1);
+  (getSession().finished ? $('result-title') : $('flashcard')).focus();
+});
 $('word-search').addEventListener('input', renderVocabulary);
+$('vocabulary-scope').addEventListener('change', renderVocabulary);
+document.addEventListener('keydown', event => {
+  if (getSession().finished || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
+  // 天数按钮、词表及输入框中的键盘操作不影响学习作答。
+  if (event.target.closest('input, textarea, select, [contenteditable], .day-plan, .vocabulary, header, footer')) return;
+  if (event.code === 'Space') {
+    if (document.activeElement.matches('button, a')) return;
+    event.preventDefault();
+    flip();
+  } else if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
+    event.preventDefault();
+    answer(event.key === 'ArrowRight');
+  }
+});
+renderPlan();
+renderStudy();
 renderVocabulary();
-start();
   </script>
 </body>
 </html>
