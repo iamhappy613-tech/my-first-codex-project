@@ -1,0 +1,1 @@
+{"name":"wordspace","private":true,"type":"module","scripts":{"test":"node --test tests/*.test.mjs","test:db":"node scripts/test-db.mjs","test:browser":"node tests/browser.mjs","embed":"node scripts/embed.mjs"}}

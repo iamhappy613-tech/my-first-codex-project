@@ -1,0 +1,8 @@
+node_modules/
+.superpowers/
+.cache/
+.env
+.env.*
+!.env.example
+supabase/.temp/
+test-results/
