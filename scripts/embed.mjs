@@ -14,4 +14,11 @@ const scripts=[await readFile('supabase/functions/_shared/core.js','utf8'),await
 replace('<!-- BEGIN WORDSPACE_SCRIPTS -->','<!-- END WORDSPACE_SCRIPTS -->',scripts.map(source=>'<script>\n'+source.replaceAll('</script','<\\/script')+'\n</script>').join('\n'));
 const cols='id,word,phonetic,meaning,example,translation,level,reviewed,source,frequency_rank';
 const seed='-- Reviewed authored lessons; see data/provenance.json and licenses/.\ninsert into public.word_catalog('+cols+')\nselect '+cols+' from jsonb_to_recordset($catalog$'+data+'$catalog$::jsonb) as t(id text,word text,phonetic text,meaning text,example text,translation text,level text,reviewed boolean,source text,frequency_rank integer)\non conflict(id) do nothing;\n';
-if(process.argv.includes('--check')){if(html!==original)throw Error('index.html is stale; run npm run embed');if(seed!==await readFile('supabase/seed.sql','utf8'))throw Error('SQL seed is stale');console.log('PASS: standalone HTML and SQL seed match source')}else {await writeFile('index.html',html);await writeFile('supabase/seed.sql',seed);}
+let cloudOriginal=null,cloudNext=null;
+try{cloudOriginal=await readFile('cloud-preview.html','utf8')}catch(error){if(error.code!=='ENOENT')throw error}
+if(cloudOriginal!==null){
+ const configPattern=/(<script id="wordspace-config" type="application\/json">)([\s\S]*?)(<\/script>)/,cloudConfig=cloudOriginal.match(configPattern);
+ if(!cloudConfig||!html.match(configPattern))throw Error('Public page configuration is missing; cloud preview was not overwritten');
+ JSON.parse(cloudConfig[2]);cloudNext=html.replace(configPattern,()=>cloudConfig[0]);
+}
+if(process.argv.includes('--check')){if(html!==original)throw Error('index.html is stale; run npm run embed');if(cloudNext!==cloudOriginal)throw Error('cloud-preview.html is stale; run npm run embed');if(seed!==await readFile('supabase/seed.sql','utf8'))throw Error('SQL seed is stale');console.log('PASS: public HTML pages and SQL seed match source')}else {await writeFile('index.html',html);if(cloudNext!==null)await writeFile('cloud-preview.html',cloudNext);await writeFile('supabase/seed.sql',seed);}

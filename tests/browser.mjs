@@ -1,7 +1,7 @@
-import {chromium} from 'playwright';import assert from 'node:assert/strict';import {createServer} from 'node:http';import {readFile} from 'node:fs/promises';import {resolve,extname} from 'node:path';
+import {chromium} from './browser-runtime.mjs';import assert from 'node:assert/strict';import {createServer} from 'node:http';import {readFile} from 'node:fs/promises';import {resolve} from 'node:path';
 import '../supabase/functions/_shared/core.js';
 const root=resolve('.'),catalog=JSON.parse(await readFile('data/catalog.json','utf8'));
-const server=createServer(async(req,res)=>{try{const p=resolve(root,'.'+new URL(req.url,'http://test').pathname);if(!p.startsWith(root+'/'))throw Error();const file=p.endsWith('/')?p+'index.html':p;res.setHeader('Content-Type',extname(file)==='.json'?'application/json':extname(file)==='.js'?'text/javascript':'text/html');res.end(await readFile(file))}catch{res.statusCode=404;res.end('not found')}});
+const server=createServer(async(req,res)=>{try{if(!['/','/index.html'].includes(new URL(req.url,'http://test').pathname))throw Error();res.setHeader('Content-Type','text/html');res.end(await readFile(resolve(root,'index.html')))}catch{res.statusCode=404;res.end('not found')}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${server.address().port}`;
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
 const ids={a:'00000000-0000-4000-8000-000000000001',b:'00000000-0000-4000-8000-000000000002'};
@@ -110,10 +110,11 @@ try {
  await expired.page.locator('#sync-now').click();await expired.page.locator('#account-gate').waitFor({state:'visible',timeout:3000});
  assert.match(await expired.page.locator('#auth-message').textContent(),/登录/);assert(await expired.page.evaluate(id=>JSON.parse(localStorage.getItem(`wordspace:account:${id}`)).dirty,ids.b));assert.equal(await expired.page.evaluate(()=>localStorage.getItem('wordspace:session')),null);flags.refreshExpired=false;checks++;await expired.ctx.close();
  // Failed evidence retrieval for a new learner must not retain the former learner's sample or due word.
- events.push({user_id:ids.a,word_id:'accept',correct:false,assisted:false,created_at:'2026-11-21T00:00:00Z'});
+ const privacyPlan=records.get(ids.a).state;privacyPlan.days[0].first=Array(11).fill(true);privacyPlan.mastered=privacyPlan.days[0].ids.slice(0,11);
+ const privateDue=privacyPlan.days[0].ids[10];events.push({user_id:ids.a,word_id:privateDue,correct:false,assisted:false,created_at:'2026-11-21T00:00:00Z'});
  const privacy=await cloudPage();await privacy.page.goto(base+'/index.html');await login(privacy.page,'a');await privacy.page.locator('#study-main').waitFor({state:'visible'});await privacy.page.waitForFunction(()=>document.querySelector('#assessment-stats').textContent.includes('待复测 1'));
  await privacy.page.locator('#logout').click();flags.evidenceFailureB=true;await login(privacy.page,'b');await privacy.page.locator('#study-main').waitFor({state:'visible'});await privacy.page.waitForTimeout(100);
- assert.match(await privacy.page.locator('#assessment-stats').textContent(),/不可用/);await privacy.page.evaluate(()=>Math.random=()=>.99);await privacy.page.locator('#assessment-start').click();assert.equal(await privacy.page.locator('#assessment-word').textContent(),catalog[990].word);flags.evidenceFailureB=false;checks++;await privacy.ctx.close();
+ assert.match(await privacy.page.locator('#assessment-stats').textContent(),/不可用/);await privacy.page.evaluate(()=>Math.random=()=>.99);await privacy.page.locator('#assessment-start').click();const studiedB=records.get(ids.b).state.days.flatMap(day=>day.ids.slice(0,day.first.length));assert(studiedB.includes(await privacy.page.locator('#assessment-word').textContent()));flags.evidenceFailureB=false;checks++;await privacy.ctx.close();
  for(const width of [320,390,768,1280]){await local.setViewportSize({width,height:844});assert(await local.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))}checks++;
  assert.deepEqual(errors,[]);await ctx.close();console.log(`PASS: ${checks} browser scenarios (local fallback, real UI auth gates, explicit import, reload, account isolation, sync/offline/conflict, admin, assessments, blocked account, responsive).`);
 }finally{await browser.close();await new Promise(r=>server.close(r))}

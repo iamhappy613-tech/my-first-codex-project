@@ -1,4 +1,4 @@
-import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdtemp,mkdir,writeFile,rm,stat,access} from 'node:fs/promises';import {execFileSync,spawn} from 'node:child_process';import {tmpdir} from 'node:os';import {join,resolve} from 'node:path';
+import test from 'node:test';import assert from 'node:assert/strict';import {readFile,mkdtemp,mkdir,writeFile,rm,stat,access,copyFile} from 'node:fs/promises';import {execFileSync,spawn} from 'node:child_process';import {tmpdir} from 'node:os';import {join,resolve,dirname} from 'node:path';
 import '../supabase/functions/_shared/core.js';
 const root=resolve('.');
 test('reviewed 1000-word catalog keeps 300 starter tasks and source-backed expansion',async()=>{
@@ -37,5 +37,24 @@ test('cloud staging output preserves live local page and uses its own same-origi
  try{await mkdir(join(dir,'gpt'));const original='<script id="wordspace-config" type="application/json">{"mode":"local"}</script>';await writeFile(join(dir,'index.html'),original);await writeFile(join(dir,'gpt/openapi.json'),'{"servers":[]}');
   execFileSync(process.execPath,[join(root,'scripts/configure.mjs'),'--url','https://project.supabase.co','--key','sb_publishable_test','--enable-cloud','--output','cloud-preview.html'],{cwd:dir,stdio:'pipe'});
   assert.equal(await readFile(join(dir,'index.html'),'utf8'),original);const staged=await readFile(join(dir,'cloud-preview.html'),'utf8');assert(staged.includes('"mode":"cloud"'));assert(staged.includes('https://iamhappy613-tech.github.io/my-first-codex-project/cloud-preview.html'));
+ }finally{await rm(dir,{recursive:true,force:true})}
+});
+
+test('embedding refreshes both public pages and checks cloud staleness without replacing its config',async()=>{
+ const dir=await mkdtemp(join(tmpdir(),'wordspace-embed-'));
+ try{
+  const files=['index.html','web/account.css','web/account-ui.html','web/learning-ui.html','web/account.js','web/assessment.js','web/study.js','supabase/functions/_shared/core.js','data/catalog.json','licenses/ECDICT-LICENSE.txt','licenses/CMUDICT-LICENSE.txt'];
+  for(const file of files){await mkdir(dirname(join(dir,file)),{recursive:true});await copyFile(join(root,file),join(dir,file))}
+  const configPattern=/(<script id="wordspace-config" type="application\/json">)([\s\S]*?)(<\/script>)/;
+  const original=await readFile(join(dir,'index.html'),'utf8'),cloudConfig={mode:'cloud',supabaseUrl:'https://fixture.supabase.co',publicKey:'sb_publishable_fixture',ownerId:'00000000-0000-4000-8000-000000000001',siteUrl:'https://fixture.test/cloud-preview.html'};
+  await writeFile(join(dir,'cloud-preview.html'),original.replace(configPattern,(_all,open,_config,close)=>open+JSON.stringify(cloudConfig)+close));
+  const markup=await readFile(join(dir,'web/learning-ui.html'),'utf8');await writeFile(join(dir,'web/learning-ui.html'),markup.replace('学习效果检测','本次自动检测'));
+  execFileSync(process.execPath,[join(root,'scripts/embed.mjs')],{cwd:dir,stdio:'pipe'});
+  const cloud=await readFile(join(dir,'cloud-preview.html'),'utf8'),local=await readFile(join(dir,'index.html'),'utf8');
+  assert(cloud.includes('本次自动检测'));assert(local.includes('本次自动检测'));assert.deepEqual(JSON.parse(cloud.match(configPattern)[2]),cloudConfig);
+  assert.equal(JSON.parse(local.match(configPattern)[2]).mode,'local');
+  execFileSync(process.execPath,[join(root,'scripts/embed.mjs'),'--check'],{cwd:dir,stdio:'pipe'});
+  await writeFile(join(dir,'cloud-preview.html'),cloud.replace('本次自动检测','过期内容'));
+  assert.throws(()=>execFileSync(process.execPath,[join(root,'scripts/embed.mjs'),'--check'],{cwd:dir,stdio:'pipe'}));
  }finally{await rm(dir,{recursive:true,force:true})}
 });
