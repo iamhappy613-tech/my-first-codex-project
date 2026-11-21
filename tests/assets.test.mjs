@@ -43,7 +43,7 @@ test('cloud staging output preserves live local page and uses its own same-origi
 test('embedding refreshes both public pages and checks cloud staleness without replacing its config',async()=>{
  const dir=await mkdtemp(join(tmpdir(),'wordspace-embed-'));
  try{
-  const files=['index.html','web/account.css','web/account-ui.html','web/learning-ui.html','web/account.js','web/assessment.js','web/study.js','supabase/functions/_shared/core.js','data/catalog.json','licenses/ECDICT-LICENSE.txt','licenses/CMUDICT-LICENSE.txt'];
+  const files=['index.html','web/account.css','web/account-ui.html','web/learning-ui.html','web/account.js','web/assessment.js','web/word-memory.js','web/study.js','supabase/functions/_shared/core.js','data/catalog.json','data/memory-notes/core.json','data/memory-notes/expansion-a.json','data/memory-notes/expansion-b.json','licenses/ECDICT-LICENSE.txt','licenses/CMUDICT-LICENSE.txt'];
   for(const file of files){await mkdir(dirname(join(dir,file)),{recursive:true});await copyFile(join(root,file),join(dir,file))}
   const configPattern=/(<script id="wordspace-config" type="application\/json">)([\s\S]*?)(<\/script>)/;
   const original=await readFile(join(dir,'index.html'),'utf8'),cloudConfig={mode:'cloud',supabaseUrl:'https://fixture.supabase.co',publicKey:'sb_publishable_fixture',ownerId:'00000000-0000-4000-8000-000000000001',siteUrl:'https://fixture.test/cloud-preview.html'};

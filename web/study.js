@@ -178,10 +178,11 @@ function renderCard(session) {
   inner.style.transition = 'none';
   $('flashcard').classList.remove('flipped');
   $('flashcard').setAttribute('aria-pressed', 'false');
-  $('flashcard').setAttribute('aria-label', `${entry.word}，点击查看中文释义和例句`);
+  $('flashcard').setAttribute('aria-label', `${entry.word}，点击查看中文释义、构词与记忆提示和例句`);
   document.querySelector('.card-front').setAttribute('aria-hidden', 'false');
   document.querySelector('.card-back').setAttribute('aria-hidden', 'true');
   for (const key of ['word', 'phonetic', 'meaning', 'example', 'translation']) $(key).textContent = entry[key];
+  WordspaceMemory.render($('word-memory'), entry);
   $('back-word').textContent = entry.word;
   $('current').textContent = String(index + 1).padStart(2, '0');
   $('total').textContent = String(queue.length).padStart(2, '0');
@@ -249,7 +250,8 @@ function flip() {
   const entry = session.queue[session.index];
   const flipped = $('flashcard').classList.toggle('flipped');
   $('flashcard').setAttribute('aria-pressed', String(flipped));
-  $('flashcard').setAttribute('aria-label', flipped ? `${entry.word}，${entry.meaning}。例句：${entry.example} ${entry.translation}。点击返回单词正面` : `${entry.word}，点击查看中文释义和例句`);
+  const memory=WordspaceMemory.describe(entry);
+  $('flashcard').setAttribute('aria-label', flipped ? `${entry.word}，${entry.meaning}。构词与记忆，${memory.label}：${memory.structure}。${memory.explanation} ${memory.tip}。例句：${entry.example} ${entry.translation}。点击返回单词正面` : `${entry.word}，点击查看中文释义、构词与记忆提示和例句`);
   document.querySelector('.card-front').setAttribute('aria-hidden', String(flipped));
   document.querySelector('.card-back').setAttribute('aria-hidden', String(!flipped));
 }
@@ -342,11 +344,12 @@ function renderVocabulary() {
     const word = document.createElement('button'); word.type = 'button'; word.className = 'list-speak-word'; word.dataset.speakWord = entry.word;
     word.textContent = `${entry.word} ▷`; word.disabled = !canSpeak; word.setAttribute('aria-label', `用英语朗读单词 ${entry.word}`);
     const meaning = document.createElement('span'); meaning.className = 'list-meaning'; meaning.textContent = entry.meaning;
+    const memory = document.createElement('div'); memory.className = 'list-memory'; WordspaceMemory.render(memory, entry);
     const example = document.createElement('div'); example.className = 'list-example';
     const sentence = document.createElement('span'); sentence.textContent = entry.example;
     const play = document.createElement('button'); play.type = 'button'; play.className = 'list-speak-example'; play.dataset.speakExample = entry.word;
     play.textContent = '▷ 听例句'; play.disabled = !canSpeak; play.setAttribute('aria-label', `用英语朗读例句：${entry.example}`);
-    example.append(sentence, play); row.append(index, word, meaning, example); fragment.append(row);
+    example.append(sentence, play); row.append(index, word, meaning, memory, example); fragment.append(row);
   }
   $('word-list').replaceChildren(fragment);
   $('search-status').textContent = filtered.length ? `显示 ${filtered.length} / ${source.length} 个单词` : '没有匹配项，请换个关键词或切换查看范围。';

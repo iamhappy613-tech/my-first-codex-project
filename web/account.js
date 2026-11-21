@@ -205,7 +205,7 @@
    display('assessment-completion',`已作答 ${report.answered} / ${report.total} 词。未答词不计错。`+(report.total<10?`本轮仅 ${report.total} 词，样本较少。`:''));
    display('assessment-retention',report.delayed_answered?`本轮24小时复测：${report.delayed_correct} / ${report.delayed_answered} 词正确（${report.delayed_rate}%）。`:'本轮暂无已作答的24小时复测样本，等待复测。');
    display('assessment-advice',report.wrong_ids.length?'先巩固下面的错词，稍后再测。已答对的词可在满24小时后复测。':report.answered?'本轮作答均正确。建议满24小时后再测一次，观察是否仍能记住。':'可以重新开始一轮；只记录你实际提交的答案。');
-   $('assessment-wrong').replaceChildren();for(const id of report.wrong_ids){const word=round.questions.find(item=>item.word.id===id).word,li=document.createElement('li'),title=document.createElement('strong'),meaning=document.createElement('p'),example=document.createElement('p');title.textContent=word.word;title.lang='en';meaning.textContent=word.meaning;example.textContent=word.example+' '+word.translation;li.append(title,meaning,example);$('assessment-wrong').append(li)}
+   $('assessment-wrong').replaceChildren();for(const id of report.wrong_ids){const word=round.questions.find(item=>item.word.id===id).word,li=document.createElement('li'),title=document.createElement('strong'),meaning=document.createElement('p'),memory=document.createElement('div'),example=document.createElement('p');title.textContent=word.word;title.lang='en';meaning.textContent=word.meaning;root.WordspaceMemory.render(memory,word);example.textContent=word.example+' '+word.translation;li.append(title,meaning,memory,example);$('assessment-wrong').append(li)}
    renderAssessmentSync();$('assessment-report-title').focus({preventScroll:true});
   }
   async function answerAssessment(option){
@@ -215,7 +215,8 @@
    display('assessment-progress',`第 ${round.index+1} / ${round.questions.length} 题 · 已作答 ${round.answers.length} 词`);
    $('assessment-options').querySelectorAll('button').forEach((button,index)=>{button.disabled=true;if(current.options[index].id===current.word.id)button.classList.add('is-correct');else if(current.options[index].id===option.id)button.classList.add('is-wrong')});
    const payload={p_event_id:current.id,p_word_id:current.word.id,p_choice_id:option.id,p_assisted:false,recorded_at:recorded.created_at};
-   const feedback=`${result.correct?'答对了':'再记一遍'}：${current.word.meaning}。\n${current.word.example}\n${current.word.translation}`;
+   const memory=root.WordspaceMemory.describe(current.word);
+   const feedback=[`${result.correct?'答对了':'再记一遍'}：${current.word.meaning}。`,`构词与记忆 · ${memory.label}`,memory.structure,memory.explanation,memory.tip,current.word.example,current.word.translation].filter(Boolean).join('\n');
    display('assessment-feedback',feedback);if(round.answers.length===round.questions.length)finishAssessment();else $('assessment-next').hidden=false;
    if(cloud){pendingEvents.push(payload);cache();notify('待同步检测结果');renderAssessmentSync();await flush();if(answerEpoch!==epoch||!ready)return;await refreshEvidence()}
    else{const saved=read('wordspace:local:evidence')||[],combined=new Map(saved.map(event=>[event.id||`${event.word_id}|${event.created_at}|${event.correct}`,event]));for(const event of localAssessmentEvidence.values())combined.set(event.id,event);round.storageFailed=!write('wordspace:local:evidence',[...combined.values()].slice(-1000));void refreshEvidence();renderAssessmentSync()}

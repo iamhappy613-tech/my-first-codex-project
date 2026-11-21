@@ -44,6 +44,12 @@
 }
 @media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }
 
+.word-memory { display:block; width:100%; margin:10px 0 3px; padding:12px 14px; border:1px solid #dce5d4; border-radius:10px; background:#f2f6ed; text-align:left; overflow-wrap:anywhere; }
+.word-memory>span { display:block; }
+.memory-heading { margin-bottom:5px; color:#536d49; font:600 14px/1.6 system-ui,sans-serif; }
+.memory-structure { color:#35543e; font:17px/1.6 Georgia,serif; }
+.memory-explanation,.memory-tip { margin-top:5px; color:#4e5f4d; font:16px/1.65 system-ui,sans-serif; }
+.list-memory { grid-column:2 / -1; min-width:0; margin:6px 0; }
 /* Grid overlays both faces while letting long, reviewed lessons set card height. */
 .flashcard { height:auto !important; }
 .card-inner { display:grid; height:auto; }

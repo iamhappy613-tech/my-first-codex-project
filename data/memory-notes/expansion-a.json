@@ -1,0 +1,987 @@
+{
+  "schema_version": 1,
+  "start": 334,
+  "end": 667,
+  "entries": {
+    "player": {
+      "kind": "affix",
+      "structure": "play + -er",
+      "explanation": "play 表示玩或参加比赛，-er 常表示做某事的人，player 因而可指运动员或参加者。"
+    },
+    "especially": {
+      "kind": "affix",
+      "structure": "especial + -ly",
+      "explanation": "especial 表特别的，-ly 构成副词；especially 表尤其、特别，开头的 e 也要记住。",
+      "source_url": "https://www.merriam-webster.com/dictionary/especial"
+    },
+    "official": {
+      "kind": "family",
+      "structure": "office ↔ official（词族）",
+      "explanation": "office 可指公职，official 可指官员或官方的；按同一词族联系职务与任职者。",
+      "source_url": "https://www.merriam-webster.com/dictionary/official"
+    },
+    "activity": {
+      "kind": "affix",
+      "structure": "active → activity（去 e，加 -ity）",
+      "explanation": "active 表活跃的，去词尾 e 加名词后缀 -ity，activity 表示活动或所做的事情。"
+    },
+    "product": {
+      "kind": "family",
+      "structure": "produce ↔ product ↔ production（词族）",
+      "explanation": "produce 是生产，product 是产物，production 是生产过程；词族中区分动作与结果。"
+    },
+    "personal": {
+      "kind": "affix",
+      "structure": "person + -al",
+      "explanation": "person 表人，-al 构成形容词；personal 指与某个人有关的，即个人的、私人的。"
+    },
+    "attention": {
+      "kind": "family",
+      "structure": "attention ↔ attentive（词族）",
+      "explanation": "attention 是注意力，attentive 是专注的；把同词族的名词与形容词配对记忆。"
+    },
+    "organization": {
+      "kind": "affix",
+      "structure": "organize → organization（去 e，加 -ation）",
+      "explanation": "organize 表组织，去 e 加名词后缀 -ation；organization 可指组织活动或有特定目标的机构。"
+    },
+    "choose": {
+      "kind": "family",
+      "structure": "choose ↔ choice（词族）",
+      "explanation": "choose 是选择这一动作，choice 是选择或选项；同词族中元音和结尾的变化需分别记住。"
+    },
+    "realize": {
+      "kind": "affix",
+      "structure": "real + -ize",
+      "explanation": "real 表真实的，-ize 构成动词；realize 可指使目标实现，也可指意识到某个事实。"
+    },
+    "choice": {
+      "kind": "family",
+      "structure": "choose ↔ choice（词族）",
+      "explanation": "choice 是选择或选项，相关动词是 choose；按同一词族区分名词与动词的拼写和用法。"
+    },
+    "administration": {
+      "kind": "family",
+      "structure": "administer ↔ administration（词族）",
+      "explanation": "administer 表管理，administration 表管理工作或行政部门；词尾变化按词族整体记。"
+    },
+    "medical": {
+      "kind": "family",
+      "structure": "medicine ↔ medical（词族）",
+      "explanation": "medicine 可指医学或药物，medical 表医学的、医疗的；将同一词族的名词和形容词联记。",
+      "source_url": "https://www.merriam-webster.com/dictionary/medical"
+    },
+    "officer": {
+      "kind": "family",
+      "structure": "office ↔ officer（词族）",
+      "explanation": "office 可表示公职，officer 表担任职务的人；在具体场景中常指警官或军官。"
+    },
+    "private": {
+      "kind": "family",
+      "structure": "private ↔ privacy（词族）",
+      "explanation": "private 表私人的，privacy 表隐私或私人空间；按词族联记，注意词尾拼写和元音读法。"
+    },
+    "performance": {
+      "kind": "affix",
+      "structure": "perform + -ance",
+      "explanation": "perform 表表演或履行，-ance 构成名词；performance 可指一次表演或实际表现。"
+    },
+    "represent": {
+      "kind": "family",
+      "structure": "represent ↔ representative（词族）",
+      "explanation": "represent 是代表，representative 可指代表人或有代表性的；按同词族区分词性。"
+    },
+    "agency": {
+      "kind": "family",
+      "structure": "agent ↔ agency（词族）",
+      "explanation": "agent 可指代理人，agency 可指代理机构；同词族按人物与机构区分，词尾变化单独记。"
+    },
+    "nature": {
+      "kind": "family",
+      "structure": "nature ↔ natural（词族）",
+      "explanation": "nature 指自然，natural 指自然的；同词族词尾不同，可在 natural world 中一起记忆。"
+    },
+    "recently": {
+      "kind": "affix",
+      "structure": "recent + -ly",
+      "explanation": "recent 表最近的，-ly 将形容词变为副词；recently 表最近、近来，用来说明发生时间。"
+    },
+    "movement": {
+      "kind": "affix",
+      "structure": "move + -ment",
+      "explanation": "move 表移动，-ment 构成名词；movement 可指移动，也可指有共同目标的社会运动。"
+    },
+    "response": {
+      "kind": "family",
+      "structure": "respond ↔ response（词族）",
+      "explanation": "respond 是回应动作，response 是回答或反应；按同一词族区分动词与回应的内容。"
+    },
+    "artist": {
+      "kind": "affix",
+      "structure": "art + -ist",
+      "explanation": "art 表艺术，-ist 常表示从事某领域的人；artist 指从事艺术创作的艺术家。"
+    },
+    "central": {
+      "kind": "family",
+      "structure": "center / centre ↔ central（词族）",
+      "explanation": "center 的英式拼写是 centre，均指中心；central 表中心的，同词族中词性不同。"
+    },
+    "treatment": {
+      "kind": "affix",
+      "structure": "treat + -ment",
+      "explanation": "treat 可指对待或治疗，-ment 构成名词；treatment 因而可表示对待方式或治疗。"
+    },
+    "exactly": {
+      "kind": "affix",
+      "structure": "exact + -ly",
+      "explanation": "exact 表准确的，-ly 构成副词；exactly 表确切地，也可表示数量、时间等恰好一致。"
+    },
+    "media": {
+      "kind": "family",
+      "structure": "medium ↔ media（词族·单复数）",
+      "explanation": "media 是 medium 的复数形式之一；谈报刊、广播等传播渠道时，常用它统称媒体。",
+      "source_url": "https://www.merriam-webster.com/dictionary/media"
+    },
+    "prepare": {
+      "kind": "family",
+      "structure": "prepare ↔ preparation（词族）",
+      "explanation": "prepare 是准备，preparation 是准备工作；按动名词词族联记，注意词尾和重音的变化。"
+    },
+    "success": {
+      "kind": "family",
+      "structure": "succeed ↔ success（词族）",
+      "explanation": "succeed 是取得成功，success 是成功这一结果；按同一词族区分动作与名词用法。"
+    },
+    "particularly": {
+      "kind": "affix",
+      "structure": "particular + -ly",
+      "explanation": "particular 可表特定的，-ly 构成副词；particularly 常表示特别、尤其，用于突出某一项。"
+    },
+    "growth": {
+      "kind": "family",
+      "structure": "grow ↔ growth（词族）",
+      "explanation": "grow 表生长或增加，growth 是生长、增长；同词族把变化动作与这一变化的名词联记。"
+    },
+    "loss": {
+      "kind": "family",
+      "structure": "lose ↔ loss（词族）",
+      "explanation": "lose 表失去，loss 表损失或丧失；同词族词尾和读音有变化，注意动词与名词的区别。"
+    },
+    "election": {
+      "kind": "affix",
+      "structure": "elect + -ion",
+      "explanation": "elect 表选举，-ion 构成名词；election 指选举过程或一次选举，可与动词对照记。"
+    },
+    "physical": {
+      "kind": "family",
+      "structure": "physics ↔ physical（词族）",
+      "explanation": "physics 指物理学，physical 有物理的和身体的两种常见义；同词族的词义在此有所分支。",
+      "source_url": "https://www.merriam-webster.com/dictionary/physical"
+    },
+    "analysis": {
+      "kind": "family",
+      "structure": "analyze ↔ analysis（词族）",
+      "explanation": "analyze 是分析动作，analysis 是分析过程或结果；同词族词尾与重音不同，需要分别记。"
+    },
+    "lawyer": {
+      "kind": "family",
+      "structure": "law ↔ lawyer（词族）",
+      "explanation": "law 指法律，lawyer 指律师；把法律领域与从事法律工作的人放在同一词族中记忆。"
+    },
+    "operation": {
+      "kind": "affix",
+      "structure": "operate → operation（去 e，加 -ion）",
+      "explanation": "operate 表操作或运转，去 e 加 -ion 得名词；operation 还可在医疗语境中指手术。"
+    },
+    "financial": {
+      "kind": "family",
+      "structure": "finance ↔ financial（词族）",
+      "explanation": "finance 指财务或金融，financial 是相应形容词；同词族的词尾变化需连同读音一起记。"
+    },
+    "clearly": {
+      "kind": "affix",
+      "structure": "clear + -ly",
+      "explanation": "clear 表清楚的，-ly 构成副词；clearly 可表示表达清楚，也可表示某事实显然成立。"
+    },
+    "truth": {
+      "kind": "family",
+      "structure": "true ↔ truth（词族）",
+      "explanation": "true 表真实的，truth 指事实或真相；同词族的词尾和读音有变化，按词性配对记忆。"
+    },
+    "various": {
+      "kind": "family",
+      "structure": "vary ↔ various（词族）",
+      "explanation": "vary 表变化或不同，various 表各种各样的；同词族可用来联系变化与种类的多样。"
+    },
+    "executive": {
+      "kind": "family",
+      "structure": "execute ↔ executive（词族）",
+      "explanation": "execute 表执行，executive 可表执行的或指管理人员；按同词族联系执行与管理职责。",
+      "source_url": "https://www.merriam-webster.com/dictionary/executive"
+    },
+    "network": {
+      "kind": "compound",
+      "structure": "net + work",
+      "explanation": "net 表网，与 work 组成合成词 network；它可指相互连接的网络，也可指人际关系网。",
+      "source_url": "https://www.merriam-webster.com/dictionary/network"
+    },
+    "legal": {
+      "kind": "family",
+      "structure": "legal ↔ illegal（词族）",
+      "explanation": "legal 是合法的，illegal 是非法的；对照记忆时，il- 带来的否定意义有助于区分两词。"
+    },
+    "religious": {
+      "kind": "family",
+      "structure": "religion ↔ religious（词族）",
+      "explanation": "religion 是宗教，religious 是宗教的；同词族中名词和形容词的词尾不同，需要分别记。"
+    },
+    "final": {
+      "kind": "family",
+      "structure": "final ↔ finally（词族）",
+      "explanation": "final 表最后的，finally 表最后、终于；同词族中 -ly 可帮助区分形容词与副词。"
+    },
+    "memory": {
+      "kind": "family",
+      "structure": "memory ↔ memorize（词族）",
+      "explanation": "memory 指记忆或记忆力，memorize 指把内容记住；同词族中区分记忆能力与记忆动作。"
+    },
+    "trial": {
+      "kind": "family",
+      "structure": "try ↔ trial（词族）",
+      "explanation": "try 表尝试，trial 可指试验；在法律语境中又指审判，词族关联还需结合具体例句。",
+      "source_url": "https://www.merriam-webster.com/dictionary/trial"
+    },
+    "management": {
+      "kind": "affix",
+      "structure": "manage + -ment",
+      "explanation": "manage 表管理，-ment 构成名词；management 可指管理工作，也可统称负责管理的人。"
+    },
+    "imagine": {
+      "kind": "family",
+      "structure": "imagine ↔ imagination（词族）",
+      "explanation": "imagine 是想象，imagination 指想象力；动词与名词按词族联记，注意词尾和重音。"
+    },
+    "statement": {
+      "kind": "affix",
+      "structure": "state + -ment",
+      "explanation": "state 作动词可表陈述，-ment 构成名词；statement 是说出或写下的陈述、声明。"
+    },
+    "direction": {
+      "kind": "affix",
+      "structure": "direct + -ion",
+      "explanation": "direct 有指引的意思，-ion 构成名词；direction 可指方向，其复数形式常用于表示指示。"
+    },
+    "employee": {
+      "kind": "affix",
+      "structure": "employ + -ee",
+      "explanation": "employ 表雇用，-ee 常表示动作的接受者；employee 指受雇的人，即雇员或员工。"
+    },
+    "politics": {
+      "kind": "family",
+      "structure": "politics ↔ political（词族）",
+      "explanation": "politics 指政治或政治活动，political 表政治的；同词族中注意名词和形容词的词尾差别。"
+    },
+    "suddenly": {
+      "kind": "affix",
+      "structure": "sudden + -ly",
+      "explanation": "sudden 表突然的，-ly 构成副词；suddenly 用于说明动作或变化突然发生。"
+    },
+    "production": {
+      "kind": "family",
+      "structure": "produce ↔ production（词族）",
+      "explanation": "produce 是生产，production 是生产或制作的过程；按同一词族联记，注意词尾拼写和读音。"
+    },
+    "inside": {
+      "kind": "compound",
+      "structure": "in + side",
+      "explanation": "in 表在内，side 表一侧；合成词 inside 表里面或内部，可结合物体的内侧来记忆。"
+    },
+    "writer": {
+      "kind": "affix",
+      "structure": "write → writer（去 e，加 -er）",
+      "explanation": "write 表写作，去 e 加表示人的后缀 -er；writer 可指作家，也可指某篇文字的作者。"
+    },
+    "institution": {
+      "kind": "family",
+      "structure": "institute ↔ institution（词族）",
+      "explanation": "institute 可作动词指设立，institution 指机构或制度；按词族联系动作与形成的事物。"
+    },
+    "marriage": {
+      "kind": "family",
+      "structure": "marry ↔ marriage（词族）",
+      "explanation": "marry 表结婚，marriage 表婚姻或结婚这一关系；同词族中词尾和词性一起记忆。"
+    },
+    "owner": {
+      "kind": "affix",
+      "structure": "own + -er",
+      "explanation": "own 作动词表示拥有，-er 表示做某事的人；owner 即拥有某物的人，也就是所有者。"
+    },
+    "commercial": {
+      "kind": "family",
+      "structure": "commerce ↔ commercial（词族）",
+      "explanation": "commerce 表商业或贸易，commercial 表商业的；它还可作名词，指电视或广播广告。"
+    },
+    "reality": {
+      "kind": "affix",
+      "structure": "real + -ity",
+      "explanation": "real 表真实的，-ity 构成名词；reality 表现实或实际情况，把性质与名词形式联系记。"
+    },
+    "violence": {
+      "kind": "family",
+      "structure": "violent ↔ violence（词族）",
+      "explanation": "violent 表暴力的，violence 表暴力；同词族中词尾从 -ent 对应到 -ence，注意词性。"
+    },
+    "investment": {
+      "kind": "affix",
+      "structure": "invest + -ment",
+      "explanation": "invest 表投资或投入，-ment 构成名词；investment 可指投资行为，也可指投入的资金。"
+    },
+    "discussion": {
+      "kind": "affix",
+      "structure": "discuss + -ion",
+      "explanation": "discuss 表讨论，-ion 构成名词；discussion 指讨论过程或一次讨论，词尾原有的 ss 保留。"
+    },
+    "collection": {
+      "kind": "affix",
+      "structure": "collect + -ion",
+      "explanation": "collect 表收集，-ion 构成名词；collection 可指收集行为，也可指收集到的一组物品。"
+    },
+    "consumer": {
+      "kind": "affix",
+      "structure": "consume → consumer（去 e，加 -er）",
+      "explanation": "consume 表消费或消耗，去 e 加表示人的 -er；consumer 指购买、使用商品或服务的消费者。"
+    },
+    "scientist": {
+      "kind": "family",
+      "structure": "science ↔ scientist（词族）",
+      "explanation": "science 是科学，scientist 是科学家；拼写发生变化，作为学科与研究者成对记忆。",
+      "source_url": "https://www.merriam-webster.com/dictionary/scientist"
+    },
+    "safe": {
+      "kind": "family",
+      "structure": "safe ↔ safety（词族）",
+      "explanation": "safe 表安全的，safety 表安全这一状态；在 safety first 这个说法中记住名词形式。"
+    },
+    "responsibility": {
+      "kind": "affix",
+      "structure": "responsible → responsibility（名词后缀 -ity）",
+      "explanation": "responsible 表负责的，名词形式中词尾 -ble 对应 -bility；responsibility 指应承担的责任或职责。"
+    },
+    "majority": {
+      "kind": "affix",
+      "structure": "major + -ity",
+      "explanation": "major 可表较大的或主要的，-ity 构成名词；majority 通常指人数或数量上的大多数。"
+    },
+    "professional": {
+      "kind": "affix",
+      "structure": "profession + -al",
+      "explanation": "profession 表职业，-al 构成形容词；professional 表专业的，也可作名词指专业人员。"
+    },
+    "speech": {
+      "kind": "family",
+      "structure": "speak ↔ speech（词族）",
+      "explanation": "speak 是说话，speech 可指讲话或语言能力；同词族词尾变化，需把读音和拼写一起记。"
+    },
+    "successful": {
+      "kind": "affix",
+      "structure": "success + -ful",
+      "explanation": "success 表成功，-ful 构成形容词；successful 表取得成功的，词尾 -ful 只有一个 l。"
+    },
+    "option": {
+      "kind": "family",
+      "structure": "opt ↔ option（词族）",
+      "explanation": "opt 表作选择，option 指选择或可选项目；按同一词族联记，常见 opt for 表示选择。"
+    },
+    "southern": {
+      "kind": "affix",
+      "structure": "south + -ern",
+      "explanation": "south 表南方，-ern 构成方位形容词；southern 指位于南方的或与南部有关的。"
+    },
+    "eventually": {
+      "kind": "affix",
+      "structure": "eventual + -ly",
+      "explanation": "eventual 表最终的，-ly 构成副词；eventually 常指经过一段时间或一连串事情后终于。"
+    },
+    "relation": {
+      "kind": "family",
+      "structure": "relate ↔ relation（词族）",
+      "explanation": "relate 可表联系，relation 指关系或联系；按同一词族区分动作与名词，注意词尾变化。"
+    },
+    "recall": {
+      "kind": "affix",
+      "structure": "re- + call",
+      "explanation": "re- 有回、再的意思，call 表召唤；recall 可指召回，也可指把信息回想起来。",
+      "source_url": "https://www.merriam-webster.com/dictionary/recall"
+    },
+    "safety": {
+      "kind": "affix",
+      "structure": "safe + -ty",
+      "explanation": "safe 表安全的，-ty 构成表示状态的名词；safety 指安全，可与形容词 safe 对照记忆。"
+    },
+    "neighborhood": {
+      "kind": "affix",
+      "structure": "neighbor + -hood",
+      "explanation": "neighbor 指邻居，-hood 构成名词；neighborhood 表相邻居民所在的街区或邻近地区。"
+    },
+    "original": {
+      "kind": "affix",
+      "structure": "origin + -al",
+      "explanation": "origin 表起源，-al 构成形容词；original 可指最初的，也可指独创的，需结合语境。"
+    },
+    "directly": {
+      "kind": "affix",
+      "structure": "direct + -ly",
+      "explanation": "direct 表直接的，-ly 构成副词；directly 可表直接地，部分语境中也可表示马上。"
+    },
+    "immediately": {
+      "kind": "affix",
+      "structure": "immediate + -ly",
+      "explanation": "immediate 表立即的或紧接的，-ly 构成副词；immediately 表立即、马上，原词尾 e 保留。"
+    },
+    "basic": {
+      "kind": "affix",
+      "structure": "base → basic（去 e，加 -ic）",
+      "explanation": "base 表基础，去 e 加形容词后缀 -ic；basic 指基本的、基础的，可与名词 base 联记。"
+    },
+    "freedom": {
+      "kind": "affix",
+      "structure": "free + -dom",
+      "explanation": "free 表自由的，-dom 构成表示状态的名词；freedom 表自由，词尾与形容词一起记忆。"
+    },
+    "absolutely": {
+      "kind": "affix",
+      "structure": "absolute + -ly",
+      "explanation": "absolute 表绝对的、完全的，-ly 构成副词；absolutely 表绝对地、完全地，也可用于加强语气。"
+    },
+    "powerful": {
+      "kind": "affix",
+      "structure": "power + -ful",
+      "explanation": "power 表力量或权力，-ful 构成形容词；powerful 指力量强大的，也可指有影响力的。"
+    },
+    "completely": {
+      "kind": "affix",
+      "structure": "complete + -ly",
+      "explanation": "complete 表完整的，-ly 构成副词；completely 表完全地，常用于强调程度达到全部。"
+    },
+    "variety": {
+      "kind": "family",
+      "structure": "vary ↔ variety（词族）",
+      "explanation": "vary 表变化或存在差异，variety 可指多样性或种类；词尾有变化，按同一词族整体记。"
+    },
+    "investigation": {
+      "kind": "affix",
+      "structure": "investigate → investigation（去 e，加 -ion）",
+      "explanation": "investigate 表调查，去 e 加名词后缀 -ion；investigation 指有目的的调查活动或一次调查。"
+    },
+    "researcher": {
+      "kind": "affix",
+      "structure": "research + -er",
+      "explanation": "research 表研究，-er 常表示做某事的人；researcher 指从事研究工作的人，即研究人员。"
+    },
+    "replace": {
+      "kind": "family",
+      "structure": "replace ↔ replacement（词族）",
+      "explanation": "replace 表替换，replacement 可指替换行为或替代品；词族中的 -ment 帮助识别名词。"
+    },
+    "argument": {
+      "kind": "affix",
+      "structure": "argue → argument（去 e，加 -ment）",
+      "explanation": "argue 表争论，加 -ment 成名词时省去词尾 e；argument 可指一场争论，也可指论点。"
+    },
+    "possibility": {
+      "kind": "affix",
+      "structure": "possible → possibility（名词后缀 -ity）",
+      "explanation": "possible 表可能的，名词形式中词尾 -ble 对应 -bility；possibility 表可能性或可能的情况。"
+    },
+    "insurance": {
+      "kind": "affix",
+      "structure": "insure → insurance（去 e，加 -ance）",
+      "explanation": "insure 表投保或承保，去 e 加名词后缀 -ance；insurance 指保险或保险保障。"
+    },
+    "generally": {
+      "kind": "affix",
+      "structure": "general + -ly",
+      "explanation": "general 表一般的，-ly 构成副词；generally 表通常、一般地，可用来概括常见情况。"
+    },
+    "easily": {
+      "kind": "affix",
+      "structure": "easy → easily（y 改 i，加 -ly）",
+      "explanation": "easy 表容易的，变副词时将 y 改为 i 再加 -ly；easily 表容易地，也可强调程度。"
+    },
+    "slowly": {
+      "kind": "affix",
+      "structure": "slow + -ly",
+      "explanation": "slow 表缓慢的，-ly 构成副词；slowly 用来说明走路、说话或其他动作进行得慢。"
+    },
+    "communication": {
+      "kind": "affix",
+      "structure": "communicate → communication（去 e，加 -ion）",
+      "explanation": "communicate 表沟通或传递信息，去 e 加 -ion 成名词；communication 可指沟通或通信。"
+    },
+    "resident": {
+      "kind": "family",
+      "structure": "reside ↔ resident（词族）",
+      "explanation": "reside 表居住，resident 指居民；把居住动作与住在某地的人按同一词族联记。",
+      "source_url": "https://www.merriam-webster.com/dictionary/resident"
+    },
+    "presence": {
+      "kind": "family",
+      "structure": "present ↔ presence（词族）",
+      "explanation": "present 可表示在场的，presence 表在场或存在；同词族中区分形容词和名词的词尾。",
+      "source_url": "https://www.merriam-webster.com/dictionary/presence"
+    },
+    "reader": {
+      "kind": "affix",
+      "structure": "read + -er",
+      "explanation": "read 表阅读，-er 常表示做某事的人；reader 指读者，也可在具体语境中指阅读设备。"
+    },
+    "strength": {
+      "kind": "family",
+      "structure": "strong ↔ strength（词族）",
+      "explanation": "strong 表强壮的，strength 表力量或长处；词族中的元音和词尾有变化，需连同读音记。"
+    },
+    "obviously": {
+      "kind": "affix",
+      "structure": "obvious + -ly",
+      "explanation": "obvious 表明显的，-ly 构成副词；obviously 表显然、明显地，用来说明事实容易看出。"
+    },
+    "reporter": {
+      "kind": "affix",
+      "structure": "report + -er",
+      "explanation": "report 表报道，-er 常表示做某事的人；reporter 指采访并报道新闻的人，即记者。"
+    },
+    "leadership": {
+      "kind": "affix",
+      "structure": "leader + -ship",
+      "explanation": "leader 指领导者，-ship 构成表示地位、状态或能力的名词；leadership 可指领导力。"
+    },
+    "basis": {
+      "kind": "family",
+      "structure": "base ↔ basis（词族）",
+      "explanation": "base 与 basis 都有基础义；同一词族中，basis 常指推理、决定或协议所依据的基础。",
+      "source_url": "https://www.merriam-webster.com/dictionary/basis"
+    },
+    "operate": {
+      "kind": "family",
+      "structure": "operate ↔ operation（词族）",
+      "explanation": "operate 表操作或运转，operation 是相应名词，也可指手术；同词族中注意词性的区别。"
+    },
+    "protection": {
+      "kind": "affix",
+      "structure": "protect + -ion",
+      "explanation": "protect 表保护，-ion 构成名词；protection 指保护行为或保护措施，可与动词成对记。"
+    },
+    "collect": {
+      "kind": "family",
+      "structure": "collect ↔ collection（词族）",
+      "explanation": "collect 表收集，collection 可指收集行为或收藏品；同词族中 -ion 帮助识别名词。"
+    },
+    "additional": {
+      "kind": "affix",
+      "structure": "addition + -al",
+      "explanation": "addition 表增加或添加的部分，-al 构成形容词；additional 指在原有基础上额外增加的。"
+    },
+    "highly": {
+      "kind": "affix",
+      "structure": "high + -ly",
+      "explanation": "high 表高的，-ly 构成副词；highly 常表高度地、非常，如高度评价或十分重视。"
+    },
+    "mostly": {
+      "kind": "affix",
+      "structure": "most + -ly",
+      "explanation": "most 有大部分的意思，加 -ly 构成副词；mostly 表主要地、大部分地，用于概括主要成分。"
+    },
+    "marry": {
+      "kind": "family",
+      "structure": "marry ↔ marriage（词族）",
+      "explanation": "marry 表结婚，marriage 表婚姻；同一词族中分别记动词和名词，留意 y 与 i 的词形差别。"
+    },
+    "survive": {
+      "kind": "family",
+      "structure": "survive ↔ survival（词族）",
+      "explanation": "survive 表活下来或幸存，survival 表生存、幸存；同词族中 -al 可帮助识别相应名词。"
+    },
+    "competition": {
+      "kind": "family",
+      "structure": "compete ↔ competition（词族）",
+      "explanation": "compete 表竞争，competition 指竞争或比赛；同词族中的词尾、元音和重音变化需一起记。"
+    },
+    "associate": {
+      "kind": "family",
+      "structure": "associate ↔ association（词族）",
+      "explanation": "associate 可表联系或交往，association 可指联系或协会；按同词族区分动作与名词用法。"
+    },
+    "critic": {
+      "kind": "family",
+      "structure": "critic ↔ criticize（词族）",
+      "explanation": "critic 指评论家，criticize 指评论或批评；同词族中 -ize 的加入使词性转为动词。"
+    },
+    "chairman": {
+      "kind": "compound",
+      "structure": "chair + man",
+      "explanation": "chair 在此与主持会议的职位有关，man 表人；合成词 chairman 指会议主席或董事长。",
+      "source_url": "https://www.merriam-webster.com/dictionary/chairman"
+    },
+    "belief": {
+      "kind": "family",
+      "structure": "believe ↔ belief（词族）",
+      "explanation": "believe 表相信，belief 表信念或看法；同词族的词尾有变化，动词与名词需分别记忆。"
+    },
+    "religion": {
+      "kind": "family",
+      "structure": "religion ↔ religious（词族）",
+      "explanation": "religion 指宗教，religious 表宗教的；按同词族配对记忆，注意名词与形容词的词尾差别。"
+    },
+    "review": {
+      "kind": "affix",
+      "structure": "re- + view",
+      "explanation": "re- 表再，view 表看；review 可指回顾、复习，也可指评论，具体意思结合使用场景来记。",
+      "source_url": "https://www.merriam-webster.com/dictionary/review"
+    },
+    "base": {
+      "kind": "family",
+      "structure": "base ↔ basic（词族）",
+      "explanation": "base 表基础，去 e 加形容词后缀 -ic；basic 指基本的、基础的，可与名词 base 联记。"
+    },
+    "recent": {
+      "kind": "family",
+      "structure": "recent ↔ recently（词族）",
+      "explanation": "recent 表最近的，-ly 将形容词变为副词；recently 表最近、近来，用来说明发生时间。"
+    },
+    "type": {
+      "kind": "family",
+      "structure": "type ↔ typical（词族）",
+      "explanation": "type指类型，typical表示具有某一类型特征的、典型的；按词族联系含义和拼写。"
+    },
+    "character": {
+      "kind": "family",
+      "structure": "character ↔ characteristic（词族）",
+      "explanation": "character可指特性，characteristic指特征或典型的；按词族联记，并区分不同词性的用法。"
+    },
+    "wonder": {
+      "kind": "family",
+      "structure": "wonder ↔ wonderful（词族）",
+      "explanation": "wonder有惊奇之意，-ful构成形容词；wonderful表示令人赞叹的或极好的。"
+    },
+    "general": {
+      "kind": "family",
+      "structure": "general ↔ generally（词族）",
+      "explanation": "general 表一般的，-ly 构成副词；generally 表通常、一般地，可用来概括常见情况。"
+    },
+    "crime": {
+      "kind": "family",
+      "structure": "crime ↔ criminal（词族）",
+      "explanation": "crime是罪行，criminal作形容词表示犯罪的，作名词表示罪犯；按词族和词性成组记。"
+    },
+    "manage": {
+      "kind": "family",
+      "structure": "manage ↔ management（词族）",
+      "explanation": "manage 表管理，-ment 构成名词；management 可指管理工作，也可统称负责管理的人。"
+    },
+    "treat": {
+      "kind": "family",
+      "structure": "treat ↔ treatment（词族）",
+      "explanation": "treat 可指对待或治疗，-ment 构成名词；treatment 因而可表示对待方式或治疗。"
+    },
+    "agent": {
+      "kind": "family",
+      "structure": "agent ↔ agency（词族）",
+      "explanation": "agent 可指代理人，agency 可指代理机构；同词族按人物与机构区分，词尾变化单独记。"
+    },
+    "refer": {
+      "kind": "family",
+      "structure": "refer ↔ reference（词族）",
+      "explanation": "refer可表示提及或参照，reference是同族名词，可指提及、参考或参考资料。"
+    },
+    "complete": {
+      "kind": "family",
+      "structure": "complete ↔ completely（词族）",
+      "explanation": "complete 表完整的，-ly 构成副词；completely 表完全地，常用于强调程度达到全部。"
+    },
+    "gold": {
+      "kind": "family",
+      "structure": "gold ↔ golden（词族）",
+      "explanation": "gold是黄金，-en构成形容词；golden可表示金制或金色的，也常引申为宝贵的。"
+    },
+    "technique": {
+      "kind": "family",
+      "structure": "technique ↔ technical（词族）",
+      "explanation": "technique是技术或技巧，technical是同族形容词；技术内容和专业术语可放在同一场景记。"
+    },
+    "soft": {
+      "kind": "family",
+      "structure": "soft ↔ software（词族）",
+      "explanation": "soft 表示柔软的；在合成词 software（软件）中，与 hard（硬的）形成对照，可与 hardware（硬件）成对联记。"
+    }
+  },
+  "whole_words": [
+    "position",
+    "record",
+    "special",
+    "space",
+    "event",
+    "couple",
+    "site",
+    "project",
+    "court",
+    "situation",
+    "figure",
+    "image",
+    "phone",
+    "test",
+    "movie",
+    "step",
+    "century",
+    "chance",
+    "period",
+    "term",
+    "rule",
+    "material",
+    "church",
+    "current",
+    "board",
+    "seek",
+    "deal",
+    "fight",
+    "author",
+    "drop",
+    "blood",
+    "color",
+    "enter",
+    "common",
+    "race",
+    "series",
+    "rise",
+    "decade",
+    "article",
+    "shoot",
+    "save",
+    "scene",
+    "stock",
+    "thus",
+    "sign",
+    "list",
+    "staff",
+    "attack",
+    "region",
+    "pretty",
+    "trade",
+    "message",
+    "section",
+    "professor",
+    "stage",
+    "authority",
+    "design",
+    "sort",
+    "indeed",
+    "rather",
+    "prove",
+    "hang",
+    "rock",
+    "remove",
+    "cold",
+    "main",
+    "cell",
+    "firm",
+    "huge",
+    "charge",
+    "popular",
+    "peace",
+    "pain",
+    "shake",
+    "interview",
+    "camera",
+    "candidate",
+    "conference",
+    "unit",
+    "style",
+    "adult",
+    "edge",
+    "throughout",
+    "fear",
+    "shoulder",
+    "dream",
+    "property",
+    "stuff",
+    "magazine",
+    "heat",
+    "tough",
+    "pattern",
+    "skin",
+    "address",
+    "cancer",
+    "item",
+    "coach",
+    "yard",
+    "total",
+    "finger",
+    "notice",
+    "partner",
+    "civil",
+    "capital",
+    "victim",
+    "score",
+    "audience",
+    "vote",
+    "citizen",
+    "senior",
+    "mission",
+    "alone",
+    "customer",
+    "university",
+    "fresh",
+    "forest",
+    "video",
+    "reform",
+    "judge",
+    "publish",
+    "release",
+    "version",
+    "stare",
+    "species",
+    "track",
+    "strike",
+    "object",
+    "therefore",
+    "conduct",
+    "examine",
+    "touch",
+    "attend",
+    "press",
+    "conflict",
+    "spirit",
+    "camp",
+    "brain",
+    "dozen",
+    "department",
+    "battle",
+    "stick",
+    "hole",
+    "element",
+    "status",
+    "vision",
+    "normal",
+    "stone",
+    "scale",
+    "introduce",
+    "spot",
+    "wood",
+    "truck",
+    "tradition",
+    "refuse",
+    "roll",
+    "screen",
+    "hide",
+    "club",
+    "district",
+    "shape",
+    "contract",
+    "crowd",
+    "apartment",
+    "band",
+    "prison",
+    "guard",
+    "deliver",
+    "tool",
+    "wild",
+    "vehicle",
+    "observe",
+    "facility",
+    "average",
+    "emerge",
+    "earn",
+    "pound",
+    "sample",
+    "tiny",
+    "settle",
+    "identity",
+    "title",
+    "faith",
+    "count",
+    "path",
+    "folk",
+    "principle",
+    "lift",
+    "border",
+    "gather",
+    "insist",
+    "annual",
+    "affair",
+    "procedure",
+    "regular"
+  ],
+  "references": [
+    {
+      "title": "Cambridge English Grammar Today: Word formation（一般构词规则）",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/word-formation_2"
+    },
+    {
+      "title": "Cambridge English Grammar Today: Suffixes（后缀与拼写变化）",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/suffixes"
+    },
+    {
+      "title": "Cambridge English Grammar Today: Spelling（去 e 与 y 改 i 等拼写规则）",
+      "url": "https://dictionary.cambridge.org/grammar/british-grammar/consonants"
+    },
+    {
+      "title": "Merriam-Webster: especial",
+      "url": "https://www.merriam-webster.com/dictionary/especial"
+    },
+    {
+      "title": "Merriam-Webster: official",
+      "url": "https://www.merriam-webster.com/dictionary/official"
+    },
+    {
+      "title": "Merriam-Webster: medical",
+      "url": "https://www.merriam-webster.com/dictionary/medical"
+    },
+    {
+      "title": "Merriam-Webster: media",
+      "url": "https://www.merriam-webster.com/dictionary/media"
+    },
+    {
+      "title": "Merriam-Webster: physical",
+      "url": "https://www.merriam-webster.com/dictionary/physical"
+    },
+    {
+      "title": "Merriam-Webster: executive",
+      "url": "https://www.merriam-webster.com/dictionary/executive"
+    },
+    {
+      "title": "Merriam-Webster: trial",
+      "url": "https://www.merriam-webster.com/dictionary/trial"
+    },
+    {
+      "title": "Merriam-Webster: scientist",
+      "url": "https://www.merriam-webster.com/dictionary/scientist"
+    },
+    {
+      "title": "Merriam-Webster: resident",
+      "url": "https://www.merriam-webster.com/dictionary/resident"
+    },
+    {
+      "title": "Merriam-Webster: presence",
+      "url": "https://www.merriam-webster.com/dictionary/presence"
+    },
+    {
+      "title": "Merriam-Webster: basis",
+      "url": "https://www.merriam-webster.com/dictionary/basis"
+    },
+    {
+      "title": "Merriam-Webster: recall",
+      "url": "https://www.merriam-webster.com/dictionary/recall"
+    },
+    {
+      "title": "Merriam-Webster: review",
+      "url": "https://www.merriam-webster.com/dictionary/review"
+    },
+    {
+      "title": "Merriam-Webster: network",
+      "url": "https://www.merriam-webster.com/dictionary/network"
+    },
+    {
+      "title": "Merriam-Webster: chairman",
+      "url": "https://www.merriam-webster.com/dictionary/chairman"
+    }
+  ]
+}

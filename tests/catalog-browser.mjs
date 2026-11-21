@@ -8,6 +8,7 @@ try {
    const failures=[];
    for(const entry of words){
     $('word').textContent=entry.word;$('phonetic').textContent=entry.phonetic;$('back-word').textContent=entry.word;$('meaning').textContent=entry.meaning;$('example').textContent=entry.example;$('translation').textContent=entry.translation;
+    WordspaceMemory.render($('word-memory'),entry);
     const front=$('word'),back=document.querySelector('.card-back');
     if(front.scrollWidth>front.clientWidth+1||back.scrollHeight>back.clientHeight+1)failures.push(entry.word);
    }
