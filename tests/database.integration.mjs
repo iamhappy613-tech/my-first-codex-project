@@ -65,3 +65,14 @@ test('missing required JSON keys cannot pass three-valued SQL validation',()=>{
  const missingFirst={...p,days:[{...p.days[0]}]};delete missingFirst.days[0].first;
  for(const bad of [missingVersion,missingFirst,{...p,activeDay:null},{...p,days:[{...p.days[0],closed:null}]}])assert.equal(sql(`select private.valid_state(${json(bad)})`),'f');
 });
+test('two simultaneous first saves cannot both claim revision one',async()=>{
+ const {spawn}=await import('node:child_process');
+ const run=()=>new Promise(resolve=>{const child=spawn('docker',['exec','-i',container,'psql','-X','-q','-A','-t','-v','ON_ERROR_STOP=1','-U','postgres']);let out='',err='';child.stdout.on('data',x=>out+=x);child.stderr.on('data',x=>err+=x);child.on('close',code=>resolve({code,out,err}));child.stdin.end(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${B}',true);select public.save_progress(0,${json(p)});commit;`)});
+ const result=await Promise.all([run(),run()]);assert.equal(result.filter(x=>x.code===0).length,1);assert(result.find(x=>x.code!==0).err.includes('revision_conflict'));assert.equal(as(B,'select revision from public.study_progress'),'1');
+});
+test('two simultaneous adopts have one effect and return the same latest revision',async()=>{
+ const {spawn}=await import('node:child_process'),id='40000000-0000-4000-8000-000000000001';
+ sql(`set role service_role;select public.coach_create_recommendation('${A}','${id}',2,array['accept'],'Next');reset role;`);
+ const run=()=>new Promise((resolve,reject)=>{const child=spawn('docker',['exec','-i',container,'psql','-X','-q','-A','-t','-v','ON_ERROR_STOP=1','-U','postgres']);let out='',err='';child.stdout.on('data',x=>out+=x);child.stderr.on('data',x=>err+=x);child.on('close',code=>code?reject(Error(err)):resolve(JSON.parse(out.trim().split('\n').at(-1))));child.stdin.end(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${A}',true);select public.adopt_recommendation('${id}',2);commit;`)});
+ const rows=await Promise.all([run(),run()]);assert(rows.every(x=>x.revision===3));assert.equal(as(A,`select count(*) from jsonb_array_elements_text((select state->'deck_ids' from public.study_progress)) x where x='accept'`),'1');
+});

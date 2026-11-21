@@ -44,3 +44,13 @@ test('latest unassisted recall overrides earlier correct answers; delayed passes
  const s=C.summarize(p,events);assert.equal(s.tested_correct_count,1);assert.equal(s.delayed_pass_count,1);
  const stats=C.evidenceStats(events,'2026-11-21T01:00:00Z');assert(stats.due_ids.includes('a'));assert(!stats.due_ids.includes('b'));
 });
+test('bounded candidate set includes new catalog choices without losing mandatory carry',()=>{
+ const big=Array.from({length:400},(_,i)=>({id:`w${i}`,word:`w${i}`,reviewed:true,frequency_rank:i}));
+ const p=C.createPlan(big.slice(0,300),'2026-11-21');const selected=C.candidates(p,big);
+ assert.equal(selected.length,86);assert(selected.some(w=>w.id==='w300'));assert(p.days[0].ids.every(id=>selected.some(w=>w.id===id)));
+});
+test('candidate pagination reaches later expansion words without repeating extra IDs',()=>{
+ const big=Array.from({length:400},(_,i)=>({id:`w${i}`,word:`w${i}`,reviewed:true,frequency_rank:i}));const p=C.createPlan(big.slice(0,300),'2026-11-21');
+ const first=C.candidates(p,big,[],1).filter(w=>!p.deck_ids.includes(w.id));const second=C.candidates(p,big,[],2).filter(w=>!p.deck_ids.includes(w.id));
+ assert(second.length>0);assert(second.every(w=>!first.some(v=>v.id===w.id)));
+});

@@ -19,7 +19,7 @@ async function body(req,allowed) {
 function backend(env,fetch,key,token) {
  return async(path,payload)=>{
   const res=await fetch(`${env.SUPABASE_URL}${path}`,{method:payload===undefined?'GET':'POST',headers:{apikey:key,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},...(payload===undefined?{}:{body:JSON.stringify(payload)}),signal:AbortSignal.timeout(10000)});
-  if(!res.ok){if(res.status===409)fail(409,'revision_conflict');if(res.status===429)fail(429,'rate_limited');if([401,403].includes(res.status))fail(res.status,'access_denied');fail(502,'backend_unavailable')}
+  if(!res.ok){if(res.status===409)fail(409,'revision_conflict');if(res.status===429)fail(429,'rate_limited');if([401,403].includes(res.status))fail(res.status,'access_denied');if([400,422].includes(res.status)){let data;try{data=await res.json()}catch{};const allowed=['invalid_recommendation','invalid_progress','event_conflict'];fail(400,allowed.includes(data?.message)?data.message:'invalid_request')}fail(502,'backend_unavailable')}
   return res.json();
  };
 }
@@ -64,8 +64,9 @@ export function createCoachHandler({env,fetch=globalThis.fetch}) {
    return {...Core.summarize(progress.state,events),progress_revision:progress.revision,last_synced_at:progress.updated_at};
   }
   if(req.method==='GET'&&path==='/candidates') {
+   const page=Number(url.searchParams.get('page')||1);if(!Number.isInteger(page)||page<1||page>1000)fail(400,'invalid_page');
    const catalog=await db('/rest/v1/word_catalog?select=*&reviewed=eq.true&order=id&limit=1000');
-   return {progress_revision:progress.revision,mandatory_carry_ids:Core.summarize(progress.state).unfamiliar_ids,candidates:Core.candidates(progress.state,catalog)};
+   return {progress_revision:progress.revision,mandatory_carry_ids:Core.summarize(progress.state).unfamiliar_ids,...Core.candidatePage(progress.state,catalog,[],page)};
   }
   if(req.method==='POST'&&path==='/recommendations') {
    const p=await body(req,['id','progress_revision','word_ids','rationale']);

@@ -6,7 +6,7 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
 const ids={a:'00000000-0000-4000-8000-000000000001',b:'00000000-0000-4000-8000-000000000002'};
 const config={mode:'cloud',supabaseUrl:'https://db.test',publicKey:'public',coachUrl:'https://chatgpt.com/g/private-example',siteUrl:base+'/index.html',ownerId:ids.a};
-const records=new Map(),events=[],flags={offline:false,disabled:false,slowSave:0,saveStarted:false,refreshWrong:false};let checks=0;
+const records=new Map(),events=[],proposals=[],flags={offline:false,disabled:false,slowSave:0,saveStarted:false,refreshWrong:false,profile401A:false,profileStarted:false};let checks=0;
 async function cloudPage(){const ctx=await browser.newContext({viewport:{width:390,height:844}});const page=await ctx.newPage();await page.clock.install({time:new Date('2026-11-21T04:00:00Z')});
  await page.route('**/index.html',async route=>{let html=await readFile('index.html','utf8');html=html.replace(/(<script id="wordspace-config" type="application\/json">)[\s\S]*?(<\/script>)/,`$1${JSON.stringify(config)}$2`);await route.fulfill({body:html,contentType:'text/html'})});
  await page.route('https://db.test/**',async route=>{
@@ -16,13 +16,16 @@ async function cloudPage(){const ctx=await browser.newContext({viewport:{width:3
   if(u.pathname==='/auth/v1/user')return who?send({id:who,email:`${token}@test.com`,email_confirmed_at:'2026-11-20'}):send({},401);
   if(u.pathname==='/auth/v1/logout')return send({});
   if(!who)return send({},401);
+  if(u.pathname==='/rest/v1/profiles'&&token==='a'&&flags.profile401A){flags.profileStarted=true;await new Promise(r=>setTimeout(r,900));return send({},401)}
   if(u.pathname==='/rest/v1/profiles')return send([{id:who,email:`${token}@test.com`,role:token==='a'?'admin':'user',enabled:!flags.disabled}]);
   if(flags.offline)return route.abort();
   if(u.pathname==='/rest/v1/word_catalog')return send(catalog);
   if(u.pathname==='/rest/v1/study_progress')return send(records.has(who)?[records.get(who)]:[]);
-  if(u.pathname==='/rest/v1/recommendations')return send([]);
+  if(u.pathname==='/rest/v1/recommendations')return send(proposals.filter(p=>p.user_id===who&&p.status==='pending'));
   if(u.pathname==='/rest/v1/assessment_events')return send(events.filter(e=>e.user_id===who));
   if(u.pathname==='/rest/v1/rpc/save_progress') {flags.saveStarted=true;if(flags.slowSave)await new Promise(r=>setTimeout(r,flags.slowSave));const prev=records.get(who);if((prev?.revision||0)!==p.p_expected_revision)return send({message:'revision_conflict'},409);const row={state:p.p_state,revision:(prev?.revision||0)+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,structuredClone(row));return send(row)}
+  if(u.pathname==='/rest/v1/rpc/adopt_recommendation'){const proposal=proposals.find(x=>x.id===p.p_id&&x.user_id===who);const prev=records.get(who);if(!proposal||proposal.progress_revision!==prev.revision||p.p_expected_revision!==prev.revision)return send({},409);const row={state:WordspaceCore.adoptProposal(prev.state,proposal,catalog),revision:prev.revision+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,row);proposal.status='accepted';return send(row)}
+  if(u.pathname==='/rest/v1/rpc/dismiss_recommendation'){const x=proposals.find(x=>x.id===p.p_id&&x.user_id===who);if(x)x.status='ignored';return send(true)}
   if(u.pathname==='/rest/v1/rpc/submit_assessment'){const row={id:p.p_event_id,word_id:p.p_word_id,choice_id:p.p_choice_id,correct:p.p_word_id===p.p_choice_id,assisted:p.p_assisted,user_id:who,created_at:'2026-11-21T04:00:00Z'};events.push(row);return send(row)}
   if(u.pathname.endsWith('/admin/users'))return send({users:[{id:ids.b,email:'b@test.com',enabled:true,role:'user'}],total:1,page:1});
   if(u.pathname.endsWith('/admin/status'))return send({enabled:p.enabled});
@@ -32,9 +35,16 @@ const login=async(page,user)=>{await page.locator('#auth-email').fill(`${user}@t
 try {
  const local=await browser.newPage();await local.goto(base+'/index.html');assert.equal(await local.locator('#account-bar').count(),1);
  assert(await local.locator('#study').isVisible());assert.match(await local.locator('#account-status').textContent(),/本地/);await local.locator('#known').click();assert.equal(await local.locator('#current').textContent(),'02');checks++;
+ const migrationContext=await browser.newContext();const migratedPage=await migrationContext.newPage();
+ const oldLocal=WordspaceCore.createPlan(catalog.slice(0,300),'2026-11-21');oldLocal.version=2;delete oldLocal.deck_ids;delete oldLocal.schema_version;oldLocal.mastered=['ability'];oldLocal.days[0].first=[true];
+ await migratedPage.addInitScript(p=>localStorage.setItem('wordspace-adaptive-v2',JSON.stringify(p)),oldLocal);await migratedPage.goto(base+'/index.html');
+ assert.equal(await migratedPage.locator('#current').textContent(),'02');assert.equal(await migratedPage.evaluate(()=>JSON.parse(localStorage.getItem('wordspace-adaptive-v2')).version),2);
+ await migratedPage.locator('#known').click();await migratedPage.reload();assert.equal(await migratedPage.locator('#current').textContent(),'03');await migrationContext.close();checks++;
+ const standalone=await browser.newPage();const standaloneRequests=[];standalone.on('request',r=>standaloneRequests.push(r.url()));await standalone.setContent(await readFile('index.html','utf8'));
+ assert(await standalone.locator('#study').isVisible());await standalone.locator('#known').click();assert.equal(await standalone.locator('#current').textContent(),'02');assert.deepEqual(standaloneRequests,[]);checks++;
  const {page,ctx}=await cloudPage();const errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(base+'/index.html');
  assert(await page.locator('#account-gate').isVisible());await page.locator('#auth-email').press('a');assert.deepEqual(errors,[]);assert(await page.locator('#study-main').isHidden());assert.equal(await page.locator('#word').textContent(),'');checks++;
- const legacy=globalThis.WordspaceCore.createPlan(catalog,'2026-11-21');legacy.days[0].first=[true];legacy.mastered=['ability'];
+ const legacy=globalThis.WordspaceCore.createPlan(catalog.slice(0,300),'2026-11-21');legacy.days[0].first=[true];legacy.mastered=['ability'];
  await page.evaluate(p=>localStorage.setItem('wordspace-adaptive-v2',JSON.stringify(p)),legacy);
  await login(page,'a');await page.locator('#import-legacy').waitFor({state:'visible'});assert(!records.has(ids.a));await page.locator('#import-legacy').click();await page.locator('#study-main').waitFor({state:'visible'});await page.waitForFunction(()=>document.querySelector('#account-status').textContent.includes('已同步'));
  assert.equal(await page.locator('#current').textContent(),'02');assert.equal(records.get(ids.a).state.mastered.length,1);checks++;
@@ -47,9 +57,23 @@ try {
  flags.offline=true;await page.locator('#known').click();await page.waitForFunction(()=>/待同步|失败/.test(document.querySelector('#account-status').textContent));assert.equal(await page.locator('#current').textContent(),'03');flags.offline=false;await page.locator('#sync-now').click();await page.waitForFunction(()=>document.querySelector('#account-status').textContent.includes('已同步'));assert.equal(records.get(ids.b).state.mastered.length,2);checks++;
  const remote=records.get(ids.b);remote.revision++;remote.state.days[0].first.push(true);remote.state.mastered.push('absorb');await page.locator('#known').click();await page.locator('#conflict-cloud').waitFor({state:'visible'});assert.equal(records.get(ids.b).revision,remote.revision);await page.locator('#conflict-cloud').click();await page.locator('#study-main').waitFor({state:'visible'});assert.equal(await page.locator('#current').textContent(),'04');checks++;
  await page.locator('#assessment-start').click();await page.locator('#assessment-options button').first().click();await page.waitForFunction(()=>document.querySelector('#assessment-feedback').textContent.length>0);assert(events.some(e=>e.user_id===ids.b));checks++;
+ // Recommendation adoption changes next-day queue once, not current answers/history.
+ const before=structuredClone(records.get(ids.b));
+ proposals.push({id:'30000000-0000-4000-8000-000000000001',user_id:ids.b,status:'pending',progress_revision:before.revision,word_ids:['accept'],rationale:'Review next',expires_at:'2026-12-01T00:00:00Z'});
+ await page.locator('#proposal-refresh').click();await page.locator('#proposal-list').getByText('采用到下一学习日').click();
+ await page.waitForFunction(()=>document.querySelector('#account-status').textContent.includes('推荐将在'));
+ assert.deepEqual(records.get(ids.b).state.days,before.state.days);assert.deepEqual(records.get(ids.b).state.next_day_ids,['accept']);checks++;
+ // Backups survive later saves and remain downloadable for the same account only.
+ assert(await page.locator('#download-backup').isVisible());const downloadEvent=page.waitForEvent('download');await page.locator('#download-backup').click();const download=await downloadEvent;
+ const backup=JSON.parse(await readFile(await download.path(),'utf8'));assert(backup.mastered.includes('ability'));checks++;
  await page.locator('#logout').click();flags.disabled=true;await login(page,'a');await page.waitForFunction(()=>document.querySelector('#auth-message').textContent.includes('停用'));assert(await page.locator('#study-main').isHidden());checks++;
  // Async save completes after switching accounts: old payload must never replace B's cache/view.
  flags.disabled=false;await login(page,'a');await page.locator('#study-main').waitFor({state:'visible'});
+ flags.profile401A=true;flags.profileStarted=false;await page.evaluate(()=>void account.resume());
+ while(!flags.profileStarted)await new Promise(r=>setTimeout(r,20));
+ await page.locator('#logout').click();await login(page,'b');await page.locator('#study-main').waitFor({state:'visible'});
+ await new Promise(r=>setTimeout(r,1100));assert(await page.locator('#study-main').isVisible());flags.profile401A=false;checks++;
+ await page.locator('#logout').click();await login(page,'a');await page.locator('#study-main').waitFor({state:'visible'});
  flags.slowSave=900;flags.saveStarted=false;await page.locator('#unknown').click();
  while(!flags.saveStarted)await new Promise(r=>setTimeout(r,30));
  await page.locator('#logout').click();await login(page,'b');await page.locator('#study-main').waitFor({state:'visible'});

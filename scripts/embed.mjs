@@ -7,6 +7,11 @@ replace('<!-- BEGIN ACCOUNT_UI -->','<!-- END ACCOUNT_UI -->',await readFile('we
 replace('<!-- BEGIN LEARNING_UI -->','<!-- END LEARNING_UI -->',await readFile('web/learning-ui.html','utf8'));
 const data=await readFile('data/catalog.json','utf8');let study=await readFile('web/study.js','utf8');
 study=study.replace('/* WORDSPACE_CATALOG */ null',data.trim().replaceAll('<','\\u003c'));
+const notices=(await readFile('licenses/ECDICT-LICENSE.txt','utf8'))+'\n\n'+(await readFile('licenses/CMUDICT-LICENSE.txt','utf8'));
+if(!html.includes('<!-- BEGIN LICENSE_NOTICES -->'))html=html.replace('</head>','<!-- BEGIN LICENSE_NOTICES -->\n<!-- END LICENSE_NOTICES -->\n</head>');
+replace('<!-- BEGIN LICENSE_NOTICES -->','<!-- END LICENSE_NOTICES -->','<script type="text/plain" id="third-party-notices">\n'+notices.replaceAll('</script','<\\/script')+'\n</script>');
 const scripts=[await readFile('supabase/functions/_shared/core.js','utf8'),await readFile('web/account.js','utf8'),study];
 replace('<!-- BEGIN WORDSPACE_SCRIPTS -->','<!-- END WORDSPACE_SCRIPTS -->',scripts.map(source=>'<script>\n'+source.replaceAll('</script','<\\/script')+'\n</script>').join('\n'));
-if(process.argv.includes('--check')){if(html!==original)throw Error('index.html is stale; run npm run embed');console.log('PASS: standalone HTML matches source')}else await writeFile('index.html',html);
+const cols='id,word,phonetic,meaning,example,translation,level,reviewed,source,frequency_rank';
+const seed='-- Reviewed authored lessons; see data/provenance.json and licenses/.\ninsert into public.word_catalog('+cols+')\nselect '+cols+' from jsonb_to_recordset($catalog$'+data+'$catalog$::jsonb) as t(id text,word text,phonetic text,meaning text,example text,translation text,level text,reviewed boolean,source text,frequency_rank integer)\non conflict(id) do nothing;\n';
+if(process.argv.includes('--check')){if(html!==original)throw Error('index.html is stale; run npm run embed');if(seed!==await readFile('supabase/seed.sql','utf8'))throw Error('SQL seed is stale');console.log('PASS: standalone HTML and SQL seed match source')}else {await writeFile('index.html',html);await writeFile('supabase/seed.sql',seed);}

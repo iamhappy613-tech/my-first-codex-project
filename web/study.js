@@ -57,9 +57,11 @@ function migrateLegacy(raw) {
 
 function loadPlan() {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      try { const saved = JSON.parse(raw); if (validPlan(saved)) return WordspaceCore.migratePlan(saved, words); } catch { /* 尝试旧版或新计划 */ }
+    for (const key of ['wordspace:local:v3', STORAGE_KEY]) {
+      const raw = localStorage.getItem(key);
+      if (raw) {
+        try { const saved = JSON.parse(raw); if (validPlan(saved)) return WordspaceCore.migratePlan(saved, words); } catch { /* 保留旧副本，尝试下一份 */ }
+      }
     }
     const legacy = localStorage.getItem(LEGACY_KEY);
     if (legacy) {
@@ -327,10 +329,11 @@ function speakCurrent(example) {
 }
 
 function renderVocabulary() {
-  const source = $('vocabulary-scope').value === 'all' ? words : getSession().group;
+  const showAll = $('vocabulary-scope').value === 'all';
+  const source = showAll ? [...words].sort((a,b)=>a.word.localeCompare(b.word)) : getSession().group;
   const query = $('word-search').value.trim().toLowerCase();
   const filtered = source.filter(entry => entry.word.includes(query) || entry.meaning.includes(query));
-  $('vocabulary-count').textContent = `${source === words ? '全部' : '所选日'} ${source.length} 词 · 可听读`;
+  $('vocabulary-count').textContent = `${showAll ? '全部' : '所选日'} ${source.length} 词 · 可听读`;
   const fragment = document.createDocumentFragment();
   for (const entry of filtered) {
     const row = document.createElement('li');
@@ -398,7 +401,7 @@ account = WordspaceAccount.create({config: configuration, catalog: words, hooks:
   setPlan: state => { plan = state; },
   emptyPlan,
   loadLegacy: loadPlan,
-  legacyExists: () => { try { return !!(localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY)); } catch { return false; } },
+  legacyExists: () => { try { return !!(localStorage.getItem('wordspace:local:v3') || localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY)); } catch { return false; } },
   mergeCatalog: entries => {
     for (const entry of entries) {
       if (!entry.reviewed || entry.id !== entry.word || !['word','phonetic','meaning','example','translation'].every(k => typeof entry[k] === 'string')) continue;

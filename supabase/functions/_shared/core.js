@@ -77,15 +77,23 @@
       unfamiliar_ids:d.ids.filter(id=>!recognized.has(id)).slice(0,43),pending_count:p.pending.length,evidence_count:evidence.length,
       assessment_note:evidence.length?'Tests describe this sample, not an exact total vocabulary size.':'Only self-reported recognition is available; do not infer precise vocabulary size.'};
   }
-  function candidates(p,catalog,evidence=[]) {
-    const known=new Set(p.mastered),unfamiliar=p.days.at(-1).ids.filter(id=>!known.has(id));
+  function candidatePage(p,catalog,evidence=[],page=1) {
+    if(!Number.isInteger(page)||page<1||page>1000)throw Error('invalid_page');
+    const known=new Set(p.mastered),deck=new Set(p.deck_ids||p.dictionaryId.split('|'));
     const checked=new Map(catalog.filter(w=>w.reviewed===true).map(w=>[w.id||w.word,w]));
-    const ids=[...new Set([...unfamiliar,...(p.next_day_ids||[]),...p.pending,...checked.keys()])].filter(id=>!known.has(id)&&checked.has(id));
-    return ids.slice(0,86).map(id=>({...checked.get(id),kind:unfamiliar.includes(id)?'review':'new'}));
+    const carry=p.days.at(-1).ids.filter(id=>!known.has(id)&&checked.has(id));
+    const waiting=[...new Set([...(p.next_day_ids||[]),...p.pending])].filter(id=>!known.has(id)&&!carry.includes(id)&&checked.has(id));
+    const extra=[...checked.keys()].filter(id=>!deck.has(id)&&!known.has(id)).sort((a,b)=>(checked.get(a).frequency_rank||1e9)-(checked.get(b).frequency_rank||1e9));
+    const slots=86-carry.length,budget=Math.ceil(slots/2);
+    const extraBudget=slots-Math.min(waiting.length,budget),offset=(page-1)*extraBudget;
+    const chosen=[...carry,...waiting.slice(0,budget),...extra.slice(offset,offset+extraBudget)];
+    for(const id of waiting){if(chosen.length>=86)break;if(!chosen.includes(id))chosen.push(id)}
+    return {candidates:chosen.map(id=>({...checked.get(id),kind:carry.includes(id)?'review':'new'})),page,has_more:offset+extraBudget<extra.length,available_new_count:extra.length};
   }
+  function candidates(...args) { return candidatePage(...args).candidates; }
   function scoreAssessment(catalog,wordId,choiceId) {
     if(!catalog.some(w=>(w.id||w.word)===wordId)||!catalog.some(w=>(w.id||w.word)===choiceId))throw Error('invalid_assessment');
     return {word_id:wordId,correct:wordId===choiceId};
   }
-  root.WordspaceCore=Object.freeze({validatePlan,migratePlan,createPlan,adoptProposal,advancePlan,evidenceStats,summarize,candidates,scoreAssessment});
+  root.WordspaceCore=Object.freeze({validatePlan,migratePlan,createPlan,adoptProposal,advancePlan,evidenceStats,summarize,candidatePage,candidates,scoreAssessment});
 })(globalThis);

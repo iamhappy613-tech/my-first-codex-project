@@ -2,10 +2,11 @@
  'use strict';
  const C=root.WordspaceCore,$=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x));
  class ApiError extends Error {constructor(status,message){super(message);this.status=status}}
- function create({config,catalog,hooks,storage=root.localStorage,fetch=root.fetch.bind(root)}) {
+ function create({config,catalog,hooks,storage,fetch=root.fetch.bind(root)}) {
+  if(!storage){try{storage=root.localStorage}catch{storage={getItem:()=>null,setItem:()=>{throw Error('storage_unavailable')},removeItem:()=>{}}}}
   const cloud=config.mode==='cloud';let session=null,user=null,profile=null,epoch=0,revision=0,dirty=false,changes=0,ready=false;
   let evidence=[];let cacheOK=true;let syncPromise=null,refreshPromise=null,timer=null,pendingEvents=[],syncedAt='',message='',conflict=null,adminPage=1,question=null;
-  const SESSION='wordspace:session',localKey='wordspace-adaptive-v2',cacheKey=id=>`wordspace:account:${id}`;
+  const SESSION='wordspace:session',localKey='wordspace:local:v3',cacheKey=id=>`wordspace:account:${id}`;
   const read=k=>{try{return JSON.parse(storage.getItem(k)||'null')}catch{return null}};
   const write=(k,v)=>{try{storage.setItem(k,JSON.stringify(v));return true}catch{return false}};
   const remove=k=>{try{storage.removeItem(k)}catch{}};
@@ -52,6 +53,7 @@
   }
   async function loadUser(){
    const e=epoch;user=await api('/auth/v1/user');if(e!==epoch)return;
+   if(session&&user?.id){session.userId=user.id;write(SESSION,session);}
    if(!user?.id||!user.email_confirmed_at)throw Error('请先验证邮箱后登录。');
    const profiles=await api(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=id,email,role,enabled`);profile=profiles[0];
    if(!profile?.enabled)throw new ApiError(403,'account_disabled');
@@ -62,7 +64,7 @@
     if(saved.revision!==revision){conflict={local:copy(saved.state),remote};choice('另一台设备的进度已更新。本机进度会保留备份，请选择要继续的版本。',['conflict-cloud','conflict-local']);return}
     dirty=true;showStudy(saved.state);notify('待同步本机进度');void flush();return;
    }
-   if(remote){if(!C.validatePlan(remote.state,catalog))throw Error('云端进度暂不能读取，未覆盖本机记录。');dirty=false;showStudy(remote.state);notify(`已同步 · ${new Date(syncedAt).toLocaleString()}`);void refreshProposals();return}
+   if(remote){if(!C.validatePlan(remote.state,catalog))throw Error('云端进度暂不能读取，未覆盖本机记录。');dirty=false;showStudy(remote.state);if(pendingEvents.length){notify('待同步检测结果');void flush()}else notify(`已同步 · ${new Date(syncedAt).toLocaleString()}`);void refreshProposals();return}
    if(saved?.revision>0){conflict={local:saved.state,remote:null};choice('云端记录暂未找到，本机备份已保留。',['conflict-cloud','conflict-local']);return}
    const owner=read('wordspace:legacyOwner');
    if(hooks.legacyExists()&&(!owner||owner===user.id)){
@@ -119,6 +121,7 @@
    catch(error){if(e===epoch)lock(authError(error))}finally{$('auth-password').value='';$('auth-signin').disabled=false}
   }
   async function resume(){
+   const operationEpoch=epoch;
    if(!cloud){hooks.rollover();return}
    if(!ready||!session||!user)return;
    try{const row=(await api(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=id,email,role,enabled`))[0];if(!row?.enabled){cache();lock('账号已停用，请联系管理员。');return}
@@ -126,7 +129,7 @@
     const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0];
     if(remote&&remote.revision!==revision){if(dirty)return;revision=remote.revision;syncedAt=remote.updated_at;showStudy(remote.state);notify('已同步最新云端进度')}
     hooks.rollover();void refreshProposals();
-   }catch(error){if(error.status===401){cache();lock('登录已失效，请重新登录。')}else notify('网络暂不可用，继续保留本机进度。')}
+   }catch(error){if(operationEpoch!==epoch)return;if(error.status===401){cache();lock('登录已失效，请重新登录。')}else notify('网络暂不可用，继续保留本机进度。')}
   }
   async function manageUsers(){
    if(profile?.role!=='admin')return;$('admin-panel').hidden=false;$('study-main').hidden=true;
@@ -169,6 +172,7 @@
    }catch(error){display('proposal-message','暂时无法读取推荐，现有学习任务保留。')}
   }
   async function boot(){
+   const bootEpoch=epoch;
    $('download-backup').addEventListener('click',()=>{if(!user||!ready)return;const backup=read(cacheKey(user.id))?.conflictBackup;if(!backup)return;const url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='wordspace-progress-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
    $('auth-form').addEventListener('submit',signIn);$('logout').addEventListener('click',logout);$('sync-now').addEventListener('click',()=>void flush());
    $('import-legacy').addEventListener('click',()=>beginNew(true));$('start-fresh').addEventListener('click',()=>beginNew(false));
@@ -185,7 +189,7 @@
    const params=new URLSearchParams(location.hash.slice(1)),isRecovery=params.get('type')==='recovery';
    if(params.has('access_token')&&params.has('refresh_token')){storeSession({access_token:params.get('access_token'),refresh_token:params.get('refresh_token'),expires_in:Number(params.get('expires_in'))||3600});history.replaceState(null,'',location.pathname+location.search)}else session=read(SESSION);
    if(!session)return;
-   try{if(isRecovery){user=await api('/auth/v1/user');$('password-form').hidden=false;$('auth-form').hidden=true;display('auth-message','请设置新密码。');return}await loadUser()}catch(e){lock(authError(e));if(e.status===401){session=null;remove(SESSION)}}
+   try{if(isRecovery){user=await api('/auth/v1/user');$('password-form').hidden=false;$('auth-form').hidden=true;display('auth-message','请设置新密码。');return}await loadUser()}catch(e){if(bootEpoch!==epoch)return;lock(authError(e));if(e.status===401){session=null;remove(SESSION)}}
   }
   return {boot,persist,flush,resume,status:()=>message,canStudy:()=>ready};
  }

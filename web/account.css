@@ -16,3 +16,11 @@
 #assessment-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }#assessment-options button { text-align:left; overflow-wrap:anywhere; }
 #assessment-feedback { min-height:24px; }.proposal p { white-space:pre-line; overflow-wrap:anywhere; }
 @media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }
+
+/* Grid overlays both faces while letting long, reviewed lessons set card height. */
+.flashcard { height:auto !important; }
+.card-inner { display:grid; height:auto; }
+.card-face { position:relative; inset:auto; grid-area:1 / 1; min-height:310px; }
+.word,.phonetic { max-width:100%; overflow-wrap:anywhere; }
+@media(max-width:700px) { .card-face { min-height:340px; } }
+@media(max-width:380px) { .card-face { min-height:370px; } }

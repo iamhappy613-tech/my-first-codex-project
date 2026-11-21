@@ -4,7 +4,7 @@ const owner='00000000-0000-4000-8000-000000000001';
 const env={SUPABASE_URL:'https://db.test',SUPABASE_ANON_KEY:'public',SUPABASE_SERVICE_ROLE_KEY:'server-only',WORDSPACE_OWNER_ID:owner,WORDSPACE_COACH_TOKEN_SHA256:createHash('sha256').update('private-connection').digest('hex'),WORDSPACE_SITE_ORIGIN:'https://site.test'};
 const catalog=['a','b','c'].map(id=>({id,word:id,reviewed:true,meaning:id}));
 const state={version:3,deck_ids:['a','b','c'],dictionaryId:'a|b|c',mastered:[],pending:['c'],activeDay:0,days:[{date:'2026-11-21',ids:['a','b'],first:[],review:[],closed:false}]};
-function backend({disabled=false,conflict=false}={}) {return async(url,init={})=>{
+function backend({disabled=false,conflict=false,validation=false}={}) {return async(url,init={})=>{
  const u=new URL(url),headers=new Headers(init.headers),ok=x=>new Response(JSON.stringify(x),{status:200,headers:{'Content-Type':'application/json'}});
  if(u.pathname==='/auth/v1/user')return headers.get('authorization')==='Bearer valid-user'?ok({id:owner}):new Response('{}',{status:401});
  if(u.pathname==='/rest/v1/profiles')return ok([{id:owner,enabled:!disabled,role:'admin'}]);
@@ -12,7 +12,7 @@ function backend({disabled=false,conflict=false}={}) {return async(url,init={})=
  if(u.pathname==='/rest/v1/word_catalog')return ok(catalog);
  if(u.pathname==='/rest/v1/assessment_events')return ok([]);
  if(u.pathname==='/rest/v1/rpc/coach_rate_limit')return ok(true);
- if(u.pathname==='/rest/v1/rpc/coach_create_recommendation')return conflict?new Response('{"message":"revision_conflict"}',{status:409}):ok({id:JSON.parse(init.body).p_id,status:'pending'});
+ if(u.pathname==='/rest/v1/rpc/coach_create_recommendation')return validation?new Response('{"message":"invalid_recommendation"}',{status:400}):conflict?new Response('{"message":"revision_conflict"}',{status:409}):ok({id:JSON.parse(init.body).p_id,status:'pending'});
  if(u.pathname==='/rest/v1/rpc/list_accounts')return ok({users:[{id:owner,email:'owner@test',enabled:true}],total:1});
  if(u.pathname==='/rest/v1/rpc/set_account_status')return ok({enabled:false});
  throw Error(`unexpected backend route ${u.pathname}`);
@@ -41,4 +41,9 @@ test('oversized body and untrusted origins are rejected',async()=>{
 test('admin verifies actual user token before calling role-checked RPC',async()=>{
  const h=createAdminHandler({env,fetch:backend()});assert.equal((await h(new Request('https://edge.test/functions/v1/admin/users',{headers:{Authorization:'Bearer bad'}}))).status,401);
  const r=await h(new Request('https://edge.test/functions/v1/admin/users',{headers:{Authorization:'Bearer valid-user',Origin:'https://site.test'}}));assert.equal(r.status,200);assert.equal((await r.json()).total,1);
+});
+
+test('database validation is a repairable request error, not a fabricated backend outage',async()=>{
+ const r=await createCoachHandler({env,fetch:backend({validation:true})})(req('/recommendations',{id:'10000000-0000-4000-8000-000000000009',progress_revision:3,word_ids:['c'],rationale:'Next'}));
+ assert.equal(r.status,400);assert.equal((await r.json()).error,'invalid_recommendation');
 });

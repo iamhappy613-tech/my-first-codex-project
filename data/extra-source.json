@@ -1,0 +1,3502 @@
+[
+  {
+    "word": "history",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 350
+  },
+  {
+    "word": "within",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 352
+  },
+  {
+    "word": "force",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 372
+  },
+  {
+    "word": "education",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 376
+  },
+  {
+    "word": "actually",
+    "tag": "cet4 cet6 toefl",
+    "frq": 396
+  },
+  {
+    "word": "probably",
+    "tag": "zk gk cet4 cet6",
+    "frq": 398
+  },
+  {
+    "word": "human",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 399
+  },
+  {
+    "word": "nation",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 412
+  },
+  {
+    "word": "death",
+    "tag": "zk gk cet4 ky",
+    "frq": 417
+  },
+  {
+    "word": "course",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 418
+  },
+  {
+    "word": "reach",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 422
+  },
+  {
+    "word": "local",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 423
+  },
+  {
+    "word": "kill",
+    "tag": "zk gk cet4 ky",
+    "frq": 425
+  },
+  {
+    "word": "remain",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 426
+  },
+  {
+    "word": "control",
+    "tag": "zk gk cet4 ky ielts gre",
+    "frq": 432
+  },
+  {
+    "word": "perhaps",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 435
+  },
+  {
+    "word": "former",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 442
+  },
+  {
+    "word": "rate",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 457
+  },
+  {
+    "word": "drug",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 461
+  },
+  {
+    "word": "leader",
+    "tag": "zk gk cet4 cet6",
+    "frq": 463
+  },
+  {
+    "word": "voice",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 465
+  },
+  {
+    "word": "whole",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 467
+  },
+  {
+    "word": "finally",
+    "tag": "cet4 ky",
+    "frq": 470
+  },
+  {
+    "word": "military",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 474
+  },
+  {
+    "word": "less",
+    "tag": "gk cet4 ky",
+    "frq": 477
+  },
+  {
+    "word": "decision",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 479
+  },
+  {
+    "word": "view",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 485
+  },
+  {
+    "word": "relationship",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 486
+  },
+  {
+    "word": "difference",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 496
+  },
+  {
+    "word": "value",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 499
+  },
+  {
+    "word": "international",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 500
+  },
+  {
+    "word": "action",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 502
+  },
+  {
+    "word": "model",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 504
+  },
+  {
+    "word": "director",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 510
+  },
+  {
+    "word": "position",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 512
+  },
+  {
+    "word": "player",
+    "tag": "gk cet4 cet6 ielts",
+    "frq": 513
+  },
+  {
+    "word": "especially",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 515
+  },
+  {
+    "word": "record",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 516
+  },
+  {
+    "word": "special",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 520
+  },
+  {
+    "word": "space",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 521
+  },
+  {
+    "word": "event",
+    "tag": "gk cet4 ky ielts",
+    "frq": 525
+  },
+  {
+    "word": "official",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 526
+  },
+  {
+    "word": "couple",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 531
+  },
+  {
+    "word": "site",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 532
+  },
+  {
+    "word": "project",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 534
+  },
+  {
+    "word": "base",
+    "tag": "gk cet4 ky gre",
+    "frq": 536
+  },
+  {
+    "word": "activity",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 537
+  },
+  {
+    "word": "court",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 541
+  },
+  {
+    "word": "situation",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 548
+  },
+  {
+    "word": "figure",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 552
+  },
+  {
+    "word": "image",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 555
+  },
+  {
+    "word": "phone",
+    "tag": "zk cet4 ky ielts",
+    "frq": 557
+  },
+  {
+    "word": "recent",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 567
+  },
+  {
+    "word": "product",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 569
+  },
+  {
+    "word": "test",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 575
+  },
+  {
+    "word": "movie",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 576
+  },
+  {
+    "word": "personal",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 580
+  },
+  {
+    "word": "step",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 587
+  },
+  {
+    "word": "type",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 590
+  },
+  {
+    "word": "attention",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 591
+  },
+  {
+    "word": "organization",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 595
+  },
+  {
+    "word": "choose",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 600
+  },
+  {
+    "word": "century",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 605
+  },
+  {
+    "word": "chance",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 613
+  },
+  {
+    "word": "realize",
+    "tag": "cet4 cet6 toefl",
+    "frq": 616
+  },
+  {
+    "word": "period",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 617
+  },
+  {
+    "word": "term",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 626
+  },
+  {
+    "word": "choice",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 630
+  },
+  {
+    "word": "rule",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 633
+  },
+  {
+    "word": "administration",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 635
+  },
+  {
+    "word": "material",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 641
+  },
+  {
+    "word": "medical",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 646
+  },
+  {
+    "word": "church",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 648
+  },
+  {
+    "word": "current",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 652
+  },
+  {
+    "word": "board",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 667
+  },
+  {
+    "word": "seek",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 668
+  },
+  {
+    "word": "officer",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 671
+  },
+  {
+    "word": "private",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 672
+  },
+  {
+    "word": "deal",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 674
+  },
+  {
+    "word": "performance",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 675
+  },
+  {
+    "word": "fight",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 676
+  },
+  {
+    "word": "author",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 685
+  },
+  {
+    "word": "represent",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 687
+  },
+  {
+    "word": "drop",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 690
+  },
+  {
+    "word": "blood",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 692
+  },
+  {
+    "word": "agency",
+    "tag": "gk cet4 ky ielts",
+    "frq": 694
+  },
+  {
+    "word": "nature",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 696
+  },
+  {
+    "word": "color",
+    "tag": "cet4 ky ielts",
+    "frq": 697
+  },
+  {
+    "word": "recently",
+    "tag": "cet4 cet6 toefl",
+    "frq": 699
+  },
+  {
+    "word": "movement",
+    "tag": "gk cet4 cet6 ky gre",
+    "frq": 707
+  },
+  {
+    "word": "enter",
+    "tag": "zk gk cet4 ky",
+    "frq": 709
+  },
+  {
+    "word": "common",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 710
+  },
+  {
+    "word": "race",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 716
+  },
+  {
+    "word": "series",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 718
+  },
+  {
+    "word": "response",
+    "tag": "cet4 cet6 ky ielts gre",
+    "frq": 725
+  },
+  {
+    "word": "rise",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 727
+  },
+  {
+    "word": "decade",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 730
+  },
+  {
+    "word": "article",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 731
+  },
+  {
+    "word": "shoot",
+    "tag": "gk cet4 cet6 ky gre",
+    "frq": 732
+  },
+  {
+    "word": "save",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 735
+  },
+  {
+    "word": "artist",
+    "tag": "gk cet4 ky",
+    "frq": 736
+  },
+  {
+    "word": "scene",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 738
+  },
+  {
+    "word": "stock",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 740
+  },
+  {
+    "word": "central",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 743
+  },
+  {
+    "word": "thus",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 744
+  },
+  {
+    "word": "treatment",
+    "tag": "zk gk cet4 cet6 toefl ielts",
+    "frq": 745
+  },
+  {
+    "word": "exactly",
+    "tag": "gk cet4",
+    "frq": 748
+  },
+  {
+    "word": "media",
+    "tag": "gk cet4 cet6 toefl ielts",
+    "frq": 757
+  },
+  {
+    "word": "sign",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 759
+  },
+  {
+    "word": "list",
+    "tag": "zk gk cet4 cet6 ky ielts gre",
+    "frq": 761
+  },
+  {
+    "word": "prepare",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 774
+  },
+  {
+    "word": "success",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 777
+  },
+  {
+    "word": "particularly",
+    "tag": "cet4 cet6",
+    "frq": 781
+  },
+  {
+    "word": "staff",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 784
+  },
+  {
+    "word": "character",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 786
+  },
+  {
+    "word": "growth",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 787
+  },
+  {
+    "word": "loss",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 788
+  },
+  {
+    "word": "wonder",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 790
+  },
+  {
+    "word": "attack",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 791
+  },
+  {
+    "word": "region",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 793
+  },
+  {
+    "word": "pretty",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 797
+  },
+  {
+    "word": "trade",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 800
+  },
+  {
+    "word": "election",
+    "tag": "cet4 cet6 toefl",
+    "frq": 801
+  },
+  {
+    "word": "physical",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 802
+  },
+  {
+    "word": "general",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 804
+  },
+  {
+    "word": "message",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 807
+  },
+  {
+    "word": "analysis",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 811
+  },
+  {
+    "word": "lawyer",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 816
+  },
+  {
+    "word": "section",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 818
+  },
+  {
+    "word": "professor",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 825
+  },
+  {
+    "word": "operation",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 826
+  },
+  {
+    "word": "financial",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 827
+  },
+  {
+    "word": "crime",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 828
+  },
+  {
+    "word": "stage",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 829
+  },
+  {
+    "word": "authority",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 832
+  },
+  {
+    "word": "design",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 834
+  },
+  {
+    "word": "sort",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 835
+  },
+  {
+    "word": "clearly",
+    "tag": "gk cet4",
+    "frq": 846
+  },
+  {
+    "word": "indeed",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 848
+  },
+  {
+    "word": "truth",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 850
+  },
+  {
+    "word": "various",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 859
+  },
+  {
+    "word": "rather",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 860
+  },
+  {
+    "word": "executive",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 863
+  },
+  {
+    "word": "prove",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 866
+  },
+  {
+    "word": "hang",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 867
+  },
+  {
+    "word": "rock",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 869
+  },
+  {
+    "word": "remove",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 876
+  },
+  {
+    "word": "network",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 882
+  },
+  {
+    "word": "legal",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 883
+  },
+  {
+    "word": "religious",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 884
+  },
+  {
+    "word": "cold",
+    "tag": "zk gk cet4 ky",
+    "frq": 885
+  },
+  {
+    "word": "final",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 887
+  },
+  {
+    "word": "main",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 888
+  },
+  {
+    "word": "memory",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 891
+  },
+  {
+    "word": "cell",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 895
+  },
+  {
+    "word": "trial",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 898
+  },
+  {
+    "word": "firm",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 902
+  },
+  {
+    "word": "management",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 906
+  },
+  {
+    "word": "imagine",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 909
+  },
+  {
+    "word": "huge",
+    "tag": "zk gk cet4 ky",
+    "frq": 911
+  },
+  {
+    "word": "statement",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 921
+  },
+  {
+    "word": "charge",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 923
+  },
+  {
+    "word": "popular",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 924
+  },
+  {
+    "word": "direction",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 928
+  },
+  {
+    "word": "employee",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 930
+  },
+  {
+    "word": "peace",
+    "tag": "zk gk cet4 ky",
+    "frq": 933
+  },
+  {
+    "word": "pain",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 937
+  },
+  {
+    "word": "shake",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 942
+  },
+  {
+    "word": "interview",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 944
+  },
+  {
+    "word": "manage",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 945
+  },
+  {
+    "word": "camera",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 949
+  },
+  {
+    "word": "politics",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 951
+  },
+  {
+    "word": "suddenly",
+    "tag": "cet4 cet6",
+    "frq": 955
+  },
+  {
+    "word": "candidate",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 957
+  },
+  {
+    "word": "production",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 959
+  },
+  {
+    "word": "treat",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 960
+  },
+  {
+    "word": "inside",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 964
+  },
+  {
+    "word": "conference",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 965
+  },
+  {
+    "word": "unit",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 966
+  },
+  {
+    "word": "style",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 968
+  },
+  {
+    "word": "adult",
+    "tag": "gk cet4 ky ielts",
+    "frq": 969
+  },
+  {
+    "word": "edge",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 977
+  },
+  {
+    "word": "writer",
+    "tag": "cet4 cet6 ielts",
+    "frq": 980
+  },
+  {
+    "word": "throughout",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 983
+  },
+  {
+    "word": "fear",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 985
+  },
+  {
+    "word": "shoulder",
+    "tag": "zk gk cet4 cet6 ky gre",
+    "frq": 986
+  },
+  {
+    "word": "institution",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 987
+  },
+  {
+    "word": "dream",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 990
+  },
+  {
+    "word": "property",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 993
+  },
+  {
+    "word": "stuff",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 996
+  },
+  {
+    "word": "magazine",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1001
+  },
+  {
+    "word": "heat",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1009
+  },
+  {
+    "word": "marriage",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1011
+  },
+  {
+    "word": "tough",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1012
+  },
+  {
+    "word": "pattern",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1017
+  },
+  {
+    "word": "skin",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1019
+  },
+  {
+    "word": "agent",
+    "tag": "gk cet4 ky toefl",
+    "frq": 1020
+  },
+  {
+    "word": "owner",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1021
+  },
+  {
+    "word": "commercial",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1027
+  },
+  {
+    "word": "address",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1028
+  },
+  {
+    "word": "cancer",
+    "tag": "zk cet4 cet6 ky",
+    "frq": 1029
+  },
+  {
+    "word": "item",
+    "tag": "cet4 ky ielts",
+    "frq": 1031
+  },
+  {
+    "word": "reality",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1032
+  },
+  {
+    "word": "coach",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1033
+  },
+  {
+    "word": "yard",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1035
+  },
+  {
+    "word": "violence",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1037
+  },
+  {
+    "word": "total",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1038
+  },
+  {
+    "word": "investment",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 1040
+  },
+  {
+    "word": "discussion",
+    "tag": "zk gk cet4 cet6 ielts",
+    "frq": 1041
+  },
+  {
+    "word": "finger",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1042
+  },
+  {
+    "word": "notice",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1044
+  },
+  {
+    "word": "collection",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 1045
+  },
+  {
+    "word": "partner",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1048
+  },
+  {
+    "word": "civil",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1050
+  },
+  {
+    "word": "consumer",
+    "tag": "cet4 cet6 toefl ielts",
+    "frq": 1052
+  },
+  {
+    "word": "scientist",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1057
+  },
+  {
+    "word": "safe",
+    "tag": "zk gk cet4 cet6 ky ielts gre",
+    "frq": 1058
+  },
+  {
+    "word": "capital",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1061
+  },
+  {
+    "word": "victim",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1063
+  },
+  {
+    "word": "responsibility",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1067
+  },
+  {
+    "word": "score",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1070
+  },
+  {
+    "word": "audience",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1074
+  },
+  {
+    "word": "vote",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1078
+  },
+  {
+    "word": "citizen",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1084
+  },
+  {
+    "word": "majority",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1085
+  },
+  {
+    "word": "senior",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1090
+  },
+  {
+    "word": "professional",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1094
+  },
+  {
+    "word": "mission",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1095
+  },
+  {
+    "word": "alone",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 1097
+  },
+  {
+    "word": "customer",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1098
+  },
+  {
+    "word": "speech",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1100
+  },
+  {
+    "word": "successful",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1101
+  },
+  {
+    "word": "option",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1102
+  },
+  {
+    "word": "southern",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1105
+  },
+  {
+    "word": "eventually",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1106
+  },
+  {
+    "word": "university",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1106
+  },
+  {
+    "word": "fresh",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1107
+  },
+  {
+    "word": "forest",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1108
+  },
+  {
+    "word": "video",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1109
+  },
+  {
+    "word": "reform",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1112
+  },
+  {
+    "word": "judge",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1115
+  },
+  {
+    "word": "publish",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1116
+  },
+  {
+    "word": "relation",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1118
+  },
+  {
+    "word": "release",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1120
+  },
+  {
+    "word": "recall",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1129
+  },
+  {
+    "word": "version",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1130
+  },
+  {
+    "word": "stare",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1131
+  },
+  {
+    "word": "safety",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1132
+  },
+  {
+    "word": "neighborhood",
+    "tag": "cet4 ky",
+    "frq": 1134
+  },
+  {
+    "word": "original",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1135
+  },
+  {
+    "word": "directly",
+    "tag": "cet4 cet6 ky",
+    "frq": 1139
+  },
+  {
+    "word": "species",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1141
+  },
+  {
+    "word": "immediately",
+    "tag": "zk gk cet4 cet6 toefl",
+    "frq": 1142
+  },
+  {
+    "word": "track",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1143
+  },
+  {
+    "word": "basic",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 1144
+  },
+  {
+    "word": "strike",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1145
+  },
+  {
+    "word": "freedom",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1148
+  },
+  {
+    "word": "absolutely",
+    "tag": "cet4 toefl",
+    "frq": 1149
+  },
+  {
+    "word": "object",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1153
+  },
+  {
+    "word": "refer",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1156
+  },
+  {
+    "word": "powerful",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1159
+  },
+  {
+    "word": "therefore",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1161
+  },
+  {
+    "word": "conduct",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1162
+  },
+  {
+    "word": "examine",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1165
+  },
+  {
+    "word": "touch",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1166
+  },
+  {
+    "word": "attend",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1168
+  },
+  {
+    "word": "completely",
+    "tag": "cet4 cet6",
+    "frq": 1169
+  },
+  {
+    "word": "variety",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1171
+  },
+  {
+    "word": "investigation",
+    "tag": "cet4 cet6 toefl ielts",
+    "frq": 1175
+  },
+  {
+    "word": "researcher",
+    "tag": "cet4 cet6",
+    "frq": 1177
+  },
+  {
+    "word": "press",
+    "tag": "gk cet4 cet6 ky gre",
+    "frq": 1178
+  },
+  {
+    "word": "conflict",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1179
+  },
+  {
+    "word": "spirit",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1180
+  },
+  {
+    "word": "replace",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1182
+  },
+  {
+    "word": "argument",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1185
+  },
+  {
+    "word": "camp",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1188
+  },
+  {
+    "word": "brain",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1189
+  },
+  {
+    "word": "dozen",
+    "tag": "zk gk cet4 ky",
+    "frq": 1194
+  },
+  {
+    "word": "possibility",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1195
+  },
+  {
+    "word": "insurance",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1197
+  },
+  {
+    "word": "department",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1198
+  },
+  {
+    "word": "battle",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1199
+  },
+  {
+    "word": "generally",
+    "tag": "cet4 cet6 toefl",
+    "frq": 1202
+  },
+  {
+    "word": "complete",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1207
+  },
+  {
+    "word": "stick",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1209
+  },
+  {
+    "word": "easily",
+    "tag": "gk cet4",
+    "frq": 1211
+  },
+  {
+    "word": "hole",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1213
+  },
+  {
+    "word": "element",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1214
+  },
+  {
+    "word": "status",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1215
+  },
+  {
+    "word": "vision",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1216
+  },
+  {
+    "word": "normal",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1217
+  },
+  {
+    "word": "stone",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1220
+  },
+  {
+    "word": "slowly",
+    "tag": "cet4 cet6",
+    "frq": 1222
+  },
+  {
+    "word": "scale",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1223
+  },
+  {
+    "word": "introduce",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1225
+  },
+  {
+    "word": "spot",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1228
+  },
+  {
+    "word": "wood",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1236
+  },
+  {
+    "word": "truck",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1237
+  },
+  {
+    "word": "tradition",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1243
+  },
+  {
+    "word": "refuse",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1247
+  },
+  {
+    "word": "roll",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1249
+  },
+  {
+    "word": "communication",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1250
+  },
+  {
+    "word": "screen",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1252
+  },
+  {
+    "word": "resident",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1254
+  },
+  {
+    "word": "hide",
+    "tag": "zk gk cet4 cet6 ky toefl gre",
+    "frq": 1255
+  },
+  {
+    "word": "gold",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1256
+  },
+  {
+    "word": "club",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1257
+  },
+  {
+    "word": "presence",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1264
+  },
+  {
+    "word": "district",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1266
+  },
+  {
+    "word": "shape",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1267
+  },
+  {
+    "word": "reader",
+    "tag": "cet4 cet6 ky",
+    "frq": 1268
+  },
+  {
+    "word": "contract",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1269
+  },
+  {
+    "word": "crowd",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1270
+  },
+  {
+    "word": "apartment",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1273
+  },
+  {
+    "word": "strength",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1275
+  },
+  {
+    "word": "band",
+    "tag": "gk cet4 ky toefl ielts gre",
+    "frq": 1277
+  },
+  {
+    "word": "obviously",
+    "tag": "cet4 cet6",
+    "frq": 1278
+  },
+  {
+    "word": "prison",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1282
+  },
+  {
+    "word": "guard",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1284
+  },
+  {
+    "word": "reporter",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1286
+  },
+  {
+    "word": "deliver",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1288
+  },
+  {
+    "word": "tool",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1291
+  },
+  {
+    "word": "wild",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1292
+  },
+  {
+    "word": "vehicle",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1293
+  },
+  {
+    "word": "observe",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1294
+  },
+  {
+    "word": "facility",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1297
+  },
+  {
+    "word": "average",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1299
+  },
+  {
+    "word": "emerge",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1300
+  },
+  {
+    "word": "leadership",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1304
+  },
+  {
+    "word": "earn",
+    "tag": "gk cet4 ky",
+    "frq": 1305
+  },
+  {
+    "word": "pound",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1306
+  },
+  {
+    "word": "basis",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1307
+  },
+  {
+    "word": "operate",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1309
+  },
+  {
+    "word": "sample",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1311
+  },
+  {
+    "word": "tiny",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1313
+  },
+  {
+    "word": "protection",
+    "tag": "gk cet4 cet6 toefl",
+    "frq": 1315
+  },
+  {
+    "word": "settle",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 1316
+  },
+  {
+    "word": "collect",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1318
+  },
+  {
+    "word": "additional",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1319
+  },
+  {
+    "word": "highly",
+    "tag": "cet4 cet6 ky",
+    "frq": 1320
+  },
+  {
+    "word": "identity",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1322
+  },
+  {
+    "word": "title",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1323
+  },
+  {
+    "word": "mostly",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1324
+  },
+  {
+    "word": "faith",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1326
+  },
+  {
+    "word": "count",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1331
+  },
+  {
+    "word": "marry",
+    "tag": "zk gk cet4 ky",
+    "frq": 1333
+  },
+  {
+    "word": "technique",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1335
+  },
+  {
+    "word": "path",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1336
+  },
+  {
+    "word": "folk",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1339
+  },
+  {
+    "word": "principle",
+    "tag": "gk cet4 cet6 ky gre",
+    "frq": 1341
+  },
+  {
+    "word": "survive",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1342
+  },
+  {
+    "word": "lift",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 1343
+  },
+  {
+    "word": "border",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1344
+  },
+  {
+    "word": "competition",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1345
+  },
+  {
+    "word": "gather",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1347
+  },
+  {
+    "word": "associate",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1354
+  },
+  {
+    "word": "critic",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1355
+  },
+  {
+    "word": "insist",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1359
+  },
+  {
+    "word": "annual",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1361
+  },
+  {
+    "word": "affair",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1364
+  },
+  {
+    "word": "procedure",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1369
+  },
+  {
+    "word": "regular",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1370
+  },
+  {
+    "word": "chairman",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1372
+  },
+  {
+    "word": "soft",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1374
+  },
+  {
+    "word": "belief",
+    "tag": "gk cet4 ky toefl",
+    "frq": 1378
+  },
+  {
+    "word": "religion",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1383
+  },
+  {
+    "word": "review",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1384
+  },
+  {
+    "word": "editor",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1385
+  },
+  {
+    "word": "engage",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1387
+  },
+  {
+    "word": "document",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1389
+  },
+  {
+    "word": "speed",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1390
+  },
+  {
+    "word": "cross",
+    "tag": "zk gk cet4 cet6 ky toefl gre",
+    "frq": 1391
+  },
+  {
+    "word": "anyway",
+    "tag": "zk cet4 ky",
+    "frq": 1393
+  },
+  {
+    "word": "commit",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1394
+  },
+  {
+    "word": "threaten",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1395
+  },
+  {
+    "word": "female",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1396
+  },
+  {
+    "word": "wave",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1398
+  },
+  {
+    "word": "background",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 1402
+  },
+  {
+    "word": "native",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1403
+  },
+  {
+    "word": "broad",
+    "tag": "gk cet4 ky",
+    "frq": 1404
+  },
+  {
+    "word": "wonderful",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1405
+  },
+  {
+    "word": "deny",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1406
+  },
+  {
+    "word": "slightly",
+    "tag": "cet4 cet6 toefl",
+    "frq": 1408
+  },
+  {
+    "word": "reaction",
+    "tag": "cet4 cet6",
+    "frq": 1409
+  },
+  {
+    "word": "suit",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1411
+  },
+  {
+    "word": "perspective",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1412
+  },
+  {
+    "word": "construction",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1415
+  },
+  {
+    "word": "intelligence",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1417
+  },
+  {
+    "word": "destroy",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1418
+  },
+  {
+    "word": "connection",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1421
+  },
+  {
+    "word": "burn",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1422
+  },
+  {
+    "word": "committee",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1428
+  },
+  {
+    "word": "location",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1433
+  },
+  {
+    "word": "promise",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1438
+  },
+  {
+    "word": "bone",
+    "tag": "gk cet4 ky",
+    "frq": 1443
+  },
+  {
+    "word": "active",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1444
+  },
+  {
+    "word": "chief",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1446
+  },
+  {
+    "word": "wine",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1449
+  },
+  {
+    "word": "dangerous",
+    "tag": "zk gk cet4 ky toefl ielts",
+    "frq": 1457
+  },
+  {
+    "word": "remind",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1458
+  },
+  {
+    "word": "moral",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1459
+  },
+  {
+    "word": "relatively",
+    "tag": "cet4 cet6",
+    "frq": 1462
+  },
+  {
+    "word": "victory",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1463
+  },
+  {
+    "word": "negative",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1470
+  },
+  {
+    "word": "historical",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 1472
+  },
+  {
+    "word": "tour",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1474
+  },
+  {
+    "word": "direct",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1478
+  },
+  {
+    "word": "justice",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1481
+  },
+  {
+    "word": "photograph",
+    "tag": "zk gk cet4 cet6 toefl ielts",
+    "frq": 1481
+  },
+  {
+    "word": "daily",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1483
+  },
+  {
+    "word": "fair",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1484
+  },
+  {
+    "word": "knee",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1488
+  },
+  {
+    "word": "tape",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1490
+  },
+  {
+    "word": "hire",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1491
+  },
+  {
+    "word": "actor",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1497
+  },
+  {
+    "word": "birth",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1499
+  },
+  {
+    "word": "search",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1500
+  },
+  {
+    "word": "eastern",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1503
+  },
+  {
+    "word": "primary",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1504
+  },
+  {
+    "word": "circle",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1506
+  },
+  {
+    "word": "progress",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1508
+  },
+  {
+    "word": "bottom",
+    "tag": "zk gk cet4 ky",
+    "frq": 1511
+  },
+  {
+    "word": "island",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1512
+  },
+  {
+    "word": "county",
+    "tag": "cet4 cet6 ky",
+    "frq": 1516
+  },
+  {
+    "word": "lady",
+    "tag": "zk gk cet4 ky",
+    "frq": 1517
+  },
+  {
+    "word": "colleague",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1518
+  },
+  {
+    "word": "lean",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1520
+  },
+  {
+    "word": "neck",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1521
+  },
+  {
+    "word": "plastic",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1523
+  },
+  {
+    "word": "hate",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1526
+  },
+  {
+    "word": "otherwise",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1527
+  },
+  {
+    "word": "male",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1530
+  },
+  {
+    "word": "alive",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1532
+  },
+  {
+    "word": "expression",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1533
+  },
+  {
+    "word": "chicken",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1538
+  },
+  {
+    "word": "abuse",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1540
+  },
+  {
+    "word": "session",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1544
+  },
+  {
+    "word": "danger",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1546
+  },
+  {
+    "word": "domestic",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1547
+  },
+  {
+    "word": "literature",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1549
+  },
+  {
+    "word": "injury",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1553
+  },
+  {
+    "word": "respect",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1554
+  },
+  {
+    "word": "paint",
+    "tag": "zk gk cet4 ky",
+    "frq": 1555
+  },
+  {
+    "word": "northern",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1556
+  },
+  {
+    "word": "fuel",
+    "tag": "gk cet4 ky toefl ielts",
+    "frq": 1558
+  },
+  {
+    "word": "leaf",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1559
+  },
+  {
+    "word": "pool",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1565
+  },
+  {
+    "word": "climb",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1566
+  },
+  {
+    "word": "engine",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1569
+  },
+  {
+    "word": "salt",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1571
+  },
+  {
+    "word": "importance",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1573
+  },
+  {
+    "word": "metal",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1574
+  },
+  {
+    "word": "software",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1577
+  },
+  {
+    "word": "disappear",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1578
+  },
+  {
+    "word": "urban",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1583
+  },
+  {
+    "word": "increasingly",
+    "tag": "cet4 cet6 ky",
+    "frq": 1585
+  },
+  {
+    "word": "farmer",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1589
+  },
+  {
+    "word": "planet",
+    "tag": "zk gk cet4 cet6 ky toefl gre",
+    "frq": 1592
+  },
+  {
+    "word": "favorite",
+    "tag": "cet4 ky ielts",
+    "frq": 1593
+  },
+  {
+    "word": "enemy",
+    "tag": "zk gk cet4 ky",
+    "frq": 1596
+  },
+  {
+    "word": "surround",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1599
+  },
+  {
+    "word": "athlete",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1600
+  },
+  {
+    "word": "invite",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1601
+  },
+  {
+    "word": "repeat",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1602
+  },
+  {
+    "word": "soul",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1604
+  },
+  {
+    "word": "impossible",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1606
+  },
+  {
+    "word": "panel",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1607
+  },
+  {
+    "word": "instrument",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1611
+  },
+  {
+    "word": "commitment",
+    "tag": "gk cet4 cet6 toefl ielts",
+    "frq": 1616
+  },
+  {
+    "word": "emotional",
+    "tag": "cet4 cet6 toefl",
+    "frq": 1617
+  },
+  {
+    "word": "pocket",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1620
+  },
+  {
+    "word": "temperature",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1622
+  },
+  {
+    "word": "poll",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1623
+  },
+  {
+    "word": "proposal",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1625
+  },
+  {
+    "word": "breath",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1628
+  },
+  {
+    "word": "sight",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1629
+  },
+  {
+    "word": "minority",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1633
+  },
+  {
+    "word": "belong",
+    "tag": "gk cet4 ky toefl",
+    "frq": 1639
+  },
+  {
+    "word": "advice",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1641
+  },
+  {
+    "word": "okay",
+    "tag": "cet4 ky",
+    "frq": 1642
+  },
+  {
+    "word": "organize",
+    "tag": "cet4 cet6 ky",
+    "frq": 1643
+  },
+  {
+    "word": "trail",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1646
+  },
+  {
+    "word": "novel",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1647
+  },
+  {
+    "word": "code",
+    "tag": "cet4 ky ielts gre",
+    "frq": 1648
+  },
+  {
+    "word": "somehow",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 1649
+  },
+  {
+    "word": "acknowledge",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1654
+  },
+  {
+    "word": "theme",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1655
+  },
+  {
+    "word": "storm",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1656
+  },
+  {
+    "word": "union",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1658
+  },
+  {
+    "word": "conclusion",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1666
+  },
+  {
+    "word": "prime",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1667
+  },
+  {
+    "word": "shadow",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1668
+  },
+  {
+    "word": "struggle",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1669
+  },
+  {
+    "word": "regulation",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1675
+  },
+  {
+    "word": "largely",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1679
+  },
+  {
+    "word": "shift",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1680
+  },
+  {
+    "word": "revenue",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1681
+  },
+  {
+    "word": "locate",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1682
+  },
+  {
+    "word": "mark",
+    "tag": "zk gk cet4 ky",
+    "frq": 1683
+  },
+  {
+    "word": "appearance",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1684
+  },
+  {
+    "word": "package",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1685
+  },
+  {
+    "word": "basically",
+    "tag": "cet4",
+    "frq": 1691
+  },
+  {
+    "word": "generate",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1692
+  },
+  {
+    "word": "propose",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1694
+  },
+  {
+    "word": "possibly",
+    "tag": "cet4 cet6 ky",
+    "frq": 1696
+  },
+  {
+    "word": "visitor",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1698
+  },
+  {
+    "word": "loan",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1699
+  },
+  {
+    "word": "comfortable",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1701
+  },
+  {
+    "word": "profit",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1704
+  },
+  {
+    "word": "crew",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1706
+  },
+  {
+    "word": "accident",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1707
+  },
+  {
+    "word": "traffic",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1712
+  },
+  {
+    "word": "muscle",
+    "tag": "cet4 cet6 ky gre",
+    "frq": 1713
+  },
+  {
+    "word": "notion",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1714
+  },
+  {
+    "word": "capture",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1715
+  },
+  {
+    "word": "chest",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1717
+  },
+  {
+    "word": "truly",
+    "tag": "gk cet4 cet6",
+    "frq": 1719
+  },
+  {
+    "word": "thick",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1721
+  },
+  {
+    "word": "cash",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1722
+  },
+  {
+    "word": "museum",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1723
+  },
+  {
+    "word": "beauty",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1724
+  },
+  {
+    "word": "emergency",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 1725
+  },
+  {
+    "word": "unique",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1726
+  },
+  {
+    "word": "internal",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1728
+  },
+  {
+    "word": "link",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1730
+  },
+  {
+    "word": "stress",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1731
+  },
+  {
+    "word": "content",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1732
+  },
+  {
+    "word": "root",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1734
+  },
+  {
+    "word": "declare",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1736
+  },
+  {
+    "word": "actual",
+    "tag": "gk cet4 ky toefl",
+    "frq": 1739
+  },
+  {
+    "word": "hardly",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1741
+  },
+  {
+    "word": "launch",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1743
+  },
+  {
+    "word": "file",
+    "tag": "gk cet4 ky toefl ielts gre",
+    "frq": 1745
+  },
+  {
+    "word": "outcome",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1747
+  },
+  {
+    "word": "defend",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1750
+  },
+  {
+    "word": "duty",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1752
+  },
+  {
+    "word": "sheet",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1753
+  },
+  {
+    "word": "extremely",
+    "tag": "gk cet4 cet6",
+    "frq": 1756
+  },
+  {
+    "word": "component",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1760
+  },
+  {
+    "word": "contrast",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1762
+  },
+  {
+    "word": "zone",
+    "tag": "gk cet4 cet6 ky toefl gre",
+    "frq": 1763
+  },
+  {
+    "word": "pilot",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1772
+  },
+  {
+    "word": "warn",
+    "tag": "zk cet4 cet6 ky toefl",
+    "frq": 1773
+  },
+  {
+    "word": "ultimately",
+    "tag": "cet4 cet6 ielts",
+    "frq": 1774
+  },
+  {
+    "word": "contribution",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1776
+  },
+  {
+    "word": "capacity",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1777
+  },
+  {
+    "word": "estate",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1778
+  },
+  {
+    "word": "guide",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1779
+  },
+  {
+    "word": "circumstance",
+    "tag": "gk cet4 cet6 toefl ielts",
+    "frq": 1780
+  },
+  {
+    "word": "politician",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1783
+  },
+  {
+    "word": "steal",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1784
+  },
+  {
+    "word": "pursue",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1785
+  },
+  {
+    "word": "slip",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1786
+  },
+  {
+    "word": "percentage",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1787
+  },
+  {
+    "word": "funny",
+    "tag": "zk gk cet4 ky",
+    "frq": 1789
+  },
+  {
+    "word": "soil",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 1791
+  },
+  {
+    "word": "surgery",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1793
+  },
+  {
+    "word": "correct",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1794
+  },
+  {
+    "word": "blame",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1797
+  },
+  {
+    "word": "investigate",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1802
+  },
+  {
+    "word": "crazy",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1803
+  },
+  {
+    "word": "chain",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1805
+  },
+  {
+    "word": "branch",
+    "tag": "gk cet4 ky ielts",
+    "frq": 1807
+  },
+  {
+    "word": "combination",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1808
+  },
+  {
+    "word": "frequently",
+    "tag": "cet4 cet6",
+    "frq": 1810
+  },
+  {
+    "word": "governor",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1811
+  },
+  {
+    "word": "relief",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1812
+  },
+  {
+    "word": "user",
+    "tag": "gk cet4 cet6",
+    "frq": 1813
+  },
+  {
+    "word": "kick",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1815
+  },
+  {
+    "word": "ancient",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1817
+  },
+  {
+    "word": "manner",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1818
+  },
+  {
+    "word": "silence",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1820
+  },
+  {
+    "word": "golden",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1821
+  },
+  {
+    "word": "motion",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1822
+  },
+  {
+    "word": "solve",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1825
+  },
+  {
+    "word": "bowl",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1829
+  },
+  {
+    "word": "frame",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1833
+  },
+  {
+    "word": "forth",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1834
+  },
+  {
+    "word": "typical",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1835
+  },
+  {
+    "word": "eliminate",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1838
+  },
+  {
+    "word": "hall",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 1839
+  },
+  {
+    "word": "host",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1840
+  },
+  {
+    "word": "trust",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1841
+  },
+  {
+    "word": "ocean",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1842
+  },
+  {
+    "word": "meanwhile",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1847
+  },
+  {
+    "word": "division",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1849
+  },
+  {
+    "word": "mirror",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1853
+  },
+  {
+    "word": "length",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1855
+  },
+  {
+    "word": "smart",
+    "tag": "zk gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1856
+  },
+  {
+    "word": "rely",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1857
+  },
+  {
+    "word": "association",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1859
+  },
+  {
+    "word": "complain",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1859
+  },
+  {
+    "word": "topic",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1860
+  },
+  {
+    "word": "variable",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1862
+  },
+  {
+    "word": "secret",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1868
+  },
+  {
+    "word": "debt",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1871
+  },
+  {
+    "word": "rare",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1872
+  },
+  {
+    "word": "tank",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1874
+  },
+  {
+    "word": "aside",
+    "tag": "gk cet4 ky",
+    "frq": 1878
+  },
+  {
+    "word": "anywhere",
+    "tag": "zk gk cet4 ky",
+    "frq": 1879
+  },
+  {
+    "word": "bond",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1880
+  },
+  {
+    "word": "master",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1883
+  },
+  {
+    "word": "requirement",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1885
+  },
+  {
+    "word": "wing",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1889
+  },
+  {
+    "word": "expectation",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1890
+  },
+  {
+    "word": "somewhat",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1897
+  },
+  {
+    "word": "pour",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1898
+  },
+  {
+    "word": "stir",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1899
+  },
+  {
+    "word": "reference",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1904
+  },
+  {
+    "word": "tear",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1905
+  },
+  {
+    "word": "seriously",
+    "tag": "cet4 cet6 toefl",
+    "frq": 1908
+  },
+  {
+    "word": "hero",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1912
+  },
+  {
+    "word": "industrial",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1913
+  },
+  {
+    "word": "stretch",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1915
+  },
+  {
+    "word": "winner",
+    "tag": "zk gk cet4 cet6",
+    "frq": 1916
+  },
+  {
+    "word": "volume",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1917
+  },
+  {
+    "word": "seed",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1919
+  },
+  {
+    "word": "fashion",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1922
+  },
+  {
+    "word": "pepper",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1923
+  },
+  {
+    "word": "welfare",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1933
+  },
+  {
+    "word": "improvement",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 1936
+  },
+  {
+    "word": "beach",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 1937
+  },
+  {
+    "word": "gray",
+    "tag": "cet4 cet6",
+    "frq": 1939
+  },
+  {
+    "word": "overall",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1941
+  },
+  {
+    "word": "divide",
+    "tag": "zk gk cet4 ky toefl",
+    "frq": 1942
+  },
+  {
+    "word": "initial",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1943
+  },
+  {
+    "word": "terrible",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1944
+  },
+  {
+    "word": "oppose",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1945
+  },
+  {
+    "word": "route",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 1946
+  },
+  {
+    "word": "contemporary",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1947
+  },
+  {
+    "word": "multiple",
+    "tag": "cet4 cet6 ky toefl gre",
+    "frq": 1948
+  },
+  {
+    "word": "criminal",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 1953
+  },
+  {
+    "word": "upper",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1955
+  },
+  {
+    "word": "rush",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 1956
+  },
+  {
+    "word": "necessarily",
+    "tag": "cet4 cet6",
+    "frq": 1957
+  },
+  {
+    "word": "vast",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1965
+  },
+  {
+    "word": "household",
+    "tag": "cet4 cet6 ky toefl",
+    "frq": 1967
+  },
+  {
+    "word": "resolution",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1968
+  },
+  {
+    "word": "witness",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 1970
+  },
+  {
+    "word": "apart",
+    "tag": "gk cet4 ky",
+    "frq": 1971
+  },
+  {
+    "word": "barely",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1973
+  },
+  {
+    "word": "emphasize",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1975
+  },
+  {
+    "word": "representative",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1976
+  },
+  {
+    "word": "incident",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 1980
+  },
+  {
+    "word": "proud",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 1983
+  },
+  {
+    "word": "flow",
+    "tag": "gk cet4 ky",
+    "frq": 1984
+  },
+  {
+    "word": "faculty",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1985
+  },
+  {
+    "word": "merely",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 1988
+  },
+  {
+    "word": "mass",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 1989
+  },
+  {
+    "word": "definitely",
+    "tag": "cet4 cet6 toefl",
+    "frq": 1991
+  },
+  {
+    "word": "liberal",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 1993
+  },
+  {
+    "word": "tone",
+    "tag": "cet4 cet6 ky",
+    "frq": 1995
+  },
+  {
+    "word": "massive",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 1996
+  },
+  {
+    "word": "engineer",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1997
+  },
+  {
+    "word": "wheel",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 1999
+  },
+  {
+    "word": "invest",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 2001
+  },
+  {
+    "word": "cable",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 2003
+  },
+  {
+    "word": "rural",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 2006
+  },
+  {
+    "word": "narrow",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2007
+  },
+  {
+    "word": "cream",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 2008
+  },
+  {
+    "word": "solid",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 2011
+  },
+  {
+    "word": "unfortunately",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2016
+  },
+  {
+    "word": "legislation",
+    "tag": "cet4 cet6 ky toefl ielts gre",
+    "frq": 2017
+  },
+  {
+    "word": "succeed",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2018
+  },
+  {
+    "word": "celebrate",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2019
+  },
+  {
+    "word": "achievement",
+    "tag": "gk cet4 cet6 toefl ielts",
+    "frq": 2021
+  },
+  {
+    "word": "accuse",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 2024
+  },
+  {
+    "word": "useful",
+    "tag": "zk gk cet4 cet6 ky ielts",
+    "frq": 2026
+  },
+  {
+    "word": "reject",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2029
+  },
+  {
+    "word": "talent",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2030
+  },
+  {
+    "word": "taste",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2031
+  },
+  {
+    "word": "characteristic",
+    "tag": "gk cet4 cet6 ky toefl ielts gre",
+    "frq": 2032
+  },
+  {
+    "word": "escape",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2034
+  },
+  {
+    "word": "sentence",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2036
+  },
+  {
+    "word": "unusual",
+    "tag": "gk cet4 cet6 ky ielts",
+    "frq": 2037
+  },
+  {
+    "word": "closely",
+    "tag": "cet4",
+    "frq": 2038
+  },
+  {
+    "word": "height",
+    "tag": "zk gk cet4 cet6 ky toefl ielts",
+    "frq": 2040
+  },
+  {
+    "word": "physician",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 2041
+  },
+  {
+    "word": "plenty",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 2044
+  },
+  {
+    "word": "virtually",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 2046
+  },
+  {
+    "word": "sharp",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 2049
+  },
+  {
+    "word": "creative",
+    "tag": "cet4 cet6 ky",
+    "frq": 2050
+  },
+  {
+    "word": "approve",
+    "tag": "gk cet4 cet6 ky toefl",
+    "frq": 2053
+  },
+  {
+    "word": "explanation",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 2054
+  },
+  {
+    "word": "proper",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2058
+  },
+  {
+    "word": "guilty",
+    "tag": "gk cet4 cet6 ky gre",
+    "frq": 2061
+  },
+  {
+    "word": "acquire",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 2063
+  },
+  {
+    "word": "technical",
+    "tag": "gk cet4 cet6 ky toefl ielts",
+    "frq": 2064
+  },
+  {
+    "word": "immigrant",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 2069
+  },
+  {
+    "word": "weak",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 2070
+  },
+  {
+    "word": "illegal",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 2071
+  },
+  {
+    "word": "column",
+    "tag": "cet4 cet6 ky ielts",
+    "frq": 2074
+  },
+  {
+    "word": "interaction",
+    "tag": "cet4 cet6 toefl gre",
+    "frq": 2075
+  },
+  {
+    "word": "personality",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 2076
+  },
+  {
+    "word": "signal",
+    "tag": "gk cet4 cet6 ky ielts gre",
+    "frq": 2078
+  },
+  {
+    "word": "king",
+    "tag": "zk gk cet4 ky ielts",
+    "frq": 2080
+  },
+  {
+    "word": "passenger",
+    "tag": "zk gk cet4 cet6 ky",
+    "frq": 2080
+  },
+  {
+    "word": "forever",
+    "tag": "gk cet4 cet6 ky",
+    "frq": 2082
+  },
+  {
+    "word": "regard",
+    "tag": "zk gk cet4 cet6 ky toefl",
+    "frq": 2084
+  },
+  {
+    "word": "wrap",
+    "tag": "cet4 cet6 ky toefl ielts",
+    "frq": 2090
+  }
+]

@@ -17,7 +17,7 @@ grant usage on schema private to authenticated;
 grant execute on function private.active(uuid),private.admin() to authenticated;
 create table public.word_catalog (
  id text primary key, word text not null, phonetic text not null, meaning text not null, example text not null,
- translation text not null, level text not null, reviewed boolean not null default false, source text not null
+ translation text not null, level text not null, reviewed boolean not null default false, source text not null, frequency_rank integer check(frequency_rank>0)
 );
 create function private.valid_ids(p jsonb) returns boolean language sql immutable set search_path='' as $$
  select jsonb_typeof(p)='array' and not exists(select 1 from jsonb_array_elements(p) e where jsonb_typeof(e)<>'string')

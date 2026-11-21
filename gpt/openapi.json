@@ -1,0 +1,500 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "词间专属学习数据接口",
+    "version": "1.0.0",
+    "description": "仅提供固定所有者的学习数据和推荐草稿，不调用任何模型 API。不要在 schema 内填入连接口令。"
+  },
+  "servers": [
+    {
+      "url": "https://YOUR_PROJECT.supabase.co/functions/v1/coach"
+    }
+  ],
+  "security": [
+    {
+      "CoachConnection": []
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "CoachConnection": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "paths": {
+    "/summary": {
+      "get": {
+        "operationId": "getLearningSummary",
+        "summary": "先读取最新进度、同步时间、版本与近期检测统计",
+        "responses": {
+          "200": {
+            "description": "成功；以响应数据为准",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "study_day": {
+                      "type": "integer"
+                    },
+                    "deck_size": {
+                      "type": "integer"
+                    },
+                    "recognized_count": {
+                      "type": "integer"
+                    },
+                    "tested_correct_count": {
+                      "type": "integer"
+                    },
+                    "delayed_pass_count": {
+                      "type": "integer"
+                    },
+                    "today_total": {
+                      "type": "integer"
+                    },
+                    "answered_today": {
+                      "type": "integer"
+                    },
+                    "unattempted_today": {
+                      "type": "integer"
+                    },
+                    "pending_count": {
+                      "type": "integer"
+                    },
+                    "evidence_count": {
+                      "type": "integer"
+                    },
+                    "progress_revision": {
+                      "type": "integer"
+                    },
+                    "study_date": {
+                      "type": "string"
+                    },
+                    "last_synced_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "unfamiliar_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "assessment_due_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "assessment_note": {
+                      "type": "string"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选、数量或请求格式无效；修正后再提交"
+          },
+          "401": {
+            "description": "连接口令无效"
+          },
+          "403": {
+            "description": "账号已停用或没有权限"
+          },
+          "409": {
+            "description": "进度已变化，重新读取后再生成"
+          },
+          "429": {
+            "description": "访问过于频繁，请稍后再试"
+          }
+        }
+      }
+    },
+    "/evidence": {
+      "get": {
+        "operationId": "getLearningEvidence",
+        "summary": "读取近期不看答案检测的证据；自评不能作为精确词汇量",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功；以响应数据为准",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "progress_revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "page": {
+                      "type": "integer"
+                    },
+                    "events": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "word_id": {
+                            "type": "string"
+                          },
+                          "correct": {
+                            "type": "boolean"
+                          },
+                          "assisted": {
+                            "type": "boolean"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选、数量或请求格式无效；修正后再提交"
+          },
+          "401": {
+            "description": "连接口令无效"
+          },
+          "403": {
+            "description": "账号已停用或没有权限"
+          },
+          "409": {
+            "description": "进度已变化，重新读取后再生成"
+          },
+          "429": {
+            "description": "访问过于频繁，请稍后再试"
+          }
+        }
+      }
+    },
+    "/candidates": {
+      "get": {
+        "operationId": "getLearningCandidates",
+        "summary": "分页读取可用候选 ID 与必须顺延的词；正式推荐不得编造 ID",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功；以响应数据为准",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "page": {
+                      "type": "integer"
+                    },
+                    "has_more": {
+                      "type": "boolean"
+                    },
+                    "available_new_count": {
+                      "type": "integer"
+                    },
+                    "progress_revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "mandatory_carry_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    },
+                    "candidates": {
+                      "type": "array",
+                      "maxItems": 86,
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "word": {
+                            "type": "string"
+                          },
+                          "phonetic": {
+                            "type": "string"
+                          },
+                          "meaning": {
+                            "type": "string"
+                          },
+                          "example": {
+                            "type": "string"
+                          },
+                          "translation": {
+                            "type": "string"
+                          },
+                          "level": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "string"
+                          },
+                          "kind": {
+                            "type": "string",
+                            "enum": [
+                              "review",
+                              "new"
+                            ]
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选、数量或请求格式无效；修正后再提交"
+          },
+          "401": {
+            "description": "连接口令无效"
+          },
+          "403": {
+            "description": "账号已停用或没有权限"
+          },
+          "409": {
+            "description": "进度已变化，重新读取后再生成"
+          },
+          "429": {
+            "description": "访问过于频繁，请稍后再试"
+          }
+        }
+      }
+    },
+    "/recommendations": {
+      "post": {
+        "operationId": "saveRecommendationDraft",
+        "summary": "仅在用户要求保存时提交草稿；网站采用后下一学习日生效",
+        "x-openai-isConsequential": true,
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "progress_revision",
+                  "word_ids",
+                  "rationale"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "progress_revision": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "word_ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "minItems": 1,
+                    "maxItems": 43,
+                    "uniqueItems": true
+                  },
+                  "rationale": {
+                    "type": "string",
+                    "maxLength": 1500
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "返回实际保存的草稿。重复重试必须使用相同 id 和载荷。",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "pending",
+                        "accepted",
+                        "ignored"
+                      ]
+                    },
+                    "progress_revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "word_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "maxItems": 43,
+                      "uniqueItems": true
+                    },
+                    "rationale": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "expires_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选、数量或请求格式无效；修正后再提交"
+          },
+          "401": {
+            "description": "连接口令无效"
+          },
+          "403": {
+            "description": "账号已停用或没有权限"
+          },
+          "409": {
+            "description": "进度已变化，重新读取后再生成"
+          },
+          "429": {
+            "description": "访问过于频繁，请稍后再试"
+          }
+        }
+      }
+    },
+    "/recommendations/{id}": {
+      "get": {
+        "operationId": "getRecommendationDraft",
+        "summary": "核对草稿保存结果",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "成功；以响应数据为准",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "status": {
+                      "type": "string",
+                      "enum": [
+                        "pending",
+                        "accepted",
+                        "ignored"
+                      ]
+                    },
+                    "progress_revision": {
+                      "type": "integer",
+                      "minimum": 1
+                    },
+                    "word_ids": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      },
+                      "minItems": 1,
+                      "maxItems": 43,
+                      "uniqueItems": true
+                    },
+                    "rationale": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "expires_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "候选、数量或请求格式无效；修正后再提交"
+          },
+          "401": {
+            "description": "连接口令无效"
+          },
+          "403": {
+            "description": "账号已停用或没有权限"
+          },
+          "409": {
+            "description": "进度已变化，重新读取后再生成"
+          },
+          "429": {
+            "description": "访问过于频繁，请稍后再试"
+          }
+        }
+      }
+    }
+  }
+}

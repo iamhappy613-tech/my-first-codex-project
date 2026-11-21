@@ -1,0 +1,52 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "词间 Actions 连通测试（纯模拟）",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://iamhappy613-tech.github.io/my-first-codex-project"
+    }
+  ],
+  "paths": {
+    "/gpt/smoke.json": {
+      "get": {
+        "operationId": "readSyntheticLearningProgress",
+        "summary": "读取公开模拟进度，绝不是用户真实记录",
+        "responses": {
+          "200": {
+            "description": "模拟数据",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "synthetic": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "recognized_count": {
+                      "type": "integer"
+                    },
+                    "today_total": {
+                      "type": "integer"
+                    },
+                    "unfamiliar_words": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
