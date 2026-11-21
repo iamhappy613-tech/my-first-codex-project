@@ -4,7 +4,7 @@ await import('../supabase/functions/_shared/core.js');
 try { await import('../web/assessment.js'); } catch (error) { if (error.code!=='ERR_MODULE_NOT_FOUND') throw error; }
 const A=globalThis.WordspaceAssessment||{};
 const now='2026-11-22T12:00:00Z',random=()=>0.37;
-const catalog=Array.from({length:20},(_,i)=>({id:`w${i}`,word:`w${i}`,meaning:`释义${i}`,example:`We use w${i} every day.`,translation:`例句翻译${i}`,reviewed:true}));
+const catalog=Array.from({length:20},(_,i)=>({id:`w${i}`,word:`w${i}`,meaning:`释义${i}`,example:`We use w${i} for item ${i} every day.`,translation:`例句翻译${i}`,reviewed:true}));
 const plan={mastered:Array.from({length:12},(_,i)=>`w${i}`).filter(id=>id!=='w2'),days:[{ids:catalog.slice(0,13).map(w=>w.id),first:Array(12).fill(true),review:[],closed:false}],pending:['w13','w14']};
 const round=(p=plan,rows=catalog,events=[])=>A.buildRound?.(p,rows,events,now,random)||[];
 
@@ -30,7 +30,7 @@ test('due words precede weak words and untested known words',()=>{
 });
 
 test('cloze masks every target occurrence and never shows its translation before answering',()=>{
- const rows=catalog.map(w=>({...w,example:`${w.word} can appear twice: ${w.word}.`}));
+ const rows=catalog.map((w,index)=>({...w,example:`Item ${index}: ${w.word} can appear twice: ${w.word}.`}));
  const q=round({...plan,days:[{ids:['w0','w1'],first:[true,true]}]},rows);
  assert.equal(q.length,2);assert.equal(q[0].type,'meaning');assert.equal(q[1].type,'cloze');
  assert(!q[1].prompt.includes(q[1].word.word));assert(q[1].prompt.includes('_____'));
@@ -67,4 +67,19 @@ test('round report counts first answers only and does not count unanswered targe
 test('empty answers and missing delayed samples report no percentage rather than a false zero score',()=>{
  const q=[{word:catalog[0],delayed:false}];
  assert.deepEqual(A.summarizeRound?.(q,[]),{total:1,answered:0,correct:0,rate:null,wrong_ids:[],delayed_answered:0,delayed_correct:0,delayed_rate:null,complete:false});
+});
+
+test('cloze choices exclude a second word supported by the same masked catalog sentence',()=>{
+ for(const [left,right,sentence] of [['private','secret','Please keep this information WORD.'],['length','height','Measure the WORD of the table.']]){
+  const pair=[left,right].map(id=>({id,word:id,meaning:id,example:sentence.replace('WORD',id),reviewed:true}));
+  const rows=[...pair,...catalog.slice(0,2)],p={mastered:[left,right],days:[{ids:[left,right],first:[true,true]}]};
+  const q=round(p,rows).find(item=>item.type==='cloze');assert(q);
+  const alternative=q.word.id===left?right:left;assert(!q.options.some(option=>option.id===alternative));
+ }
+});
+
+test('a cloze with no unambiguous distractor falls back without dropping the studied word',()=>{
+ const rows=['private','secret'].map(id=>({id,word:id,meaning:id,example:`Keep it ${id}.`,reviewed:true}));
+ const q=round({mastered:rows.map(w=>w.id),days:[{ids:rows.map(w=>w.id),first:[true,true]}]},rows);
+ assert.equal(q.length,2);assert(q.every(item=>item.type==='meaning'));assert(q.every(item=>item.options.length===2));
 });

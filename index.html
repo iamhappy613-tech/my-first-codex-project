@@ -808,6 +808,12 @@ button:disabled { cursor:default; opacity:.55; }
 .assessment-wrong li { margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:9px; }
 .assessment-wrong p { margin:5px 0; overflow-wrap:anywhere; }
 @media(max-width:480px) { .assessment { padding:18px; }#assessment-options { grid-template-columns:1fr; }.assessment-actions button { width:100%; } }
+@media(max-width:700px) {
+ .app:has(#assessment-question:not([hidden]),#assessment-report:not([hidden])) .actions {
+  position:static; left:auto; bottom:auto; transform:none; width:auto; max-width:none; z-index:auto;
+  margin:22px 0 0; padding:0; background:transparent; border-top:0; box-shadow:none;
+ }
+}
 @media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }
 
 /* Grid overlays both faces while letting long, reviewed lessons set card height. */
@@ -1134,6 +1140,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   for(let i=result.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}
   return result;
  }
+ function clozePrompt(word){
+  if(typeof word.example!=='string')return null;
+  const escaped=word.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),pattern=new RegExp('\\b'+escaped+'\\b','gi');
+  return pattern.test(word.example)?word.example.replace(pattern,'_____'):null;
+ }
  function buildRound(plan,catalog,evidence=[],now=new Date().toISOString(),random=Math.random){
   const pool=catalog.filter(w=>w.reviewed===true&&typeof w.word==='string'&&typeof w.meaning==='string'&&w.meaning.trim());
   const byId=new Map(pool.map(w=>[w.id,w])),known=new Set(plan?.mastered||[]),last=new Map(),counts=new Map(),time=Date.parse(now);
@@ -1144,14 +1155,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   const selected=shuffled(studiedIds(plan).filter(id=>byId.has(id)),random)
    .sort((a,b)=>rank(a)-rank(b)||(rank(a)===3?(counts.get(a)||0)-(counts.get(b)||0):0)).slice(0,10);
   return selected.map((id,index)=>{
-   const word=byId.get(id),escaped=word.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-   const pattern=new RegExp('\\b'+escaped+'\\b','gi');
-   const cloze=index%2===1&&typeof word.example==='string'&&pattern.test(word.example);pattern.lastIndex=0;
-   const type=cloze?'cloze':'meaning',label=w=>type==='cloze'?w.word:w.meaning;
-   const choices=[{id:word.id,label:label(word)}],labels=new Set([label(word)]);
-   for(const other of shuffled(pool,random)){const text=label(other);if(other.id===id||labels.has(text))continue;choices.push({id:other.id,label:text});labels.add(text);if(choices.length===4)break;}
+   const word=byId.get(id),masked=clozePrompt(word),cloze=index%2===1&&masked!==null;
+   const normalized=text=>text?.toLowerCase().replace(/\s+/g,' ').trim();
+   const optionsFor=type=>{const label=w=>type==='cloze'?w.word:w.meaning,choices=[{id:word.id,label:label(word)}],labels=new Set([label(word)]);
+    for(const other of shuffled(pool,random)){const text=label(other);if(other.id===id||labels.has(text)||(type==='cloze'&&normalized(clozePrompt(other))===normalized(masked)))continue;choices.push({id:other.id,label:text});labels.add(text);if(choices.length===4)break;}return choices;};
+   let type=cloze?'cloze':'meaning',choices=optionsFor(type);if(type==='cloze'&&choices.length<2){type='meaning';choices=optionsFor(type);}
    const previous=last.get(id);
-   return {word,type,prompt:cloze?word.example.replace(pattern,'_____'):word.word,options:shuffled(choices,random),delayed:!!(previous?.correct&&time-Date.parse(previous.created_at)>=DAY)};
+   return {word,type,prompt:type==='cloze'?masked:word.word,options:shuffled(choices,random),delayed:!!(previous?.correct&&time-Date.parse(previous.created_at)>=DAY)};
   }).filter(question=>question.options.length>=2);
  }
  function summarizeRound(questions,answers){
@@ -1175,7 +1185,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   if(!storage){try{storage=root.localStorage}catch{storage={getItem:()=>null,setItem:()=>{throw Error('storage_unavailable')},removeItem:()=>{}}}}
   const cloud=config.mode==='cloud';let session=null,user=null,profile=null,epoch=0,revision=0,dirty=false,changes=0,ready=false;
   let evidence=[];let cacheOK=true;let syncPromise=null,refreshPromise=null,timer=null,pendingEvents=[],syncedAt='',message='',conflict=null,adminPage=1,question=null,adopting=false;
-  let assessmentRound=null,evidenceLoading=false,evidenceRequest=0;
+  let assessmentRound=null,evidenceLoading=false,evidenceRequest=0,evidenceUnavailable=false;
+  const localAssessmentEvidence=new Map();
   const SESSION='wordspace:session',localKey='wordspace:local:v3',cacheKey=id=>`wordspace:account:${id}`;
   const read=k=>{try{return JSON.parse(storage.getItem(k)||'null')}catch{return null}};
   const write=(k,v)=>{try{storage.setItem(k,JSON.stringify(v));return true}catch{return false}};
@@ -1195,8 +1206,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    const text=!assessmentRound.answers.length?'':cloud?(pendingEvents.length?'检测结果待同步。请联网后点击页面上方的同步按钮；本轮报告按已作答计算。':'本轮已作答的检测结果已同步。'):(assessmentRound.storageFailed?'浏览器存储不可用，本轮结果仅保留在当前页面。':'检测结果已保存在当前浏览器；本地模式不上传云端。');
    display('assessment-sync',text);
   }
+  function assessmentEvidence(){
+   const combined=new Map();for(const event of [...evidence,...localAssessmentEvidence.values()])combined.set(event.id||`${event.word_id}|${event.created_at}|${event.correct}|${event.assisted}`,event);return [...combined.values()];
+  }
   function lock(text=''){
-   setStudyBusy(false);resetAssessment();evidence=[];display('assessment-stats','检测记录尚未加载。');
+   setStudyBusy(false);resetAssessment();evidence=[];evidenceUnavailable=false;localAssessmentEvidence.clear();display('assessment-stats','检测记录尚未加载。');
    ready=false;question=null;hooks.stop();$('assessment-options').replaceChildren();display('assessment-word','');display('assessment-feedback','');$('proposal-list').replaceChildren();$('download-backup').hidden=true;$('study-main').hidden=true;$('account-gate').hidden=false;$('admin-panel').hidden=true;
    $('admin-users').replaceChildren();$('manage-users').hidden=true;$('open-coach').hidden=true;display('auth-message',text);
   }
@@ -1243,6 +1257,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    const rows=await api('/rest/v1/word_catalog?select=*&reviewed=eq.true&order=id&limit=1000');hooks.mergeCatalog(rows);
    const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0]||null;
    const saved=read(cacheKey(user.id));revision=remote?.revision||0;syncedAt=remote?.updated_at||'';pendingEvents=Array.isArray(saved?.pendingEvents)?saved.pendingEvents.filter(e=>e&&typeof e.p_event_id==='string'&&typeof e.p_word_id==='string'&&typeof e.p_choice_id==='string'&&typeof e.p_assisted==='boolean'):[];
+   localAssessmentEvidence.clear();for(const event of pendingEvents){if(!Number.isFinite(Date.parse(event.recorded_at)))event.recorded_at=new Date().toISOString();localAssessmentEvidence.set(event.p_event_id,{id:event.p_event_id,word_id:event.p_word_id,correct:event.p_word_id===event.p_choice_id,assisted:event.p_assisted,created_at:event.recorded_at});}
    if(saved?.dirty&&C.validatePlan(saved.state,catalog)){
     if(saved.revision!==revision){conflict={local:copy(saved.state),remote};choice('另一台设备的进度已更新。本机进度会保留备份，请选择要继续的版本。',['conflict-cloud','conflict-local']);return}
     dirty=true;showStudy(saved.state);notify('待同步本机进度');void flush();return;
@@ -1261,6 +1276,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    showStudy(state);notify('待同步');void flush();
   }
   function persist(state){
+   if(ready)renderEvidenceStats();
    if(!cloud){if(!write(localKey,state))notify('本地存储不可用，刷新后可能丢失。');else notify('本地模式 · 仅保存在当前浏览器，云端账号尚未配置。');return}
    if(!ready||!user)return;dirty=true;changes++;cache();notify('待同步 · 正在保存本机记录');clearTimeout(timer);timer=setTimeout(()=>void flush(),300);
   }
@@ -1273,7 +1289,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
      if(dirty){const change=changes,state=copy(hooks.getPlan());const result=await api('/rest/v1/rpc/save_progress',{p_expected_revision:revision,p_state:state});
       if(e!==epoch)return false;revision=result.revision;syncedAt=result.updated_at;dirty=changes!==change;cache();
      }
-     while(pendingEvents.length){const event=pendingEvents[0];await api('/rest/v1/rpc/submit_assessment',event);if(e!==epoch)return false;pendingEvents.shift();cache()}
+     while(pendingEvents.length){const {p_event_id,p_word_id,p_choice_id,p_assisted}=pendingEvents[0];await api('/rest/v1/rpc/submit_assessment',{p_event_id,p_word_id,p_choice_id,p_assisted});if(e!==epoch)return false;pendingEvents.shift();cache()}
      success=true;if(!dirty)notify(`已同步 · ${new Date(syncedAt||Date.now()).toLocaleString()}`);else notify('待同步 · 还有新作答');return !dirty;
     }catch(error){
      if(e!==epoch)return false;
@@ -1329,16 +1345,19 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   async function refreshEvidence(){
    const evidenceEpoch=epoch,requestId=++evidenceRequest;
    if(cloud){if(!ready||!user)return;evidenceLoading=true;$('assessment-start').disabled=true;display('assessment-stats','正在读取本账号的检测记录…');
-    try{const rows=await api('/rest/v1/assessment_events?select=word_id,correct,assisted,created_at&order=created_at.desc&limit=100');if(evidenceEpoch!==epoch||requestId!==evidenceRequest||!ready)return;evidence=Array.isArray(rows)?rows:[]}
-    catch{if(evidenceEpoch===epoch&&requestId===evidenceRequest&&ready){evidence=[];display('assessment-stats','检测记录暂不可用，仍可检测已学词；稍后再试可读取复测情况。')}return}
-    finally{if(evidenceEpoch===epoch&&requestId===evidenceRequest&&ready){evidenceLoading=false;$('assessment-start').disabled=adopting;}}
-   }else evidence=(read('wordspace:local:evidence')||[]).slice(-100);
-   const learned=new Set(A.studiedIds(hooks.getPlan())),stats=C.evidenceStats(evidence.filter(event=>learned.has(event.word_id)));
-   display('assessment-stats',`已学 ${learned.size} 词可检测。近期记录中最新答对 ${stats.tested_correct_count} 词，延迟复测通过 ${stats.delayed_pass_count} 词，待复测 ${stats.due_ids.length} 词。仅统计最近100条中的已学词。`);
+    try{const rows=await api('/rest/v1/assessment_events?select=id,word_id,correct,assisted,created_at&order=created_at.desc&limit=100');if(evidenceEpoch!==epoch||requestId!==evidenceRequest||!ready)return;evidence=Array.isArray(rows)?rows:[];evidenceUnavailable=false;for(const event of evidence)if(event.id)localAssessmentEvidence.delete(event.id);}
+    catch{if(evidenceEpoch===epoch&&requestId===evidenceRequest&&ready){evidence=[];evidenceUnavailable=true;}return}
+    finally{if(evidenceEpoch===epoch&&requestId===evidenceRequest&&ready){evidenceLoading=false;$('assessment-start').disabled=adopting;renderEvidenceStats();}}
+   }else{evidence=(read('wordspace:local:evidence')||[]).slice(-100);for(const event of evidence)if(event.id)localAssessmentEvidence.delete(event.id);}
+   renderEvidenceStats();
+  }
+  function renderEvidenceStats(){
+   const learned=new Set(A.studiedIds(hooks.getPlan())),stats=C.evidenceStats(assessmentEvidence().filter(event=>learned.has(event.word_id)));
+   display('assessment-stats',`已学 ${learned.size} 词可检测。`+(evidenceLoading?'正在读取本账号的检测记录…':evidenceUnavailable?'检测记录暂不可用，仍可检测已学词；稍后再试可读取复测情况。':`近期记录中最新答对 ${stats.tested_correct_count} 词，延迟复测通过 ${stats.delayed_pass_count} 词，待复测 ${stats.due_ids.length} 词。统计含最近100条记录及本机待同步作答，仅反映已有样本。`));
   }
   function startAssessment(){
    if(evidenceLoading||(cloud&&(!ready||adopting)))return;
-   const questions=A.buildRound(hooks.getPlan(),catalog,evidence);
+   const questions=A.buildRound(hooks.getPlan(),catalog,assessmentEvidence());
    if(!questions.length){resetAssessment();display('assessment-feedback','还没有可检测的已学词。请先在上方卡片作答，再来检测。');return}
    assessmentRound={questions,answers:[],index:0,closed:false,storageFailed:false};$('assessment-start').hidden=true;$('assessment-report').hidden=true;$('assessment-wrong').replaceChildren();$('assessment-end').hidden=false;
    renderAssessmentQuestion();renderAssessmentSync();
@@ -1362,7 +1381,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
    if(!question?.done){$('assessment-question').hidden=true;display('assessment-feedback','')}
    display('assessment-report-title',report.complete?'本轮完成':'本轮中途结束');
    display('assessment-score',report.answered?`答对 ${report.correct} / ${report.answered} 词 · 首次正确率 ${report.rate}%`:'尚未作答，暂无正确率。');
-   display('assessment-completion',`已作答 ${report.answered} / ${report.total} 词。未答词不计错。`);
+   display('assessment-completion',`已作答 ${report.answered} / ${report.total} 词。未答词不计错。`+(report.total<10?`本轮仅 ${report.total} 词，样本较少。`:''));
    display('assessment-retention',report.delayed_answered?`本轮24小时复测：${report.delayed_correct} / ${report.delayed_answered} 词正确（${report.delayed_rate}%）。`:'本轮暂无已作答的24小时复测样本，等待复测。');
    display('assessment-advice',report.wrong_ids.length?'先巩固下面的错词，稍后再测。已答对的词可在满24小时后复测。':report.answered?'本轮作答均正确。建议满24小时后再测一次，观察是否仍能记住。':'可以重新开始一轮；只记录你实际提交的答案。');
    $('assessment-wrong').replaceChildren();for(const id of report.wrong_ids){const word=round.questions.find(item=>item.word.id===id).word,li=document.createElement('li'),title=document.createElement('strong'),meaning=document.createElement('p'),example=document.createElement('p');title.textContent=word.word;title.lang='en';meaning.textContent=word.meaning;example.textContent=word.example+' '+word.translation;li.append(title,meaning,example);$('assessment-wrong').append(li)}
@@ -1371,12 +1390,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
   async function answerAssessment(option){
    if(!question||question.done||!assessmentRound||assessmentRound.closed||(cloud&&(!ready||adopting)))return;
    const current=question,round=assessmentRound,answerEpoch=epoch;current.done=true;const result=C.scoreAssessment(catalog,current.word.id,option.id);round.answers.push(result);
+   const recorded={...result,id:current.id,choice_id:option.id,created_at:new Date().toISOString(),assisted:false};localAssessmentEvidence.set(current.id,recorded);
+   display('assessment-progress',`第 ${round.index+1} / ${round.questions.length} 题 · 已作答 ${round.answers.length} 词`);
    $('assessment-options').querySelectorAll('button').forEach((button,index)=>{button.disabled=true;if(current.options[index].id===current.word.id)button.classList.add('is-correct');else if(current.options[index].id===option.id)button.classList.add('is-wrong')});
-   const payload={p_event_id:current.id,p_word_id:current.word.id,p_choice_id:option.id,p_assisted:false};
+   const payload={p_event_id:current.id,p_word_id:current.word.id,p_choice_id:option.id,p_assisted:false,recorded_at:recorded.created_at};
    const feedback=`${result.correct?'答对了':'再记一遍'}：${current.word.meaning}。\n${current.word.example}\n${current.word.translation}`;
    display('assessment-feedback',feedback);if(round.answers.length===round.questions.length)finishAssessment();else $('assessment-next').hidden=false;
-   if(cloud){pendingEvents.push(payload);cache();notify('待同步检测结果');renderAssessmentSync();await flush();if(answerEpoch!==epoch||round!==assessmentRound||!ready)return;await refreshEvidence()}
-   else{const saved=read('wordspace:local:evidence')||[];saved.push({...result,id:current.id,choice_id:option.id,created_at:new Date().toISOString(),assisted:false});round.storageFailed=!write('wordspace:local:evidence',saved.slice(-1000));void refreshEvidence();renderAssessmentSync()}
+   if(cloud){pendingEvents.push(payload);cache();notify('待同步检测结果');renderAssessmentSync();await flush();if(answerEpoch!==epoch||!ready)return;await refreshEvidence()}
+   else{const saved=read('wordspace:local:evidence')||[],combined=new Map(saved.map(event=>[event.id||`${event.word_id}|${event.created_at}|${event.correct}`,event]));for(const event of localAssessmentEvidence.values())combined.set(event.id,event);round.storageFailed=!write('wordspace:local:evidence',[...combined.values()].slice(-1000));void refreshEvidence();renderAssessmentSync()}
   }
   async function refreshProposals(){
    if(!cloud||!ready)return;

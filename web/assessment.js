@@ -9,6 +9,11 @@
   for(let i=result.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[result[i],result[j]]=[result[j],result[i]];}
   return result;
  }
+ function clozePrompt(word){
+  if(typeof word.example!=='string')return null;
+  const escaped=word.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'),pattern=new RegExp('\\b'+escaped+'\\b','gi');
+  return pattern.test(word.example)?word.example.replace(pattern,'_____'):null;
+ }
  function buildRound(plan,catalog,evidence=[],now=new Date().toISOString(),random=Math.random){
   const pool=catalog.filter(w=>w.reviewed===true&&typeof w.word==='string'&&typeof w.meaning==='string'&&w.meaning.trim());
   const byId=new Map(pool.map(w=>[w.id,w])),known=new Set(plan?.mastered||[]),last=new Map(),counts=new Map(),time=Date.parse(now);
@@ -19,14 +24,13 @@
   const selected=shuffled(studiedIds(plan).filter(id=>byId.has(id)),random)
    .sort((a,b)=>rank(a)-rank(b)||(rank(a)===3?(counts.get(a)||0)-(counts.get(b)||0):0)).slice(0,10);
   return selected.map((id,index)=>{
-   const word=byId.get(id),escaped=word.word.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
-   const pattern=new RegExp('\\b'+escaped+'\\b','gi');
-   const cloze=index%2===1&&typeof word.example==='string'&&pattern.test(word.example);pattern.lastIndex=0;
-   const type=cloze?'cloze':'meaning',label=w=>type==='cloze'?w.word:w.meaning;
-   const choices=[{id:word.id,label:label(word)}],labels=new Set([label(word)]);
-   for(const other of shuffled(pool,random)){const text=label(other);if(other.id===id||labels.has(text))continue;choices.push({id:other.id,label:text});labels.add(text);if(choices.length===4)break;}
+   const word=byId.get(id),masked=clozePrompt(word),cloze=index%2===1&&masked!==null;
+   const normalized=text=>text?.toLowerCase().replace(/\s+/g,' ').trim();
+   const optionsFor=type=>{const label=w=>type==='cloze'?w.word:w.meaning,choices=[{id:word.id,label:label(word)}],labels=new Set([label(word)]);
+    for(const other of shuffled(pool,random)){const text=label(other);if(other.id===id||labels.has(text)||(type==='cloze'&&normalized(clozePrompt(other))===normalized(masked)))continue;choices.push({id:other.id,label:text});labels.add(text);if(choices.length===4)break;}return choices;};
+   let type=cloze?'cloze':'meaning',choices=optionsFor(type);if(type==='cloze'&&choices.length<2){type='meaning';choices=optionsFor(type);}
    const previous=last.get(id);
-   return {word,type,prompt:cloze?word.example.replace(pattern,'_____'):word.word,options:shuffled(choices,random),delayed:!!(previous?.correct&&time-Date.parse(previous.created_at)>=DAY)};
+   return {word,type,prompt:type==='cloze'?masked:word.word,options:shuffled(choices,random),delayed:!!(previous?.correct&&time-Date.parse(previous.created_at)>=DAY)};
   }).filter(question=>question.options.length>=2);
  }
  function summarizeRound(questions,answers){

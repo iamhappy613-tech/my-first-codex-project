@@ -19,7 +19,7 @@ async function localPage(state){
 }
 const ids={a:'00000000-0000-4000-8000-000000000001',b:'00000000-0000-4000-8000-000000000002'};
 const events=[],flags={slowEvidence:0,slowSubmit:0,submitStarted:false,offline:false};
-async function cloudPage(){
+async function cloudPage(learningPlan=plan){
  const context=await browser.newContext({viewport:{width:390,height:844}}),page=await context.newPage();
  page.on('pageerror',e=>errors.push(e.message));await page.clock.install({time:new Date('2026-11-21T12:00:00Z')});
  const config={mode:'cloud',supabaseUrl:'https://db.test',publicKey:'public',siteUrl:base,ownerId:ids.a};
@@ -33,7 +33,7 @@ async function cloudPage(){
   if(url.pathname==='/auth/v1/user')return send({id:who,email:`${key}@test.com`,email_confirmed_at:'2026-11-20'});
   if(url.pathname==='/rest/v1/profiles')return send([{id:who,email:`${key}@test.com`,role:key==='a'?'admin':'user',enabled:true}]);
   if(url.pathname==='/rest/v1/word_catalog')return send(catalog);
-  if(url.pathname==='/rest/v1/study_progress')return send([{state:plan,revision:1,updated_at:'2026-11-21T12:00:00Z'}]);
+  if(url.pathname==='/rest/v1/study_progress')return send([{state:learningPlan,revision:1,updated_at:'2026-11-21T12:00:00Z'}]);
   if(url.pathname==='/rest/v1/recommendations')return send([]);
   if(url.pathname==='/rest/v1/assessment_events'){if(flags.slowEvidence)await new Promise(r=>setTimeout(r,flags.slowEvidence));return send(events.filter(e=>e.user_id===who))}
   if(url.pathname==='/rest/v1/rpc/submit_assessment'){
@@ -47,7 +47,8 @@ async function cloudPage(){
 async function login(page,key){await page.locator('#auth-email').fill(`${key}@test.com`);await page.locator('#auth-password').fill('test-only-password');await page.locator('#auth-signin').click();await page.locator('#study-main').waitFor({state:'visible'})}
 try{
  const empty=await localPage();assert.equal(await empty.page.locator('#assessment-title').textContent(),'学习效果检测');
- await empty.page.locator('#assessment-start').click();assert.match(await empty.page.locator('#assessment-feedback').textContent(),/先.*学|还没有/);assert.equal(await empty.page.locator('#assessment-options button').count(),0);checks++;await empty.context.close();
+ await empty.page.locator('#assessment-start').click();assert.match(await empty.page.locator('#assessment-feedback').textContent(),/先.*学|还没有/);assert.equal(await empty.page.locator('#assessment-options button').count(),0);
+ await empty.page.locator('#known').click();assert.match(await empty.page.locator('#assessment-stats').textContent(),/已学 1 词/);checks++;await empty.context.close();
 
  const local=await localPage(plan),p=local.page;await p.locator('#assessment-start').click();
  assert.match(await p.locator('#assessment-progress').textContent(),/1\s*\/\s*3/);assert.equal(await p.locator('#assessment-options button').count(),4);
@@ -70,6 +71,26 @@ try{
  flags.offline=true;await c.locator('#assessment-start').click();await c.locator('#assessment-options button').first().click();await c.locator('#assessment-end').click();
  await c.waitForFunction(()=>document.querySelector('#assessment-sync').textContent.includes('待同步'));assert(!events.some(e=>e.user_id===ids.b));assert.match(await c.locator('#assessment-report').textContent(),/未答/);checks++;
  flags.offline=false;await c.locator('#sync-now').click();await c.waitForFunction(()=>document.querySelector('#assessment-sync').textContent.includes('已同步'));
- assert.equal(events.filter(e=>e.user_id===ids.b).length,1);assert.deepEqual(errors,[]);checks++;await cloud.context.close();
+ assert.equal(events.filter(e=>e.user_id===ids.b).length,1);checks++;await cloud.context.close();
+
+ // A recent local answer must block another24h-retention claim even before POST/GET catches up.
+ const one=WordspaceCore.createPlan(catalog.slice(0,300),'2026-11-21');one.days[0].first=[true];one.mastered=[catalog[0].id];
+ const oldEvidence=()=>({id:'old-due',user_id:ids.a,word_id:catalog[0].id,correct:true,assisted:false,created_at:'2026-11-20T10:00:00Z'});
+ events.length=0;events.push(oldEvidence());const slow=await cloudPage(one),s=slow.page;await login(s,'a');await s.waitForFunction(()=>!document.querySelector('#assessment-start').disabled);
+ await s.locator('#assessment-start').click();assert.match(await s.locator('#assessment-type').textContent(),/24小时复测/);flags.slowSubmit=500;
+ await s.locator('#assessment-options button').first().click();assert.match(await s.locator('#assessment-progress').textContent(),/已作答 1 词/);assert.match(await s.locator('#assessment-report').textContent(),/样本较少|少量词/);
+ await s.locator('#assessment-start').click();assert.doesNotMatch(await s.locator('#assessment-type').textContent(),/24小时复测/);await s.waitForTimeout(700);flags.slowSubmit=0;checks++;await slow.context.close();
+
+ events.length=0;events.push(oldEvidence());flags.offline=true;const pending=await cloudPage(one),o=pending.page;await login(o,'a');await o.waitForFunction(()=>!document.querySelector('#assessment-start').disabled);
+ await o.locator('#assessment-start').click();await o.locator('#assessment-options button').first().click();await o.waitForFunction(()=>document.querySelector('#assessment-sync').textContent.includes('待同步'));await o.waitForFunction(()=>!document.querySelector('#assessment-start').disabled);
+ await o.locator('#assessment-start').click();assert.doesNotMatch(await o.locator('#assessment-type').textContent(),/24小时复测/);
+ await o.reload();await o.locator('#study-main').waitFor({state:'visible'});await o.waitForFunction(()=>!document.querySelector('#assessment-start').disabled);await o.locator('#assessment-start').click();assert.doesNotMatch(await o.locator('#assessment-type').textContent(),/24小时复测/);flags.offline=false;checks++;await pending.context.close();
+
+ // A later successful browser write must include an earlier unsaved answer.
+ const intermittent=await localPage(plan),i=intermittent.page;
+ await i.evaluate(()=>{const set=Storage.prototype.setItem;let failed=false;Storage.prototype.setItem=function(key,value){if(key==='wordspace:local:evidence'&&!failed){failed=true;throw new DOMException('quota','QuotaExceededError')}return set.call(this,key,value)}});
+ await i.locator('#assessment-start').click();await i.locator('#assessment-options button').first().click();assert.match(await i.locator('#assessment-sync').textContent(),/存储不可用/);
+ await i.locator('#assessment-next').click();await i.locator('#assessment-options button').first().click();assert.equal(await i.evaluate(()=>JSON.parse(localStorage.getItem('wordspace:local:evidence')).length),2);checks++;await intermittent.context.close();
+ assert.deepEqual(errors,[]);
  console.log(`PASS: ${checks} assessment UI scenarios (empty/studied-only rounds, cloze, first choices, partial/full report, keyboard, responsive, account isolation, offline retry).`);
 }finally{await browser.close();await new Promise(resolve=>server.close(resolve))}
