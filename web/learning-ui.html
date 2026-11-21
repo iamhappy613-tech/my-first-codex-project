@@ -1,2 +1,28 @@
-<section class="assessment" aria-labelledby="assessment-title"><h2 id="assessment-title">不看答案，测一测</h2><p>少量词义检测，区分自评认识与实际回忆；不据此宣称精确词汇量。</p><p id="assessment-stats"></p><button id="assessment-start">开始 / 换一道</button><div id="assessment-word"></div><div id="assessment-options"></div><p id="assessment-feedback" role="status"></p></section>
+<section class="assessment" aria-labelledby="assessment-title">
+ <h2 id="assessment-title">学习效果检测</h2>
+ <p class="assessment-intro">每轮最多10个已学词，练习词义和例句用法。先作答，再看答案；满24小时的复测词优先出现。</p>
+ <p id="assessment-stats" class="assessment-note" aria-live="polite"></p>
+ <button id="assessment-start" type="button">开始本轮检测</button>
+ <div id="assessment-question" hidden>
+  <p id="assessment-progress" class="assessment-note"></p>
+  <p id="assessment-type" class="assessment-kind"></p>
+  <div id="assessment-word" lang="en" tabindex="-1"></div>
+  <div id="assessment-options" role="group" aria-labelledby="assessment-word"></div>
+ </div>
+ <p id="assessment-feedback" role="status" aria-live="polite"></p>
+ <div class="assessment-actions">
+  <button id="assessment-next" type="button" hidden>下一题</button>
+  <button id="assessment-end" type="button" hidden>结束本轮并看报告</button>
+ </div>
+ <section id="assessment-report" class="assessment-report" hidden aria-labelledby="assessment-report-title">
+  <h3 id="assessment-report-title" tabindex="-1"></h3>
+  <p id="assessment-score" class="assessment-score"></p>
+  <p id="assessment-completion"></p>
+  <p id="assessment-retention"></p>
+  <p id="assessment-advice"></p>
+  <ul id="assessment-wrong" class="assessment-wrong"></ul>
+  <p class="assessment-note">结果仅反映本轮选择题样本，不等同于长期掌握或总体词汇量。刷新后可重新开始一轮，已保存的逐题记录仍保留。</p>
+ </section>
+ <p id="assessment-sync" class="assessment-note" role="status"></p>
+</section>
 <section class="proposal" id="proposal-panel" hidden aria-labelledby="proposal-title"><h2 id="proposal-title">学习助手推荐</h2><p id="proposal-message" role="status"></p><div id="proposal-list"></div><button id="proposal-refresh">刷新推荐</button></section>

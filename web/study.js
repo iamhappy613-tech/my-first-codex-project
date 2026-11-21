@@ -383,7 +383,7 @@ document.addEventListener('keydown', event => {
   if (!plan || !account?.canStudy()) return;
   const session = getSession();
   if (session.finished || session.records.closed || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
-  if (event.target.closest('input, textarea, select, [contenteditable], .day-plan, .vocabulary, .audio-controls, header, footer')) return;
+  if (event.target.closest('input, textarea, select, [contenteditable], .day-plan, .vocabulary, .audio-controls, .assessment, .proposal, .account-bar, header, footer')) return;
   if (event.code === 'Space') {
     if (document.activeElement.matches('button, a')) return;
     event.preventDefault(); flip();

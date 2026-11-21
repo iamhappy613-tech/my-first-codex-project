@@ -10,7 +10,7 @@ study=study.replace('/* WORDSPACE_CATALOG */ null',data.trim().replaceAll('<','\
 const notices=(await readFile('licenses/ECDICT-LICENSE.txt','utf8'))+'\n\n'+(await readFile('licenses/CMUDICT-LICENSE.txt','utf8'));
 if(!html.includes('<!-- BEGIN LICENSE_NOTICES -->'))html=html.replace('</head>','<!-- BEGIN LICENSE_NOTICES -->\n<!-- END LICENSE_NOTICES -->\n</head>');
 replace('<!-- BEGIN LICENSE_NOTICES -->','<!-- END LICENSE_NOTICES -->','<script type="text/plain" id="third-party-notices">\n'+notices.replaceAll('</script','<\\/script')+'\n</script>');
-const scripts=[await readFile('supabase/functions/_shared/core.js','utf8'),await readFile('web/account.js','utf8'),study];
+const scripts=[await readFile('supabase/functions/_shared/core.js','utf8'),await readFile('web/assessment.js','utf8'),await readFile('web/account.js','utf8'),study];
 replace('<!-- BEGIN WORDSPACE_SCRIPTS -->','<!-- END WORDSPACE_SCRIPTS -->',scripts.map(source=>'<script>\n'+source.replaceAll('</script','<\\/script')+'\n</script>').join('\n'));
 const cols='id,word,phonetic,meaning,example,translation,level,reviewed,source,frequency_rank';
 const seed='-- Reviewed authored lessons; see data/provenance.json and licenses/.\ninsert into public.word_catalog('+cols+')\nselect '+cols+' from jsonb_to_recordset($catalog$'+data+'$catalog$::jsonb) as t(id text,word text,phonetic text,meaning text,example text,translation text,level text,reviewed boolean,source text,frequency_rank integer)\non conflict(id) do nothing;\n';

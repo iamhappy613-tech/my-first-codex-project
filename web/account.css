@@ -15,6 +15,27 @@
 #assessment-word { font-family:Georgia,serif; font-size:30px; margin:16px 0; }
 #assessment-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }#assessment-options button { text-align:left; overflow-wrap:anywhere; }
 #assessment-feedback { min-height:24px; }.proposal p { white-space:pre-line; overflow-wrap:anywhere; }
+.assessment { font-size:16px; padding:24px; }
+.assessment h2 { font-size:22px; }
+.assessment-intro { margin:0 0 16px; }
+.assessment-note { font-size:14px; color:#586853; }
+.assessment-kind { display:inline-block; margin:8px 0 0; padding:3px 9px; background:#eef3e8; border-radius:6px; font-size:14px; }
+#assessment-word { line-height:1.5; overflow-wrap:anywhere; }
+#assessment-word[data-type="cloze"] { font:22px/1.7 Georgia,serif; }
+#assessment-options button { min-height:52px; font-size:16px; line-height:1.6; }
+#assessment-options button.is-correct { background:#e5f1df; border-color:#6c8a5b; color:#24451c; }
+#assessment-options button.is-wrong { background:#fff0eb; border-color:#bd8372; color:#753b2a; }
+.assessment button:focus-visible { outline:3px solid #6c8a5b; outline-offset:3px; }
+.assessment button:disabled { cursor:default; }
+#assessment-feedback { white-space:pre-line; overflow-wrap:anywhere; }
+.assessment-actions { display:flex; flex-wrap:wrap; gap:10px; }
+.assessment-report { margin-top:22px; padding-top:18px; border-top:1px solid var(--line); }
+.assessment-report h3 { margin:0 0 12px; font-size:20px; }
+.assessment-score { font-weight:600; color:var(--green); }
+.assessment-wrong { list-style:none; padding:0; }
+.assessment-wrong li { margin-top:12px; padding:14px; border:1px solid var(--line); border-radius:9px; }
+.assessment-wrong p { margin:5px 0; overflow-wrap:anywhere; }
+@media(max-width:480px) { .assessment { padding:18px; }#assessment-options { grid-template-columns:1fr; }.assessment-actions button { width:100%; } }
 @media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }
 
 /* Grid overlays both faces while letting long, reviewed lessons set card height. */
