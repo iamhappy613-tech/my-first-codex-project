@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#f6f7f2">
   <title>词间 · 每天一点，慢慢记住</title>
+  <script id="wordspace-config" type="application/json">{"mode":"local","supabaseUrl":"","publicKey":"","coachUrl":"","ownerId":"","siteUrl":""}</script>
   <style>
 :root {
   color-scheme:light;
@@ -768,6 +769,27 @@ button:disabled { cursor:default; opacity:.55; }
 .list-speak-word { font-family:Georgia,serif; font-size:18px; text-align:left; overflow-wrap:anywhere; border:0; background:transparent; padding:4px 0; min-height:44px; color:var(--green); }
 .list-example { grid-column:2 / -1; font-family:Georgia,serif; font-size:14px; line-height:1.6; color:#727f6c; }
 .list-speak-example { display:block; font-family:system-ui,sans-serif; font-size:11px; padding:5px 10px; margin-top:7px; }
+/* BEGIN ACCOUNT_CSS */
+.account-bar { max-width:760px; margin:18px auto 0; padding:12px 16px; border:1px solid var(--line); border-radius:12px; background:#fffefa; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+#account-label { font-weight:600; } #account-status { display:block; color:#65765d; }
+.account-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+.account-bar button,.account-panel button,.assessment button,.proposal button { min-height:44px; border:1px solid #d5dfcd; border-radius:8px; background:#f5f8ef; padding:9px 13px; font:inherit; color:var(--green); cursor:pointer; }
+.account-panel { max-width:570px; margin:35px auto; padding:25px; background:#fffefa; border:1px solid var(--line); border-radius:18px; font-size:14px; line-height:1.8; }
+.account-panel h2 { margin:0 0 12px; font-size:24px; }
+.account-panel label { display:block; margin:14px 0 5px; }
+.account-panel input { width:100%; padding:13px; border:1px solid #d5dfcd; border-radius:9px; background:#fff; font:inherit; font-size:16px; }
+.account-panel .primary-account-btn { width:100%; margin-top:18px; color:white; background:var(--green); }
+#auth-message,#admin-message { min-height:24px; white-space:pre-line; overflow-wrap:anywhere; }
+#auth-choice button { display:block; margin:10px 0; width:100%; }
+.admin-person { border-bottom:1px solid var(--line); padding:13px 0; overflow-wrap:anywhere; }.admin-person p { margin:4px 0; }
+.assessment,.proposal { max-width:570px; margin:25px auto 0; padding:18px; background:#fffefa; border:1px solid var(--line); border-radius:14px; font-size:13px; line-height:1.8; }
+.assessment h2,.proposal h2 { font-size:16px; margin:0 0 10px; }
+#assessment-word { font-family:Georgia,serif; font-size:30px; margin:16px 0; }
+#assessment-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }#assessment-options button { text-align:left; overflow-wrap:anywhere; }
+#assessment-feedback { min-height:24px; }.proposal p { white-space:pre-line; overflow-wrap:anywhere; }
+@media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }
+
+/* END ACCOUNT_CSS */
   </style>
 </head>
 <body>
@@ -777,8 +799,36 @@ button:disabled { cursor:default; opacity:.55; }
       <span class="header-note">留一点时间，给新的词汇。</span>
       <span class="collection"><span class="status-dot"></span>四级常用词 · <span data-word-total>300</span></span>
     </header>
+<!-- BEGIN ACCOUNT_UI -->
+<section id="account-bar" class="account-bar" aria-label="账号和同步">
+  <span id="account-label">词间 · 正在初始化</span>
+  <span id="account-status" role="status"></span>
+  <div class="account-actions"><button id="sync-now" hidden>同步</button><button id="open-coach" hidden>打开我的学习助手 ↗</button><button id="manage-users" hidden>管理人员</button><button id="download-backup" hidden>下载本机备份</button><button id="logout" hidden>退出</button></div>
+</section>
+<section id="account-gate" class="account-panel" hidden aria-labelledby="auth-title">
+  <h2 id="auth-title">登录词间</h2><p>登录后，手机和电脑可以接着学。</p>
+  <form id="auth-form"><label for="auth-email">邮箱</label><input id="auth-email" type="email" autocomplete="username" required>
+    <label for="auth-password">密码</label><input id="auth-password" type="password" minlength="8" autocomplete="current-password" required>
+    <button id="auth-signin" type="submit" class="primary-account-btn">登录</button>
+  </form>
+  <div class="account-actions"><button id="auth-signup">注册账号</button><button id="auth-recover">忘记密码</button></div>
+  <p id="auth-message" role="status"></p>
+  <div id="auth-choice" hidden>
+    <p id="choice-message"></p>
+    <button id="import-legacy" class="primary-account-btn" hidden>导入本机旧进度</button><button id="start-fresh" hidden>从头开始</button>
+    <button id="conflict-cloud" class="primary-account-btn" hidden>保留本机备份，加载云端进度</button><button id="conflict-local" hidden>确认用本机进度替换云端</button>
+  </div>
+  <form id="password-form" hidden><label for="new-password">新密码（至少 8 位）</label><input id="new-password" type="password" minlength="8" autocomplete="new-password" required><button class="primary-account-btn">保存新密码</button></form>
+</section>
+<section id="admin-panel" class="account-panel" hidden aria-labelledby="admin-title">
+  <div class="plan-heading"><h2 id="admin-title">人员管理</h2><button id="admin-close">返回学习</button></div>
+  <label for="admin-search">搜索邮箱</label><input id="admin-search" type="search" placeholder="输入邮箱关键词"><button id="admin-search-btn">搜索</button>
+  <p id="admin-message" role="status"></p><div id="admin-users"></div><div class="account-actions"><button id="admin-prev">上一页</button><span id="admin-page"></span><button id="admin-next">下一页</button></div>
+</section>
 
-    <main>
+<!-- END ACCOUNT_UI -->
+
+    <main id="study-main" hidden>
       <section class="intro">
         <div class="eyebrow">A LITTLE EVERY DAY</div>
         <h1>一天一点，学会 300 词<span>。</span></h1>
@@ -831,6 +881,11 @@ button:disabled { cursor:default; opacity:.55; }
         <div class="result-details"><span>首次掌握率<strong id="accuracy"></strong></span><span>复习后记住<strong id="review-score"></strong></span><span>顺延词数<strong id="remaining"></strong></span></div>
         <p id="remaining-words" class="remaining-words"></p><button class="again-btn" id="next-day">学习下一天 <span>↗</span></button><button class="repeat-day-btn" id="again">重学当天 ↻</button>
       </section>
+<!-- BEGIN LEARNING_UI -->
+<section class="assessment" aria-labelledby="assessment-title"><h2 id="assessment-title">不看答案，测一测</h2><p>少量词义检测，区分自评认识与实际回忆；不据此宣称精确词汇量。</p><p id="assessment-stats"></p><button id="assessment-start">开始 / 换一道</button><div id="assessment-word"></div><div id="assessment-options"></div><p id="assessment-feedback" role="status"></p></section>
+<section class="proposal" id="proposal-panel" hidden aria-labelledby="proposal-title"><h2 id="proposal-title">学习助手推荐</h2><p id="proposal-message" role="status"></p><div id="proposal-list"></div><button id="proposal-refresh">刷新推荐</button></section>
+
+<!-- END LEARNING_UI -->
       <details class="vocabulary" id="vocabulary">
         <summary>查看词汇清单 <span class="vocabulary-total" id="vocabulary-count">当天 43 词 · 中英对照</span></summary>
         <p class="vocabulary-note">覆盖学习、工作、社会、科技与环境等四级常见话题；按字母排序，非官方频次排名。</p>
@@ -846,309 +901,3600 @@ button:disabled { cursor:default; opacity:.55; }
     </main>
     <footer><span>小小积累，也有大大的力量。</span><span class="keyboard-tip"><kbd>空格</kbd> 翻面 <span>·</span> <kbd>←</kbd> 不认识 <span>·</span> <kbd>→</kbd> 认识</span><span>词间 · 让学习轻一点</span></footer>
   </div>
-  <script>
+<!-- BEGIN WORDSPACE_SCRIPTS -->
+<script>
+(function (root) {
+  'use strict';
+  const clone = value => JSON.parse(JSON.stringify(value));
+  const unique = ids => Array.isArray(ids) && ids.every(id => typeof id === 'string') && new Set(ids).size === ids.length;
+  function validatePlan(p, catalog) {
+    if (!p || ![2,3].includes(p.version) || !unique(p.mastered) || !unique(p.pending) || !Array.isArray(p.days) || !p.days.length || p.days.length>2000) return false;
+    const available = new Set(catalog.map(w => w.id || w.word));
+    const deck = p.version === 3 ? p.deck_ids : typeof p.dictionaryId === 'string' ? p.dictionaryId.split('|') : null;
+    if (!unique(deck) || !deck.length || deck.some(id => !available.has(id))) return false;
+    const ids = new Set(deck), known = new Set(p.mastered);
+    if (!Number.isInteger(p.activeDay) || p.activeDay<0 || p.activeDay>=p.days.length) return false;
+    if (!p.days.every((d,i) => d && unique(d.ids) && d.ids.length>0 && d.ids.length<=43 && d.ids.every(id=>ids.has(id)) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(d.date) && d.closed===(i<p.days.length-1) && Array.isArray(d.first) && Array.isArray(d.review) &&
+      d.first.length<=d.ids.length && d.review.length<=d.first.filter(x=>x===false).length &&
+      (!d.review.length || d.first.length===d.ids.length) && [...d.first,...d.review].every(x=>typeof x==='boolean'))) return false;
+    const partition=[...p.mastered,...p.days.at(-1).ids.filter(id=>!known.has(id)),...p.pending];
+    if (partition.some(id=>!ids.has(id)) || partition.length!==deck.length || new Set(partition).size!==deck.length) return false;
+    if (p.next_day_ids && (!unique(p.next_day_ids)||p.next_day_ids.length>43||p.next_day_ids.some(id=>!ids.has(id)||known.has(id)))) return false;
+    return true;
+  }
+  function migratePlan(p,catalog) {
+    if (!validatePlan(p,catalog)) return null;
+    const result=clone(p);
+    result.deck_ids=p.version===3?[...p.deck_ids]:p.dictionaryId.split('|');
+    result.version=3;result.schema_version=3;
+    return result;
+  }
+  function createPlan(catalog,date,mastered=[],priority=[]) {
+    const deck=catalog.filter(w=>w.reviewed!==false).map(w=>w.id||w.word);
+    const known=[...new Set(mastered)].filter(id=>deck.includes(id));
+    const waiting=[...new Set([...priority,...deck])].filter(id=>deck.includes(id)&&!known.includes(id));
+    const ids=waiting.splice(0,43);const full=!ids.length;
+    return {version:3,schema_version:3,deck_ids:deck,dictionaryId:deck.join('|'),mastered:known,pending:waiting,activeDay:0,
+      days:[{date,ids:full?deck.slice(-43):ids,first:full?deck.slice(-43).map(()=>true):[],review:[],closed:false}]};
+  }
+  function adoptProposal(state,proposal,catalog) {
+    const p=migratePlan(state,catalog);if (!p) throw Error('invalid_progress');
+    const chosen=proposal.word_ids,checked=new Set(catalog.filter(w=>w.reviewed===true).map(w=>w.id||w.word));
+    if (!unique(chosen)||!chosen.length||chosen.length>43||chosen.some(id=>!checked.has(id)||p.mastered.includes(id))) throw Error('invalid_recommendation');
+    const carry=p.days.at(-1).ids.filter(id=>!p.mastered.includes(id));
+    if(new Set([...carry,...chosen]).size>43)throw Error('daily_budget');
+    const newIds=chosen.filter(id=>!p.deck_ids.includes(id));p.deck_ids.push(...newIds);p.pending.push(...newIds);p.dictionaryId=p.deck_ids.join('|');
+    p.next_day_ids=[...chosen];return p;
+  }
+  function advancePlan(state,catalog,date) {
+    const p=migratePlan(state,catalog);if (!p) throw Error('invalid_progress');
+    const last=p.days.at(-1),known=new Set(p.mastered);
+    const carry=last.ids.filter(id=>!known.has(id));
+    const queue=[...new Set([...carry,...(p.next_day_ids||[]),...p.pending])].filter(id=>!known.has(id));
+    if (!queue.length) return p;
+    last.closed=true;p.days.push({date,ids:queue.splice(0,43),first:[],review:[],closed:false});p.pending=queue;p.activeDay=p.days.length-1;delete p.next_day_ids;
+    return p;
+  }
+  function evidenceStats(events,now=new Date().toISOString()) {
+    const groups=new Map();
+    for(const e of [...events].filter(e=>!e.assisted&&typeof e.correct==='boolean'&&Number.isFinite(Date.parse(e.created_at))).sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at))){
+      if(!groups.has(e.word_id))groups.set(e.word_id,[]);groups.get(e.word_id).push(e);
+    }
+    let tested_correct_count=0,delayed_pass_count=0;const due_ids=[];
+    for(const [id,rows] of groups){
+      const last=rows.at(-1);let delayed=false;
+      if(last.correct){tested_correct_count++;const previous=rows.slice(0,-1).reverse();
+        for(const e of previous){if(!e.correct)break;if(Date.parse(last.created_at)-Date.parse(e.created_at)>=86400000){delayed=true;break}}
+        if(delayed)delayed_pass_count++;
+      }
+      const due=Date.parse(last.created_at)+(last.correct?(delayed?3:1)*86400000:0);
+      if(due<=Date.parse(now))due_ids.push(id);
+    }
+    return {tested_correct_count,delayed_pass_count,due_ids};
+  }
+  function summarize(p,evidence=[]) {
+    const d=p.days.at(-1),missed=d.ids.filter((_,i)=>d.first[i]===false),recognized=new Set(d.ids.filter((_,i)=>d.first[i]===true));
+    missed.forEach((id,i)=>{if(d.review[i]===true)recognized.add(id)});
+    const stats=evidenceStats(evidence);
+    return {study_day:p.days.length,study_date:d.date,deck_size:(p.deck_ids||p.dictionaryId.split('|')).length,recognized_count:p.mastered.length,
+      tested_correct_count:stats.tested_correct_count,delayed_pass_count:stats.delayed_pass_count,assessment_due_ids:stats.due_ids.slice(0,43),today_total:d.ids.length,answered_today:d.first.length,unattempted_today:d.ids.length-d.first.length,
+      unfamiliar_ids:d.ids.filter(id=>!recognized.has(id)).slice(0,43),pending_count:p.pending.length,evidence_count:evidence.length,
+      assessment_note:evidence.length?'Tests describe this sample, not an exact total vocabulary size.':'Only self-reported recognition is available; do not infer precise vocabulary size.'};
+  }
+  function candidates(p,catalog,evidence=[]) {
+    const known=new Set(p.mastered),unfamiliar=p.days.at(-1).ids.filter(id=>!known.has(id));
+    const checked=new Map(catalog.filter(w=>w.reviewed===true).map(w=>[w.id||w.word,w]));
+    const ids=[...new Set([...unfamiliar,...(p.next_day_ids||[]),...p.pending,...checked.keys()])].filter(id=>!known.has(id)&&checked.has(id));
+    return ids.slice(0,86).map(id=>({...checked.get(id),kind:unfamiliar.includes(id)?'review':'new'}));
+  }
+  function scoreAssessment(catalog,wordId,choiceId) {
+    if(!catalog.some(w=>(w.id||w.word)===wordId)||!catalog.some(w=>(w.id||w.word)===choiceId))throw Error('invalid_assessment');
+    return {word_id:wordId,correct:wordId===choiceId};
+  }
+  root.WordspaceCore=Object.freeze({validatePlan,migratePlan,createPlan,adoptProposal,advancePlan,evidenceStats,summarize,candidates,scoreAssessment});
+})(globalThis);
+
+</script>
+<script>
+(function(root){
+ 'use strict';
+ const C=root.WordspaceCore,$=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x));
+ class ApiError extends Error {constructor(status,message){super(message);this.status=status}}
+ function create({config,catalog,hooks,storage=root.localStorage,fetch=root.fetch.bind(root)}) {
+  const cloud=config.mode==='cloud';let session=null,user=null,profile=null,epoch=0,revision=0,dirty=false,changes=0,ready=false;
+  let evidence=[];let cacheOK=true;let syncPromise=null,refreshPromise=null,timer=null,pendingEvents=[],syncedAt='',message='',conflict=null,adminPage=1,question=null;
+  const SESSION='wordspace:session',localKey='wordspace-adaptive-v2',cacheKey=id=>`wordspace:account:${id}`;
+  const read=k=>{try{return JSON.parse(storage.getItem(k)||'null')}catch{return null}};
+  const write=(k,v)=>{try{storage.setItem(k,JSON.stringify(v));return true}catch{return false}};
+  const remove=k=>{try{storage.removeItem(k)}catch{}};
+  const display=(id,text)=>{$(id).textContent=text};
+  const notify=text=>{message=cloud&&!cacheOK?('浏览器存储不可用，未同步修改在关闭后可能丢失。 '+text.replace('本机记录已保留。','')):text;display('account-status',message);hooks.status?.()};
+  function cache(extra={}){if(user&&ready){const previous=read(cacheKey(user.id));const backup=extra.conflictBackup||previous?.conflictBackup;cacheOK=write(cacheKey(user.id),{state:copy(hooks.getPlan()),revision,dirty,pendingEvents:copy(pendingEvents),syncedAt,...(backup?{conflictBackup:backup}:{}),...extra});$('download-backup').hidden=!backup;}}
+  function lock(text=''){
+   ready=false;question=null;hooks.stop();$('assessment-options').replaceChildren();display('assessment-word','');display('assessment-feedback','');$('proposal-list').replaceChildren();$('download-backup').hidden=true;$('study-main').hidden=true;$('account-gate').hidden=false;$('admin-panel').hidden=true;
+   $('admin-users').replaceChildren();$('manage-users').hidden=true;$('open-coach').hidden=true;display('auth-message',text);
+  }
+  function choice(text,buttons){lock();$('auth-form').hidden=true;$('auth-choice').hidden=false;display('choice-message',text);
+   for(const id of ['import-legacy','start-fresh','conflict-cloud','conflict-local'])$(id).hidden=!buttons.includes(id);
+  }
+  function showStudy(state){
+   if(!C.validatePlan(state,catalog))throw Error('云端进度格式不正确，已保留本机记录，请联系管理员。');
+   ready=true;hooks.setPlan(C.migratePlan(state,catalog));$('account-gate').hidden=true;$('auth-choice').hidden=true;$('auth-form').hidden=false;$('study-main').hidden=false;
+   $('logout').hidden=!cloud;$('sync-now').hidden=!cloud;$('proposal-panel').hidden=!cloud;
+   $('manage-users').hidden=profile?.role!=='admin';$('open-coach').hidden=!cloud||profile?.role!=='admin'||(config.ownerId&&config.ownerId!==user?.id)||!validCoachURL(config.coachUrl);
+   display('account-label',cloud?user.email:'本地学习');hooks.render();cache();void refreshEvidence();
+  }
+  function validCoachURL(value){try{const u=new URL(value);return u.protocol==='https:'&&u.hostname==='chatgpt.com'&&u.pathname.startsWith('/g/')}catch{return false}}
+  async function publicRequest(path,payload,token){
+   const response=await fetch(config.supabaseUrl+path,{method:payload===undefined?'GET':'POST',headers:{apikey:config.publicKey,'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},...(payload===undefined?{}:{body:JSON.stringify(payload)}),signal:AbortSignal.timeout(12000)});
+   let data;try{data=await response.json()}catch{data=null}
+   if(!response.ok)throw new ApiError(response.status,data?.message||data?.error_description||data?.msg||data?.error||'请求未成功');return data;
+  }
+  async function freshToken(){
+   if(!session)throw new ApiError(401,'请重新登录');
+   if(session.expiresAt>Date.now()+60000)return session.access_token;
+   if(!refreshPromise){const e=epoch,previous=session;refreshPromise=publicRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:previous.refresh_token}).then(data=>{
+    if(epoch!==e)throw Error('账号已切换');if((user?.id||previous.userId)&&data.user?.id!==(user?.id||previous.userId))throw new ApiError(401,'登录会话身份变化，请重新登录。');storeSession(data);return session.access_token;
+   }).finally(()=>{if(epoch===e)refreshPromise=null})}
+   return refreshPromise;
+  }
+  async function api(path,payload){const e=epoch,token=await freshToken();const data=await publicRequest(path,payload,token);if(e!==epoch)throw Error('账号已切换');return data}
+  function storeSession(data){if(!data?.access_token||!data?.refresh_token)throw Error('登录会话不完整');
+   session={userId:data.user?.id||session?.userId,access_token:data.access_token,refresh_token:data.refresh_token,expiresAt:data.expires_at?data.expires_at*1000:Date.now()+(data.expires_in||3600)*1000};write(SESSION,session);
+  }
+  function authError(error){
+   const text=error?.message||'网络暂不可用，请重试';
+   if(/account_disabled|access_denied/.test(text)||error.status===403)return '账号已停用或无权限，请联系管理员。';
+   if(/Email not confirmed/i.test(text))return '请先打开验证邮件，验证邮箱后再登录。';
+   if(/Invalid login credentials/i.test(text))return '邮箱或密码不正确。';return text;
+  }
+  async function loadUser(){
+   const e=epoch;user=await api('/auth/v1/user');if(e!==epoch)return;
+   if(!user?.id||!user.email_confirmed_at)throw Error('请先验证邮箱后登录。');
+   const profiles=await api(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=id,email,role,enabled`);profile=profiles[0];
+   if(!profile?.enabled)throw new ApiError(403,'account_disabled');
+   const rows=await api('/rest/v1/word_catalog?select=*&reviewed=eq.true&order=id&limit=1000');hooks.mergeCatalog(rows);
+   const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0]||null;
+   const saved=read(cacheKey(user.id));revision=remote?.revision||0;syncedAt=remote?.updated_at||'';pendingEvents=Array.isArray(saved?.pendingEvents)?saved.pendingEvents.filter(e=>e&&typeof e.p_event_id==='string'&&typeof e.p_word_id==='string'&&typeof e.p_choice_id==='string'&&typeof e.p_assisted==='boolean'):[];
+   if(saved?.dirty&&C.validatePlan(saved.state,catalog)){
+    if(saved.revision!==revision){conflict={local:copy(saved.state),remote};choice('另一台设备的进度已更新。本机进度会保留备份，请选择要继续的版本。',['conflict-cloud','conflict-local']);return}
+    dirty=true;showStudy(saved.state);notify('待同步本机进度');void flush();return;
+   }
+   if(remote){if(!C.validatePlan(remote.state,catalog))throw Error('云端进度暂不能读取，未覆盖本机记录。');dirty=false;showStudy(remote.state);notify(`已同步 · ${new Date(syncedAt).toLocaleString()}`);void refreshProposals();return}
+   if(saved?.revision>0){conflict={local:saved.state,remote:null};choice('云端记录暂未找到，本机备份已保留。',['conflict-cloud','conflict-local']);return}
+   const owner=read('wordspace:legacyOwner');
+   if(hooks.legacyExists()&&(!owner||owner===user.id)){
+    choice('本浏览器有旧学习记录。仅在这是你本人的记录时导入，避免共用设备串入他人进度。',['import-legacy','start-fresh']);return;
+   }
+   beginNew(false);
+  }
+  function beginNew(importOld){
+   const state=importOld?hooks.loadLegacy():hooks.emptyPlan();
+   if(importOld)write('wordspace:legacyOwner',user.id);dirty=true;changes++;
+   showStudy(state);notify('待同步');void flush();
+  }
+  function persist(state){
+   if(!cloud){if(!write(localKey,state))notify('本地存储不可用，刷新后可能丢失。');else notify('本地模式 · 仅保存在当前浏览器，云端账号尚未配置。');return}
+   if(!ready||!user)return;dirty=true;changes++;cache();notify('待同步 · 正在保存本机记录');clearTimeout(timer);timer=setTimeout(()=>void flush(),300);
+  }
+  async function flush(){
+   if(!cloud||!ready||!user||conflict)return false;
+   if(syncPromise)return syncPromise;
+   const e=epoch;let success=false;syncPromise=(async()=>{
+    try{
+     if(dirty){const change=changes,state=copy(hooks.getPlan());const result=await api('/rest/v1/rpc/save_progress',{p_expected_revision:revision,p_state:state});
+      if(e!==epoch)return false;revision=result.revision;syncedAt=result.updated_at;dirty=changes!==change;cache();
+     }
+     while(pendingEvents.length){const event=pendingEvents[0];await api('/rest/v1/rpc/submit_assessment',event);if(e!==epoch)return false;pendingEvents.shift();cache()}
+     success=true;if(!dirty)notify(`已同步 · ${new Date(syncedAt||Date.now()).toLocaleString()}`);else notify('待同步 · 还有新作答');return !dirty;
+    }catch(error){
+     if(e!==epoch)return false;
+     if(error.status===409){
+      const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0]||null;
+      const local=copy(hooks.getPlan());cache({conflictBackup:local});conflict={local,remote};choice('云端已被其他设备更新。本机进度已保留备份，请选择。',['conflict-cloud','conflict-local']);notify('同步冲突 · 等待选择');
+     }else if(error.status===403){cache();lock(authError(error));notify('账号无权限，已停止云端同步');}
+     else if(error.status===401){cache();remove(SESSION);session=null;lock('登录已失效，请重新登录；本机待同步记录已保留。');}
+     else{cache();notify('待同步 · 网络或服务暂不可用，本机记录已保留。')}
+     return false;
+    }finally{if(e===epoch){syncPromise=null;if(dirty&&ready&&!conflict&&success){clearTimeout(timer);timer=setTimeout(()=>void flush(),50)}}}
+   })();return syncPromise;
+  }
+  async function resolveConflict(useLocal){
+   if(!conflict)return;const {local,remote}=conflict;
+   if(!useLocal&&remote&&!C.validatePlan(remote.state,catalog)){display('auth-message','云端格式不正确，请保留本机备份并联系管理员。');return}
+   revision=remote?.revision||0;const backup=copy(local);conflict=null;dirty=useLocal;changes++;
+   showStudy(useLocal?local:remote?.state||hooks.emptyPlan());cache({conflictBackup:backup});notify(useLocal?'待同步 · 使用本机版本':'已加载云端，本机版本另存备份');if(useLocal)await flush();
+  }
+  async function logout(){
+   cache();const token=session?.access_token;epoch++;clearTimeout(timer);syncPromise=null;refreshPromise=null;user=null;profile=null;session=null;conflict=null;dirty=false;pendingEvents=[];remove(SESSION);lock();
+   $('auth-form').hidden=false;$('auth-choice').hidden=true;$('password-form').hidden=true;display('account-label','尚未登录');$('logout').hidden=true;$('sync-now').hidden=true;notify('已退出，本机未同步副本保留在原账号下。');
+   if(token)publicRequest('/auth/v1/logout?scope=local',{},token).catch(()=>{});
+  }
+  async function signIn(event){
+   event?.preventDefault();if(!$('auth-form').reportValidity())return;
+   const e=++epoch;$('auth-signin').disabled=true;display('auth-message','正在登录…');
+   try{const data=await publicRequest('/auth/v1/token?grant_type=password',{email:$('auth-email').value.trim(),password:$('auth-password').value});if(e!==epoch)return;storeSession(data);await loadUser()}
+   catch(error){if(e===epoch)lock(authError(error))}finally{$('auth-password').value='';$('auth-signin').disabled=false}
+  }
+  async function resume(){
+   if(!cloud){hooks.rollover();return}
+   if(!ready||!session||!user)return;
+   try{const row=(await api(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=id,email,role,enabled`))[0];if(!row?.enabled){cache();lock('账号已停用，请联系管理员。');return}
+    profile=row;if(dirty||pendingEvents.length){await flush();if(!ready)return}
+    const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0];
+    if(remote&&remote.revision!==revision){if(dirty)return;revision=remote.revision;syncedAt=remote.updated_at;showStudy(remote.state);notify('已同步最新云端进度')}
+    hooks.rollover();void refreshProposals();
+   }catch(error){if(error.status===401){cache();lock('登录已失效，请重新登录。')}else notify('网络暂不可用，继续保留本机进度。')}
+  }
+  async function manageUsers(){
+   if(profile?.role!=='admin')return;$('admin-panel').hidden=false;$('study-main').hidden=true;
+   try{const result=await api(`/functions/v1/admin/users?page=${adminPage}&search=${encodeURIComponent($('admin-search').value.trim())}`);$('admin-users').replaceChildren();
+    for(const person of result.users){const row=document.createElement('div');row.className='admin-person';const label=document.createElement('p');label.textContent=`${person.email} · ${person.enabled?'正常':'已停用'}${person.role==='admin'?' · 管理员':''}`;
+     const button=document.createElement('button');button.textContent=person.enabled?'停用账号':'恢复账号';button.disabled=person.role==='admin'||person.id===user.id;
+     button.addEventListener('click',async()=>{button.disabled=true;try{await api('/functions/v1/admin/status',{user_id:person.id,enabled:!person.enabled});await manageUsers()}catch(error){display('admin-message',authError(error));button.disabled=false}});row.append(label,button);$('admin-users').append(row)
+    }
+    display('admin-page',`第 ${result.page} 页 · 共 ${result.total} 人`);$('admin-prev').disabled=adminPage===1;$('admin-next').disabled=adminPage*20>=result.total;display('admin-message','');
+   }catch(error){display('admin-message',authError(error))}
+  }
+  async function refreshEvidence(){
+   if(cloud){if(!ready||!user)return;try{evidence=await api('/rest/v1/assessment_events?select=word_id,correct,assisted,created_at&order=created_at.desc&limit=100')}catch{return}}
+   else evidence=read('wordspace:local:evidence')||[];
+   const stats=C.evidenceStats(evidence);
+   display('assessment-stats',`近期检测：最新答对 ${stats.tested_correct_count} 词，延迟复测通过 ${stats.delayed_pass_count} 词，待复测 ${stats.due_ids.length} 词。仅反映已有样本。`);
+  }
+  function startAssessment(){
+   if(cloud&&!ready)return;const pool=catalog.filter(w=>w.reviewed!==false);const due=C.evidenceStats(evidence).due_ids.find(id=>id!==question?.word?.id);const chosen=pool.find(w=>w.id===due)||pool[Math.floor(Math.random()*pool.length)];const options=[chosen,...pool.filter(w=>w.id!==chosen.id).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+   question={id:crypto.randomUUID(),word:chosen,done:false};display('assessment-word',chosen.word);display('assessment-feedback','请选择中文释义；选定后再显示答案。');$('assessment-options').replaceChildren();
+   for(const option of options){const button=document.createElement('button');button.textContent=option.meaning;button.addEventListener('click',()=>void answerAssessment(option));$('assessment-options').append(button)}
+  }
+  async function answerAssessment(option){
+   if(!question||question.done||(cloud&&!ready))return;question.done=true;const result=C.scoreAssessment(catalog,question.word.id,option.id);$('assessment-options').querySelectorAll('button').forEach(b=>b.disabled=true);
+   const payload={p_event_id:question.id,p_word_id:question.word.id,p_choice_id:option.id,p_assisted:false};
+   display('assessment-feedback',`${result.correct?'答对了':'再记一遍'}：${question.word.meaning}。${cloud?'检测结果待同步。':'检测只保存在本机。'}`);
+   if(cloud){pendingEvents.push(payload);cache();notify('待同步检测结果');await flush();await refreshEvidence()}
+   else{const saved=read('wordspace:local:evidence')||[];saved.push({...result,id:question.id,created_at:new Date().toISOString(),assisted:false});write('wordspace:local:evidence',saved.slice(-1000));void refreshEvidence()}
+  }
+  async function refreshProposals(){
+   if(!cloud||!ready)return;
+   try{const rows=await api(`/rest/v1/recommendations?select=id,status,progress_revision,word_ids,rationale,expires_at&status=eq.pending&order=created_at.desc&limit=10`);
+    $('proposal-list').replaceChildren();display('proposal-message',rows.length?'推荐只在你采用后用于下一学习日。':'暂未收到推荐。可前往专属 GPT 请求安排下一次学习。');
+    for(const proposal of rows){const block=document.createElement('div'),text=document.createElement('p');text.textContent=`${proposal.word_ids.join(' · ')}\n${proposal.rationale}`;const adopt=document.createElement('button');adopt.textContent='采用到下一学习日';const ignore=document.createElement('button');ignore.textContent='忽略';
+     adopt.disabled=proposal.progress_revision!==revision||new Date(proposal.expires_at)<new Date();if(adopt.disabled){const stale=document.createElement('p');stale.textContent='进度已变化或建议过期，请让助手重新生成。';block.append(stale)}
+     adopt.addEventListener('click',async()=>{adopt.disabled=true;try{if(!await flush())throw Error('请先同步当前作答');const updated=await api('/rest/v1/rpc/adopt_recommendation',{p_id:proposal.id,p_expected_revision:revision});revision=updated.revision;syncedAt=updated.updated_at;dirty=false;showStudy(updated.state);notify('已同步 · 推荐将在下一学习日生效');await refreshProposals()}catch(error){display('proposal-message',error.status===409?'建议已过期，请重新生成。':authError(error))}});
+     ignore.addEventListener('click',async()=>{try{await api('/rest/v1/rpc/dismiss_recommendation',{p_id:proposal.id});await refreshProposals()}catch(error){display('proposal-message',authError(error))}});
+     block.append(text,adopt,ignore);$('proposal-list').append(block)
+    }
+   }catch(error){display('proposal-message','暂时无法读取推荐，现有学习任务保留。')}
+  }
+  async function boot(){
+   $('download-backup').addEventListener('click',()=>{if(!user||!ready)return;const backup=read(cacheKey(user.id))?.conflictBackup;if(!backup)return;const url=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));const a=document.createElement('a');a.href=url;a.download='wordspace-progress-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)});
+   $('auth-form').addEventListener('submit',signIn);$('logout').addEventListener('click',logout);$('sync-now').addEventListener('click',()=>void flush());
+   $('import-legacy').addEventListener('click',()=>beginNew(true));$('start-fresh').addEventListener('click',()=>beginNew(false));
+   $('conflict-cloud').addEventListener('click',()=>void resolveConflict(false));$('conflict-local').addEventListener('click',()=>{if(confirm('确认用本机记录替换云端？两份记录会先保留本机备份。'))void resolveConflict(true)});
+   $('auth-signup').addEventListener('click',async()=>{if(!$('auth-form').reportValidity())return;try{await publicRequest(`/auth/v1/signup?redirect_to=${encodeURIComponent(config.siteUrl||location.origin+location.pathname)}`,{email:$('auth-email').value.trim(),password:$('auth-password').value});display('auth-message','注册请求已提交，请检查邮箱中的确认邮件，验证后登录。')}catch(e){display('auth-message',authError(e))}finally{$('auth-password').value=''}});
+   $('auth-recover').addEventListener('click',async()=>{if(!$('auth-email').reportValidity())return;try{await publicRequest(`/auth/v1/recover?redirect_to=${encodeURIComponent(config.siteUrl||location.origin+location.pathname)}`,{email:$('auth-email').value.trim()});display('auth-message','如果邮箱已注册，将收到重置邮件。')}catch(e){display('auth-message',authError(e))}});
+   $('password-form').addEventListener('submit',async event=>{event.preventDefault();if(!$('password-form').reportValidity())return;try{const token=await freshToken();const response=await fetch(config.supabaseUrl+'/auth/v1/user',{method:'PUT',headers:{apikey:config.publicKey,Authorization:`Bearer ${token}`,'Content-Type':'application/json'},body:JSON.stringify({password:$('new-password').value})});if(!response.ok)throw Error('密码未能更新，请重试。');$('new-password').value='';$('password-form').hidden=true;$('auth-form').hidden=false;await loadUser()}catch(e){display('auth-message',authError(e))}});
+   $('manage-users').addEventListener('click',()=>{adminPage=1;void manageUsers()});$('admin-search-btn').addEventListener('click',()=>{adminPage=1;void manageUsers()});$('admin-prev').addEventListener('click',()=>{adminPage--;void manageUsers()});$('admin-next').addEventListener('click',()=>{adminPage++;void manageUsers()});$('admin-close').addEventListener('click',()=>{$('admin-panel').hidden=true;if(ready)$('study-main').hidden=false});
+   $('open-coach').addEventListener('click',async()=>{const tab=window.open('about:blank','_blank');if(tab)tab.opener=null;try{if(!await flush())throw Error('尚未同步成功，请先同步再打开学习助手。');if(validCoachURL(config.coachUrl)){if(tab)tab.location.href=config.coachUrl;else notify('浏览器拦截了新窗口，请允许弹出后再试。')}}catch(e){tab?.close();notify(authError(e))}});
+   $('assessment-start').addEventListener('click',startAssessment);$('proposal-refresh').addEventListener('click',()=>void refreshProposals());
+   if(!cloud){ready=true;hooks.setPlan(hooks.loadLegacy());$('study-main').hidden=false;display('account-label','本地学习');notify('本地模式 · 仅保存在当前浏览器，云端账号尚未配置。');hooks.render();hooks.rollover();persist(hooks.getPlan());void refreshEvidence();return}
+   lock('');display('account-label','尚未登录');
+   if(!/^https:\/\//.test(config.supabaseUrl||'')||!config.publicKey){display('auth-message','云端配置未完成，未进行登录或上传。');$('auth-signin').disabled=true;return}
+   const params=new URLSearchParams(location.hash.slice(1)),isRecovery=params.get('type')==='recovery';
+   if(params.has('access_token')&&params.has('refresh_token')){storeSession({access_token:params.get('access_token'),refresh_token:params.get('refresh_token'),expires_in:Number(params.get('expires_in'))||3600});history.replaceState(null,'',location.pathname+location.search)}else session=read(SESSION);
+   if(!session)return;
+   try{if(isRecovery){user=await api('/auth/v1/user');$('password-form').hidden=false;$('auth-form').hidden=true;display('auth-message','请设置新密码。');return}await loadUser()}catch(e){lock(authError(e));if(e.status===401){session=null;remove(SESSION)}}
+  }
+  return {boot,persist,flush,resume,status:()=>message,canStudy:()=>ready};
+ }
+ root.WordspaceAccount={create};
+})(globalThis);
+
+</script>
+<script>
 // 完全本地的四级词库；无需网络、账号或构建步骤。
 const words = [
-  {"word": "ability", "phonetic": "/əˈbɪləti/", "meaning": "n. 能力；才能", "example": "Practice improves your ability to communicate.", "translation": "练习能提高你的沟通能力。"},
-  {"word": "abroad", "phonetic": "/əˈbrɔːd/", "meaning": "adv. 在国外；到国外", "example": "She plans to study abroad next year.", "translation": "她计划明年出国留学。"},
-  {"word": "absorb", "phonetic": "/əbˈzɔːb/", "meaning": "v. 吸收；使专注", "example": "Plants absorb water through their roots.", "translation": "植物通过根部吸收水分。"},
-  {"word": "academic", "phonetic": "/ˌækəˈdemɪk/", "meaning": "adj. 学术的；学业的", "example": "The library offers academic support.", "translation": "图书馆提供学术支持。"},
-  {"word": "accept", "phonetic": "/əkˈsept/", "meaning": "v. 接受；认可", "example": "I am happy to accept your invitation.", "translation": "我很高兴接受你的邀请。"},
-  {"word": "access", "phonetic": "/ˈækses/", "meaning": "n. 使用权；通道；v. 访问", "example": "Students have free access to the library.", "translation": "学生可以免费使用图书馆。"},
-  {"word": "account", "phonetic": "/əˈkaʊnt/", "meaning": "n. 账户；描述；v. 解释", "example": "I opened a bank account yesterday.", "translation": "我昨天开了一个银行账户。"},
-  {"word": "accurate", "phonetic": "/ˈækjərət/", "meaning": "adj. 准确的；精确的", "example": "We need accurate information for the report.", "translation": "我们需要准确的信息来写报告。"},
-  {"word": "achieve", "phonetic": "/əˈtʃiːv/", "meaning": "v. 实现；达到", "example": "Small steps help us achieve our goals.", "translation": "小小的行动帮助我们实现目标。"},
-  {"word": "adapt", "phonetic": "/əˈdæpt/", "meaning": "v. 适应；改编", "example": "It takes time to adapt to a new city.", "translation": "适应新城市需要时间。"},
-  {"word": "addition", "phonetic": "/əˈdɪʃn/", "meaning": "n. 增加；加法", "example": "The new park is a welcome addition.", "translation": "新公园的增建很受欢迎。"},
-  {"word": "adequate", "phonetic": "/ˈædɪkwət/", "meaning": "adj. 足够的；适当的", "example": "Make sure you get adequate sleep.", "translation": "确保你有充足的睡眠。"},
-  {"word": "adjust", "phonetic": "/əˈdʒʌst/", "meaning": "v. 调整；适应", "example": "You can adjust the height of the chair.", "translation": "你可以调整椅子的高度。"},
-  {"word": "admire", "phonetic": "/ədˈmaɪə(r)/", "meaning": "v. 钦佩；欣赏", "example": "I admire her courage and honesty.", "translation": "我钦佩她的勇气和诚实。"},
-  {"word": "admit", "phonetic": "/ədˈmɪt/", "meaning": "v. 承认；准许进入", "example": "He was willing to admit his mistake.", "translation": "他愿意承认自己的错误。"},
-  {"word": "adopt", "phonetic": "/əˈdɒpt/", "meaning": "v. 采用；收养", "example": "Many schools adopt new teaching methods.", "translation": "许多学校采用新的教学方法。"},
-  {"word": "advantage", "phonetic": "/ədˈvɑːntɪdʒ/", "meaning": "n. 优势；有利条件", "example": "Experience is an advantage in this job.", "translation": "经验是从事这份工作的优势。"},
-  {"word": "advertise", "phonetic": "/ˈædvətaɪz/", "meaning": "v. 做广告；宣传", "example": "They advertise their products online.", "translation": "他们在网上宣传自己的产品。"},
-  {"word": "affect", "phonetic": "/əˈfekt/", "meaning": "v. 影响；使感动", "example": "Lack of sleep can affect your memory.", "translation": "睡眠不足会影响记忆力。"},
-  {"word": "afford", "phonetic": "/əˈfɔːd/", "meaning": "v. 买得起；承担得起", "example": "I cannot afford a new computer now.", "translation": "我现在买不起新电脑。"},
-  {"word": "alternative", "phonetic": "/ɔːlˈtɜːnətɪv/", "meaning": "n. 替代选择；adj. 可供选择的", "example": "Cycling is an alternative to driving.", "translation": "骑自行车是开车之外的另一种选择。"},
-  {"word": "amount", "phonetic": "/əˈmaʊnt/", "meaning": "n. 数量；总额", "example": "A small amount of exercise is helpful.", "translation": "少量运动也有益处。"},
-  {"word": "analyze", "phonetic": "/ˈænəlaɪz/", "meaning": "v. 分析", "example": "We need to analyze the survey results.", "translation": "我们需要分析调查结果。"},
-  {"word": "announce", "phonetic": "/əˈnaʊns/", "meaning": "v. 宣布；公布", "example": "They will announce the results tomorrow.", "translation": "他们将在明天公布结果。"},
-  {"word": "anxious", "phonetic": "/ˈæŋkʃəs/", "meaning": "adj. 焦虑的；渴望的", "example": "She felt anxious before the exam.", "translation": "考试前她感到焦虑。"},
-  {"word": "apologize", "phonetic": "/əˈpɒlədʒaɪz/", "meaning": "v. 道歉", "example": "I apologize for being late.", "translation": "我为迟到道歉。"},
-  {"word": "appeal", "phonetic": "/əˈpiːl/", "meaning": "n. 呼吁；吸引力；v. 呼吁", "example": "The charity made an appeal for help.", "translation": "该慈善机构发出了求助呼吁。"},
-  {"word": "appear", "phonetic": "/əˈpɪə(r)/", "meaning": "v. 出现；似乎", "example": "Stars appear when the sky gets dark.", "translation": "天黑时星星会出现。"},
-  {"word": "application", "phonetic": "/ˌæplɪˈkeɪʃn/", "meaning": "n. 申请；应用", "example": "Please send your application by Friday.", "translation": "请在星期五之前提交申请。"},
-  {"word": "apply", "phonetic": "/əˈplaɪ/", "meaning": "v. 申请；应用", "example": "You can apply for the job online.", "translation": "你可以在网上申请这份工作。"},
-  {"word": "appreciate", "phonetic": "/əˈpriːʃieɪt/", "meaning": "v. 感激；欣赏", "example": "I really appreciate your help.", "translation": "我非常感谢你的帮助。"},
-  {"word": "approach", "phonetic": "/əˈprəʊtʃ/", "meaning": "n. 方法；v. 接近", "example": "We need a different approach to this problem.", "translation": "我们需要用不同的方法解决这个问题。"},
-  {"word": "appropriate", "phonetic": "/əˈprəʊpriət/", "meaning": "adj. 适当的；合适的", "example": "Wear appropriate clothes for the interview.", "translation": "面试时穿着得体。"},
-  {"word": "argue", "phonetic": "/ˈɑːɡjuː/", "meaning": "v. 争论；论证", "example": "They argue that education should be free.", "translation": "他们主张教育应该免费。"},
-  {"word": "arrange", "phonetic": "/əˈreɪndʒ/", "meaning": "v. 安排；整理", "example": "Let us arrange a meeting for Monday.", "translation": "我们安排在星期一开会吧。"},
-  {"word": "aspect", "phonetic": "/ˈæspekt/", "meaning": "n. 方面", "example": "Cost is only one aspect of the decision.", "translation": "费用只是这项决定的一个方面。"},
-  {"word": "assess", "phonetic": "/əˈses/", "meaning": "v. 评估；评价", "example": "Teachers assess students in different ways.", "translation": "教师以不同方式评估学生。"},
-  {"word": "assist", "phonetic": "/əˈsɪst/", "meaning": "v. 帮助；协助", "example": "Volunteers assist visitors at the museum.", "translation": "志愿者在博物馆帮助参观者。"},
-  {"word": "assume", "phonetic": "/əˈsjuːm/", "meaning": "v. 假定；承担", "example": "Do not assume that everyone agrees.", "translation": "不要假定所有人都同意。"},
-  {"word": "atmosphere", "phonetic": "/ˈætməsfɪə(r)/", "meaning": "n. 大气；气氛", "example": "The cafe has a friendly atmosphere.", "translation": "这家咖啡馆气氛友好。"},
-  {"word": "attempt", "phonetic": "/əˈtempt/", "meaning": "n. 尝试；v. 试图", "example": "He succeeded on his second attempt.", "translation": "他在第二次尝试时成功了。"},
-  {"word": "attitude", "phonetic": "/ˈætɪtjuːd/", "meaning": "n. 态度；看法", "example": "A positive attitude can make a difference.", "translation": "积极的态度能带来改变。"},
-  {"word": "attract", "phonetic": "/əˈtrækt/", "meaning": "v. 吸引", "example": "The museum attracts visitors from around the world.", "translation": "这座博物馆吸引世界各地的游客。"},
-  {"word": "available", "phonetic": "/əˈveɪləbl/", "meaning": "adj. 可获得的；有空的", "example": "Free courses are available online.", "translation": "网上有免费的课程。"},
-  {"word": "avoid", "phonetic": "/əˈvɔɪd/", "meaning": "v. 避免", "example": "Leave early to avoid the traffic.", "translation": "早点出发以避开拥堵。"},
-  {"word": "aware", "phonetic": "/əˈweə(r)/", "meaning": "adj. 意识到的；知道的", "example": "We should be aware of the risks.", "translation": "我们应该意识到这些风险。"},
-  {"word": "balance", "phonetic": "/ˈbæləns/", "meaning": "n. 平衡；v. 使平衡", "example": "Try to balance work and rest.", "translation": "试着平衡工作与休息。"},
-  {"word": "behavior", "phonetic": "/bɪˈheɪvjə(r)/", "meaning": "n. 行为；举止", "example": "Parents influence their children's behavior.", "translation": "父母会影响孩子的行为。"},
-  {"word": "benefit", "phonetic": "/ˈbenɪfɪt/", "meaning": "n. 益处；v. 使受益", "example": "Regular exercise benefits both body and mind.", "translation": "规律运动有益身心。"},
-  {"word": "budget", "phonetic": "/ˈbʌdʒɪt/", "meaning": "n. 预算；v. 做预算", "example": "We must stay within our budget.", "translation": "我们必须控制在预算之内。"},
-  {"word": "campaign", "phonetic": "/kæmˈpeɪn/", "meaning": "n. 活动；运动", "example": "The campaign encourages people to save energy.", "translation": "这项活动鼓励人们节约能源。"},
-  {"word": "campus", "phonetic": "/ˈkæmpəs/", "meaning": "n. 校园", "example": "There is a new library on campus.", "translation": "校园里有一座新图书馆。"},
-  {"word": "capable", "phonetic": "/ˈkeɪpəbl/", "meaning": "adj. 有能力的", "example": "She is capable of solving the problem.", "translation": "她有能力解决这个问题。"},
-  {"word": "career", "phonetic": "/kəˈrɪə(r)/", "meaning": "n. 职业；职业生涯", "example": "He hopes to build a career in science.", "translation": "他希望在科学领域发展职业生涯。"},
-  {"word": "cause", "phonetic": "/kɔːz/", "meaning": "n. 原因；v. 导致", "example": "Heavy rain can cause flooding.", "translation": "大雨会导致洪水。"},
-  {"word": "certain", "phonetic": "/ˈsɜːtn/", "meaning": "adj. 确定的；某些", "example": "I am certain that she will come.", "translation": "我确信她会来。"},
-  {"word": "challenge", "phonetic": "/ˈtʃælɪndʒ/", "meaning": "n. 挑战；v. 向……挑战", "example": "Learning a new language is a challenge.", "translation": "学习一门新语言是一项挑战。"},
-  {"word": "claim", "phonetic": "/kleɪm/", "meaning": "v. 声称；索取；n. 主张", "example": "They claim that the product saves energy.", "translation": "他们声称该产品节能。"},
-  {"word": "climate", "phonetic": "/ˈklaɪmət/", "meaning": "n. 气候", "example": "The climate here is warm and wet.", "translation": "这里气候温暖湿润。"},
-  {"word": "combine", "phonetic": "/kəmˈbaɪn/", "meaning": "v. 结合；联合", "example": "Try to combine theory with practice.", "translation": "试着把理论与实践结合起来。"},
-  {"word": "comment", "phonetic": "/ˈkɒment/", "meaning": "n. 评论；v. 评论", "example": "Please leave a comment after reading.", "translation": "请在阅读后留下评论。"},
-  {"word": "communicate", "phonetic": "/kəˈmjuːnɪkeɪt/", "meaning": "v. 交流；传达", "example": "We communicate with each other every day.", "translation": "我们每天互相交流。"},
-  {"word": "community", "phonetic": "/kəˈmjuːnəti/", "meaning": "n. 社区；群体", "example": "The whole community joined the clean-up.", "translation": "整个社区都参加了清洁活动。"},
-  {"word": "compare", "phonetic": "/kəmˈpeə(r)/", "meaning": "v. 比较；对比", "example": "Compare prices before buying a phone.", "translation": "买手机之前比较一下价格。"},
-  {"word": "compete", "phonetic": "/kəmˈpiːt/", "meaning": "v. 竞争；比赛", "example": "Several teams will compete for the prize.", "translation": "几支队伍将争夺奖项。"},
-  {"word": "complex", "phonetic": "/ˈkɒmpleks/", "meaning": "adj. 复杂的；n. 综合体", "example": "The human brain is a complex system.", "translation": "人脑是一个复杂的系统。"},
-  {"word": "concentrate", "phonetic": "/ˈkɒnsntreɪt/", "meaning": "v. 集中注意力", "example": "I cannot concentrate in a noisy room.", "translation": "在嘈杂的房间里我无法集中注意力。"},
-  {"word": "concept", "phonetic": "/ˈkɒnsept/", "meaning": "n. 概念；观念", "example": "The teacher explained the concept clearly.", "translation": "老师清楚地解释了这个概念。"},
-  {"word": "concern", "phonetic": "/kənˈsɜːn/", "meaning": "n. 担忧；v. 涉及；使担心", "example": "Safety is our main concern.", "translation": "安全是我们最关心的问题。"},
-  {"word": "conclude", "phonetic": "/kənˈkluːd/", "meaning": "v. 得出结论；结束", "example": "We conclude that the plan is practical.", "translation": "我们得出结论：这项计划可行。"},
-  {"word": "condition", "phonetic": "/kənˈdɪʃn/", "meaning": "n. 条件；状况", "example": "The car is in good condition.", "translation": "这辆车状况良好。"},
-  {"word": "confidence", "phonetic": "/ˈkɒnfɪdəns/", "meaning": "n. 信心；信任", "example": "Practice gave her more confidence.", "translation": "练习让她更有信心。"},
-  {"word": "confirm", "phonetic": "/kənˈfɜːm/", "meaning": "v. 确认；证实", "example": "Please confirm the date of the meeting.", "translation": "请确认会议日期。"},
-  {"word": "confuse", "phonetic": "/kənˈfjuːz/", "meaning": "v. 使困惑；混淆", "example": "These similar names often confuse me.", "translation": "这些相似的名字常让我混淆。"},
-  {"word": "connect", "phonetic": "/kəˈnekt/", "meaning": "v. 连接；联系", "example": "The bridge connects the two villages.", "translation": "这座桥连接两个村庄。"},
-  {"word": "consequence", "phonetic": "/ˈkɒnsɪkwəns/", "meaning": "n. 结果；后果", "example": "Think about the consequences of your actions.", "translation": "想一想你的行为会产生什么后果。"},
-  {"word": "consider", "phonetic": "/kənˈsɪdə(r)/", "meaning": "v. 考虑；认为", "example": "Please consider all the options before you decide.", "translation": "请在决定之前考虑所有选项。"},
-  {"word": "consist", "phonetic": "/kənˈsɪst/", "meaning": "v. 组成；在于", "example": "The course consists of ten lessons.", "translation": "这门课程由十节课组成。"},
-  {"word": "constant", "phonetic": "/ˈkɒnstənt/", "meaning": "adj. 不断的；不变的", "example": "Constant noise can affect our health.", "translation": "持续的噪声会影响我们的健康。"},
-  {"word": "consume", "phonetic": "/kənˈsjuːm/", "meaning": "v. 消耗；消费", "example": "Old machines consume more energy.", "translation": "旧机器消耗更多能源。"},
-  {"word": "contact", "phonetic": "/ˈkɒntækt/", "meaning": "n. 联系；v. 联系", "example": "Please contact us if you need help.", "translation": "如果需要帮助，请联系我们。"},
-  {"word": "contain", "phonetic": "/kənˈteɪn/", "meaning": "v. 包含；容纳", "example": "Fruit contains important vitamins.", "translation": "水果含有重要的维生素。"},
-  {"word": "context", "phonetic": "/ˈkɒntekst/", "meaning": "n. 上下文；背景", "example": "You can guess the meaning from context.", "translation": "你可以根据上下文猜测词义。"},
-  {"word": "contribute", "phonetic": "/kənˈtrɪbjuːt/", "meaning": "v. 贡献；促成；投稿", "example": "Everyone can contribute to the discussion.", "translation": "每个人都可以在讨论中发表意见。"},
-  {"word": "convenient", "phonetic": "/kənˈviːniənt/", "meaning": "adj. 方便的；便利的", "example": "Online shopping is convenient for busy people.", "translation": "网上购物对忙碌的人很方便。"},
-  {"word": "convince", "phonetic": "/kənˈvɪns/", "meaning": "v. 使信服；说服", "example": "The evidence convinced me that he was right.", "translation": "证据让我相信他是对的。"},
-  {"word": "cooperate", "phonetic": "/kəʊˈɒpəreɪt/", "meaning": "v. 合作；配合", "example": "We must cooperate to finish on time.", "translation": "我们必须合作才能按时完成。"},
-  {"word": "cope", "phonetic": "/kəʊp/", "meaning": "v. 应付；处理", "example": "Exercise helps me cope with stress.", "translation": "运动帮助我应对压力。"},
-  {"word": "cost", "phonetic": "/kɒst/", "meaning": "n. 成本；费用；v. 花费", "example": "The cost of living is rising.", "translation": "生活成本正在上升。"},
-  {"word": "create", "phonetic": "/kriˈeɪt/", "meaning": "v. 创造；创建", "example": "The new factory will create more jobs.", "translation": "这家新工厂会创造更多就业机会。"},
-  {"word": "crisis", "phonetic": "/ˈkraɪsɪs/", "meaning": "n. 危机", "example": "The country faced an economic crisis.", "translation": "这个国家面临经济危机。"},
-  {"word": "critical", "phonetic": "/ˈkrɪtɪkl/", "meaning": "adj. 批判性的；关键的", "example": "Critical thinking is an important skill.", "translation": "批判性思维是一项重要技能。"},
-  {"word": "culture", "phonetic": "/ˈkʌltʃə(r)/", "meaning": "n. 文化", "example": "Food is an important part of local culture.", "translation": "食物是当地文化的重要组成部分。"},
-  {"word": "curious", "phonetic": "/ˈkjʊəriəs/", "meaning": "adj. 好奇的", "example": "Children are curious about the world.", "translation": "孩子们对世界充满好奇。"},
-  {"word": "damage", "phonetic": "/ˈdæmɪdʒ/", "meaning": "n. 损害；v. 损坏", "example": "The storm caused serious damage.", "translation": "暴风雨造成了严重损失。"},
-  {"word": "debate", "phonetic": "/dɪˈbeɪt/", "meaning": "n. 辩论；v. 讨论", "example": "The students held a debate about education.", "translation": "学生们就教育问题进行了辩论。"},
-  {"word": "decline", "phonetic": "/dɪˈklaɪn/", "meaning": "v. 下降；婉拒；n. 下降", "example": "Sales began to decline last month.", "translation": "销售额从上个月开始下降。"},
-  {"word": "decrease", "phonetic": "/dɪˈkriːs/", "meaning": "v. 减少；降低", "example": "Exercise can decrease the risk of disease.", "translation": "运动可以降低患病风险。"},
-  {"word": "define", "phonetic": "/dɪˈfaɪn/", "meaning": "v. 定义；界定", "example": "How do you define success?", "translation": "你如何定义成功？"},
-  {"word": "degree", "phonetic": "/dɪˈɡriː/", "meaning": "n. 学位；程度；度", "example": "She earned a degree in history.", "translation": "她获得了历史学学位。"},
-  {"word": "delay", "phonetic": "/dɪˈleɪ/", "meaning": "v. 延迟；n. 延误", "example": "Bad weather may delay the flight.", "translation": "恶劣天气可能使航班延误。"},
-  {"word": "demand", "phonetic": "/dɪˈmɑːnd/", "meaning": "n. 需求；v. 要求", "example": "Demand for clean energy is growing.", "translation": "对清洁能源的需求正在增加。"},
-  {"word": "demonstrate", "phonetic": "/ˈdemənstreɪt/", "meaning": "v. 证明；示范", "example": "The teacher demonstrated how the machine works.", "translation": "老师演示了机器如何运转。"},
-  {"word": "depend", "phonetic": "/dɪˈpend/", "meaning": "v. 依靠；取决于", "example": "Success depends on careful preparation.", "translation": "成功取决于充分的准备。"},
-  {"word": "describe", "phonetic": "/dɪˈskraɪb/", "meaning": "v. 描述；形容", "example": "Can you describe what happened?", "translation": "你能描述一下发生了什么吗？"},
-  {"word": "desire", "phonetic": "/dɪˈzaɪə(r)/", "meaning": "n. 渴望；v. 想要", "example": "She has a strong desire to learn.", "translation": "她有强烈的求知欲。"},
-  {"word": "despite", "phonetic": "/dɪˈspaɪt/", "meaning": "prep. 尽管", "example": "They went out despite the rain.", "translation": "尽管下雨，他们还是出去了。"},
-  {"word": "detail", "phonetic": "/ˈdiːteɪl/", "meaning": "n. 细节；详情", "example": "Please explain the plan in detail.", "translation": "请详细解释这项计划。"},
-  {"word": "determine", "phonetic": "/dɪˈtɜːmɪn/", "meaning": "v. 决定；确定", "example": "Your choices help determine your future.", "translation": "你的选择有助于决定你的未来。"},
-  {"word": "develop", "phonetic": "/dɪˈveləp/", "meaning": "v. 发展；培养", "example": "Reading helps children develop their imagination.", "translation": "阅读帮助孩子培养想象力。"},
-  {"word": "device", "phonetic": "/dɪˈvaɪs/", "meaning": "n. 装置；设备", "example": "This device measures air quality.", "translation": "这个装置测量空气质量。"},
-  {"word": "differ", "phonetic": "/ˈdɪfə(r)/", "meaning": "v. 不同；有区别", "example": "Opinions differ on this issue.", "translation": "人们对这个问题意见不同。"},
-  {"word": "difficulty", "phonetic": "/ˈdɪfɪkəlti/", "meaning": "n. 困难", "example": "He had difficulty finding a job.", "translation": "他找工作遇到了困难。"},
-  {"word": "digital", "phonetic": "/ˈdɪdʒɪtl/", "meaning": "adj. 数字的；数码的", "example": "Digital technology has changed our lives.", "translation": "数字技术改变了我们的生活。"},
-  {"word": "disaster", "phonetic": "/dɪˈzɑːstə(r)/", "meaning": "n. 灾难", "example": "The earthquake was a major disaster.", "translation": "这次地震是一场重大灾难。"},
-  {"word": "discover", "phonetic": "/dɪˈskʌvə(r)/", "meaning": "v. 发现", "example": "Scientists hope to discover new treatments.", "translation": "科学家希望发现新的治疗方法。"},
-  {"word": "discuss", "phonetic": "/dɪˈskʌs/", "meaning": "v. 讨论", "example": "We will discuss the plan tomorrow.", "translation": "我们明天将讨论这项计划。"},
-  {"word": "disease", "phonetic": "/dɪˈziːz/", "meaning": "n. 疾病", "example": "Clean water helps prevent disease.", "translation": "干净的水有助于预防疾病。"},
-  {"word": "display", "phonetic": "/dɪˈspleɪ/", "meaning": "v. 展示；n. 展览", "example": "The museum displays local art.", "translation": "博物馆展示当地艺术作品。"},
-  {"word": "distance", "phonetic": "/ˈdɪstəns/", "meaning": "n. 距离", "example": "The distance between the towns is short.", "translation": "这两个城镇之间的距离很短。"},
-  {"word": "distinguish", "phonetic": "/dɪˈstɪŋɡwɪʃ/", "meaning": "v. 区分；辨别", "example": "It is hard to distinguish the twins.", "translation": "很难分辨这对双胞胎。"},
-  {"word": "distribute", "phonetic": "/dɪˈstrɪbjuːt/", "meaning": "v. 分发；分配", "example": "Volunteers distribute food to families.", "translation": "志愿者向家庭分发食物。"},
-  {"word": "diverse", "phonetic": "/daɪˈvɜːs/", "meaning": "adj. 多种多样的", "example": "The city has a diverse population.", "translation": "这座城市的人口构成多种多样。"},
-  {"word": "doubt", "phonetic": "/daʊt/", "meaning": "n. 怀疑；v. 怀疑", "example": "There is no doubt that practice helps.", "translation": "毫无疑问，练习是有帮助的。"},
-  {"word": "economic", "phonetic": "/ˌiːkəˈnɒmɪk/", "meaning": "adj. 经济的；经济学的", "example": "Education supports economic growth.", "translation": "教育促进经济增长。"},
-  {"word": "economy", "phonetic": "/ɪˈkɒnəmi/", "meaning": "n. 经济；节约", "example": "Tourism is important to the local economy.", "translation": "旅游业对当地经济很重要。"},
-  {"word": "educate", "phonetic": "/ˈedʒukeɪt/", "meaning": "v. 教育；培养", "example": "Schools educate children for the future.", "translation": "学校为孩子的未来提供教育。"},
-  {"word": "effect", "phonetic": "/ɪˈfekt/", "meaning": "n. 影响；效果", "example": "Music can have a calming effect.", "translation": "音乐可以产生舒缓的效果。"},
-  {"word": "effective", "phonetic": "/ɪˈfektɪv/", "meaning": "adj. 有效的", "example": "This is an effective way to learn.", "translation": "这是一种有效的学习方法。"},
-  {"word": "efficient", "phonetic": "/ɪˈfɪʃnt/", "meaning": "adj. 高效的；有效率的", "example": "We need a more efficient way to work.", "translation": "我们需要一种更高效的工作方式。"},
-  {"word": "effort", "phonetic": "/ˈefət/", "meaning": "n. 努力", "example": "Learning a language takes effort.", "translation": "学习语言需要努力。"},
-  {"word": "elderly", "phonetic": "/ˈeldəli/", "meaning": "adj. 年纪较大的", "example": "The center offers help to elderly people.", "translation": "这个中心为老年人提供帮助。"},
-  {"word": "employ", "phonetic": "/ɪmˈplɔɪ/", "meaning": "v. 雇用；使用", "example": "The company employs fifty people.", "translation": "这家公司雇用了五十人。"},
-  {"word": "encourage", "phonetic": "/ɪnˈkʌrɪdʒ/", "meaning": "v. 鼓励；促进", "example": "My teacher encouraged me to keep trying.", "translation": "老师鼓励我继续尝试。"},
-  {"word": "energy", "phonetic": "/ˈenədʒi/", "meaning": "n. 能量；精力；能源", "example": "We should use energy wisely.", "translation": "我们应该合理利用能源。"},
-  {"word": "enhance", "phonetic": "/ɪnˈhɑːns/", "meaning": "v. 提高；增强", "example": "Reading can enhance your vocabulary.", "translation": "阅读能够扩大词汇量。"},
-  {"word": "enormous", "phonetic": "/ɪˈnɔːməs/", "meaning": "adj. 巨大的", "example": "The project requires an enormous investment.", "translation": "这项工程需要巨额投资。"},
-  {"word": "ensure", "phonetic": "/ɪnˈʃʊə(r)/", "meaning": "v. 确保；保证", "example": "Please ensure that the door is locked.", "translation": "请确保门已锁好。"},
-  {"word": "entire", "phonetic": "/ɪnˈtaɪə(r)/", "meaning": "adj. 整个的；全部的", "example": "She spent the entire day reading.", "translation": "她一整天都在读书。"},
-  {"word": "environment", "phonetic": "/ɪnˈvaɪrənmənt/", "meaning": "n. 环境", "example": "Everyone can help protect the environment.", "translation": "每个人都能为保护环境出一份力。"},
-  {"word": "equal", "phonetic": "/ˈiːkwəl/", "meaning": "adj. 平等的；相等的", "example": "Everyone deserves equal opportunities.", "translation": "每个人都应享有平等的机会。"},
-  {"word": "equipment", "phonetic": "/ɪˈkwɪpmənt/", "meaning": "n. 设备；装备", "example": "The lab needs new equipment.", "translation": "实验室需要新设备。"},
-  {"word": "essential", "phonetic": "/ɪˈsenʃl/", "meaning": "adj. 必不可少的；本质的", "example": "Sleep is essential for good health.", "translation": "睡眠对身体健康必不可少。"},
-  {"word": "establish", "phonetic": "/ɪˈstæblɪʃ/", "meaning": "v. 建立；确立", "example": "They established a school in the village.", "translation": "他们在村里建了一所学校。"},
-  {"word": "estimate", "phonetic": "/ˈestɪmeɪt/", "meaning": "v. 估计；估算", "example": "We estimate that the trip will take two hours.", "translation": "我们估计路程需要两小时。"},
-  {"word": "evaluate", "phonetic": "/ɪˈvæljueɪt/", "meaning": "v. 评价；评估", "example": "We need to evaluate the results carefully.", "translation": "我们需要仔细评估结果。"},
-  {"word": "evidence", "phonetic": "/ˈevɪdəns/", "meaning": "n. 证据；依据", "example": "There is clear evidence of improvement.", "translation": "有明显的证据表明情况有所改善。"},
-  {"word": "exchange", "phonetic": "/ɪksˈtʃeɪndʒ/", "meaning": "v. 交换；n. 交流", "example": "The students exchanged ideas after class.", "translation": "学生们课后交流了想法。"},
-  {"word": "exist", "phonetic": "/ɪɡˈzɪst/", "meaning": "v. 存在", "example": "Many different cultures exist in this country.", "translation": "这个国家存在多种不同文化。"},
-  {"word": "expand", "phonetic": "/ɪkˈspænd/", "meaning": "v. 扩大；扩展", "example": "The company plans to expand its business.", "translation": "公司计划扩大业务。"},
-  {"word": "expect", "phonetic": "/ɪkˈspekt/", "meaning": "v. 预期；期待", "example": "We expect the work to finish soon.", "translation": "我们预计工作很快完成。"},
-  {"word": "expense", "phonetic": "/ɪkˈspens/", "meaning": "n. 费用；开支", "example": "Travel is our biggest expense.", "translation": "差旅是我们最大的开支。"},
-  {"word": "experience", "phonetic": "/ɪkˈspɪəriəns/", "meaning": "n. 经验；经历；v. 经历", "example": "Travel gives us valuable experience.", "translation": "旅行给予我们宝贵的经历。"},
-  {"word": "experiment", "phonetic": "/ɪkˈsperɪmənt/", "meaning": "n. 实验", "example": "The experiment produced surprising results.", "translation": "这个实验产生了令人惊讶的结果。"},
-  {"word": "expert", "phonetic": "/ˈekspɜːt/", "meaning": "n. 专家；adj. 熟练的", "example": "Ask an expert for advice.", "translation": "向专家寻求建议。"},
-  {"word": "explain", "phonetic": "/ɪkˈspleɪn/", "meaning": "v. 解释；说明", "example": "Could you explain the rule again?", "translation": "你能再解释一下规则吗？"},
-  {"word": "explore", "phonetic": "/ɪkˈsplɔː(r)/", "meaning": "v. 探索；探究", "example": "We want to explore new ways of learning.", "translation": "我们想探索新的学习方式。"},
-  {"word": "expose", "phonetic": "/ɪkˈspəʊz/", "meaning": "v. 暴露；使接触", "example": "Do not expose your skin to strong sunlight.", "translation": "不要让皮肤暴露在强烈的阳光下。"},
-  {"word": "express", "phonetic": "/ɪkˈspres/", "meaning": "v. 表达；表示", "example": "Art helps people express their feelings.", "translation": "艺术帮助人们表达感受。"},
-  {"word": "extend", "phonetic": "/ɪkˈstend/", "meaning": "v. 延长；扩展", "example": "The library will extend its opening hours.", "translation": "图书馆将延长开放时间。"},
-  {"word": "extent", "phonetic": "/ɪkˈstent/", "meaning": "n. 程度；范围", "example": "We do not know the full extent of the damage.", "translation": "我们尚不清楚损害的全部程度。"},
-  {"word": "extra", "phonetic": "/ˈekstrə/", "meaning": "adj. 额外的", "example": "We need extra time to finish the task.", "translation": "我们需要额外的时间来完成任务。"},
-  {"word": "factor", "phonetic": "/ˈfæktə(r)/", "meaning": "n. 因素", "example": "Price is an important factor in the decision.", "translation": "价格是做决定时的重要因素。"},
-  {"word": "failure", "phonetic": "/ˈfeɪljə(r)/", "meaning": "n. 失败；故障", "example": "Failure can teach us useful lessons.", "translation": "失败能教给我们有用的经验。"},
-  {"word": "familiar", "phonetic": "/fəˈmɪliə(r)/", "meaning": "adj. 熟悉的", "example": "This song sounds familiar to me.", "translation": "这首歌我听起来很熟悉。"},
-  {"word": "feature", "phonetic": "/ˈfiːtʃə(r)/", "meaning": "n. 特点；v. 以……为特色", "example": "The phone has several useful features.", "translation": "这款手机有几项实用功能。"},
-  {"word": "finance", "phonetic": "/ˈfaɪnæns/", "meaning": "n. 金融；资金；v. 资助", "example": "She wants to work in finance.", "translation": "她想从事金融工作。"},
-  {"word": "flexible", "phonetic": "/ˈfleksəbl/", "meaning": "adj. 灵活的；柔韧的", "example": "The company offers flexible working hours.", "translation": "公司提供灵活的工作时间。"},
-  {"word": "focus", "phonetic": "/ˈfəʊkəs/", "meaning": "v. 集中；n. 焦点", "example": "Try to focus on one task at a time.", "translation": "试着一次专注于一项任务。"},
-  {"word": "function", "phonetic": "/ˈfʌŋkʃn/", "meaning": "n. 功能；v. 运转", "example": "What is the main function of this device?", "translation": "这个设备的主要功能是什么？"},
-  {"word": "fund", "phonetic": "/fʌnd/", "meaning": "n. 基金；资金；v. 资助", "example": "The fund supports medical research.", "translation": "这项基金支持医学研究。"},
-  {"word": "further", "phonetic": "/ˈfɜːðə(r)/", "meaning": "adj. 更多的；进一步的", "example": "Contact us for further information.", "translation": "如需更多信息，请联系我们。"},
-  {"word": "gain", "phonetic": "/ɡeɪn/", "meaning": "v. 获得；增加；n. 收益", "example": "You can gain experience through practice.", "translation": "你可以通过实践获得经验。"},
-  {"word": "generation", "phonetic": "/ˌdʒenəˈreɪʃn/", "meaning": "n. 一代；产生", "example": "Each generation faces new challenges.", "translation": "每一代人都面临新的挑战。"},
-  {"word": "global", "phonetic": "/ˈɡləʊbl/", "meaning": "adj. 全球的", "example": "Climate change is a global problem.", "translation": "气候变化是一个全球性问题。"},
-  {"word": "goal", "phonetic": "/ɡəʊl/", "meaning": "n. 目标；进球", "example": "Set a clear goal before you begin.", "translation": "开始前设定一个明确的目标。"},
-  {"word": "graduate", "phonetic": "/ˈɡrædʒuət/", "meaning": "n. 毕业生", "example": "She is a recent university graduate.", "translation": "她是刚毕业的大学生。"},
-  {"word": "grant", "phonetic": "/ɡrɑːnt/", "meaning": "n. 补助金；v. 授予", "example": "He received a grant for his research.", "translation": "他获得了研究补助金。"},
-  {"word": "guarantee", "phonetic": "/ˌɡærənˈtiː/", "meaning": "v. 保证；n. 保证", "example": "Money does not guarantee happiness.", "translation": "金钱不能保证幸福。"},
-  {"word": "habit", "phonetic": "/ˈhæbɪt/", "meaning": "n. 习惯", "example": "Reading before bed is a good habit.", "translation": "睡前阅读是个好习惯。"},
-  {"word": "handle", "phonetic": "/ˈhændl/", "meaning": "v. 处理；n. 把手", "example": "She knows how to handle difficult situations.", "translation": "她知道如何处理困难局面。"},
-  {"word": "harmful", "phonetic": "/ˈhɑːmfl/", "meaning": "adj. 有害的", "example": "Smoking is harmful to your health.", "translation": "吸烟有害健康。"},
-  {"word": "identify", "phonetic": "/aɪˈdentɪfaɪ/", "meaning": "v. 识别；确定", "example": "First, identify the cause of the problem.", "translation": "首先确定问题的原因。"},
-  {"word": "ignore", "phonetic": "/ɪɡˈnɔː(r)/", "meaning": "v. 忽视；不理会", "example": "Do not ignore the warning signs.", "translation": "不要忽视这些警示信号。"},
-  {"word": "impact", "phonetic": "/ˈɪmpækt/", "meaning": "n. 影响；冲击", "example": "Technology has a major impact on society.", "translation": "技术对社会有重大影响。"},
-  {"word": "imply", "phonetic": "/ɪmˈplaɪ/", "meaning": "v. 暗示；意味着", "example": "His words imply that he disagrees.", "translation": "他的话暗示他不同意。"},
-  {"word": "improve", "phonetic": "/ɪmˈpruːv/", "meaning": "v. 改善；提高", "example": "Daily practice will improve your English.", "translation": "每天练习会提高你的英语水平。"},
-  {"word": "income", "phonetic": "/ˈɪnkʌm/", "meaning": "n. 收入", "example": "Tourism provides income for local families.", "translation": "旅游业为当地家庭提供收入。"},
-  {"word": "increase", "phonetic": "/ɪnˈkriːs/", "meaning": "v. 增加；增长", "example": "Regular practice can increase your confidence.", "translation": "定期练习能增强信心。"},
-  {"word": "independent", "phonetic": "/ˌɪndɪˈpendənt/", "meaning": "adj. 独立的；自主的", "example": "She became more independent at university.", "translation": "她上大学后变得更加独立。"},
-  {"word": "indicate", "phonetic": "/ˈɪndɪkeɪt/", "meaning": "v. 表明；指示", "example": "The results indicate a need for change.", "translation": "这些结果表明需要作出改变。"},
-  {"word": "individual", "phonetic": "/ˌɪndɪˈvɪdʒuəl/", "meaning": "n. 个人；adj. 个别的", "example": "Each individual has different needs.", "translation": "每个人都有不同的需求。"},
-  {"word": "industry", "phonetic": "/ˈɪndəstri/", "meaning": "n. 工业；行业", "example": "The tourism industry creates many jobs.", "translation": "旅游业创造了许多工作岗位。"},
-  {"word": "influence", "phonetic": "/ˈɪnfluəns/", "meaning": "n. 影响；v. 影响", "example": "Friends can influence our decisions.", "translation": "朋友可能影响我们的决定。"},
-  {"word": "information", "phonetic": "/ˌɪnfəˈmeɪʃn/", "meaning": "n. 信息；资料", "example": "Check the information before using it.", "translation": "使用信息前先核实。"},
-  {"word": "innovation", "phonetic": "/ˌɪnəˈveɪʃn/", "meaning": "n. 创新", "example": "Innovation helps businesses grow.", "translation": "创新帮助企业发展。"},
-  {"word": "instance", "phonetic": "/ˈɪnstəns/", "meaning": "n. 例子；实例", "example": "For instance, you could walk to work.", "translation": "例如，你可以步行上班。"},
-  {"word": "instead", "phonetic": "/ɪnˈsted/", "meaning": "adv. 代替；反而", "example": "We stayed home instead of going out.", "translation": "我们没有出门，而是待在家里。"},
-  {"word": "instruction", "phonetic": "/ɪnˈstrʌkʃn/", "meaning": "n. 指示；指导", "example": "Read the instructions before starting.", "translation": "开始前阅读说明。"},
-  {"word": "intend", "phonetic": "/ɪnˈtend/", "meaning": "v. 打算；意图", "example": "I intend to finish the report today.", "translation": "我打算今天完成报告。"},
-  {"word": "interact", "phonetic": "/ˌɪntərˈækt/", "meaning": "v. 互动；相互作用", "example": "Students interact during group activities.", "translation": "学生在小组活动中互动。"},
-  {"word": "interest", "phonetic": "/ˈɪntrəst/", "meaning": "n. 兴趣；利息；v. 使感兴趣", "example": "She has an interest in history.", "translation": "她对历史感兴趣。"},
-  {"word": "involve", "phonetic": "/ɪnˈvɒlv/", "meaning": "v. 涉及；使参与", "example": "The project will involve local schools.", "translation": "这个项目将让当地学校参与。"},
-  {"word": "issue", "phonetic": "/ˈɪʃuː/", "meaning": "n. 问题；期号；v. 发布", "example": "We need to discuss this important issue.", "translation": "我们需要讨论这个重要问题。"},
-  {"word": "knowledge", "phonetic": "/ˈnɒlɪdʒ/", "meaning": "n. 知识；学问", "example": "Books are a rich source of knowledge.", "translation": "书籍是丰富的知识来源。"},
-  {"word": "lack", "phonetic": "/læk/", "meaning": "n. 缺乏；v. 缺少", "example": "Lack of sleep makes it hard to concentrate.", "translation": "睡眠不足让人难以集中注意力。"},
-  {"word": "likely", "phonetic": "/ˈlaɪkli/", "meaning": "adj. 可能的；adv. 很可能", "example": "It is likely to rain this afternoon.", "translation": "今天下午很可能下雨。"},
-  {"word": "limit", "phonetic": "/ˈlɪmɪt/", "meaning": "n. 限制；v. 限制", "example": "We should limit the amount of waste we produce.", "translation": "我们应该限制产生的垃圾量。"},
-  {"word": "maintain", "phonetic": "/meɪnˈteɪn/", "meaning": "v. 维持；保养", "example": "It is important to maintain a healthy balance.", "translation": "保持健康的平衡很重要。"},
-  {"word": "major", "phonetic": "/ˈmeɪdʒə(r)/", "meaning": "adj. 主要的；n. 专业", "example": "Pollution is a major problem in many cities.", "translation": "污染是许多城市的主要问题。"},
-  {"word": "measure", "phonetic": "/ˈmeʒə(r)/", "meaning": "v. 测量；n. 措施", "example": "We must take measures to save water.", "translation": "我们必须采取措施节约用水。"},
-  {"word": "mental", "phonetic": "/ˈmentl/", "meaning": "adj. 心理的；精神的", "example": "Exercise is good for mental health.", "translation": "运动有益于心理健康。"},
-  {"word": "method", "phonetic": "/ˈmeθəd/", "meaning": "n. 方法", "example": "This method makes learning easier.", "translation": "这个方法让学习更容易。"},
-  {"word": "natural", "phonetic": "/ˈnætʃrəl/", "meaning": "adj. 自然的；天然的", "example": "The park protects natural habitats.", "translation": "这个公园保护自然栖息地。"},
-  {"word": "necessary", "phonetic": "/ˈnesəsəri/", "meaning": "adj. 必要的", "example": "Careful planning is necessary for success.", "translation": "细致的规划对成功是必要的。"},
-  {"word": "obtain", "phonetic": "/əbˈteɪn/", "meaning": "v. 获得；得到", "example": "You can obtain information from the website.", "translation": "你可以从网站获得信息。"},
-  {"word": "obvious", "phonetic": "/ˈɒbviəs/", "meaning": "adj. 明显的", "example": "The benefits of exercise are obvious.", "translation": "运动的益处显而易见。"},
-  {"word": "occur", "phonetic": "/əˈkɜː(r)/", "meaning": "v. 发生；出现", "example": "Accidents can occur when people are tired.", "translation": "人们疲劳时可能发生事故。"},
-  {"word": "offer", "phonetic": "/ˈɒfə(r)/", "meaning": "v. 提供；n. 提议", "example": "The school offers free language courses.", "translation": "学校提供免费的语言课程。"},
-  {"word": "opinion", "phonetic": "/əˈpɪnjən/", "meaning": "n. 意见；看法", "example": "In my opinion, the plan is practical.", "translation": "在我看来，这项计划切实可行。"},
-  {"word": "opportunity", "phonetic": "/ˌɒpəˈtjuːnəti/", "meaning": "n. 机会；时机", "example": "Every day is an opportunity to learn.", "translation": "每一天都是学习的机会。"},
-  {"word": "participate", "phonetic": "/pɑːˈtɪsɪpeɪt/", "meaning": "v. 参加；参与", "example": "All students can participate in the discussion.", "translation": "所有学生都可以参与讨论。"},
-  {"word": "particular", "phonetic": "/pəˈtɪkjələ(r)/", "meaning": "adj. 特定的；特别的", "example": "Is there a particular topic you prefer?", "translation": "你有特别喜欢的话题吗？"},
-  {"word": "patient", "phonetic": "/ˈpeɪʃnt/", "meaning": "adj. 耐心的；n. 病人", "example": "Be patient with yourself when learning.", "translation": "学习时请对自己多一点耐心。"},
-  {"word": "perform", "phonetic": "/pəˈfɔːm/", "meaning": "v. 执行；表演；表现", "example": "The team performed well under pressure.", "translation": "团队在压力下表现良好。"},
-  {"word": "persuade", "phonetic": "/pəˈsweɪd/", "meaning": "v. 说服；劝说", "example": "I persuaded my friend to join the club.", "translation": "我说服朋友加入了俱乐部。"},
-  {"word": "policy", "phonetic": "/ˈpɒləsi/", "meaning": "n. 政策；方针", "example": "The new policy supports small businesses.", "translation": "这项新政策支持小企业。"},
-  {"word": "population", "phonetic": "/ˌpɒpjuˈleɪʃn/", "meaning": "n. 人口", "example": "The population of the city is growing.", "translation": "这座城市的人口正在增长。"},
-  {"word": "positive", "phonetic": "/ˈpɒzətɪv/", "meaning": "adj. 积极的；肯定的", "example": "Try to stay positive during difficult times.", "translation": "困难时期也尽量保持积极心态。"},
-  {"word": "potential", "phonetic": "/pəˈtenʃl/", "meaning": "adj. 潜在的；n. 潜力", "example": "Everyone has the potential to grow.", "translation": "每个人都有成长的潜力。"},
-  {"word": "predict", "phonetic": "/prɪˈdɪkt/", "meaning": "v. 预测", "example": "It is hard to predict future changes.", "translation": "未来的变化很难预测。"},
-  {"word": "prefer", "phonetic": "/prɪˈfɜː(r)/", "meaning": "v. 更喜欢；宁愿", "example": "I prefer walking to taking the bus.", "translation": "比起坐公交车，我更喜欢步行。"},
-  {"word": "pressure", "phonetic": "/ˈpreʃə(r)/", "meaning": "n. 压力", "example": "Students often feel pressure before exams.", "translation": "学生在考试前常感到压力。"},
-  {"word": "prevent", "phonetic": "/prɪˈvent/", "meaning": "v. 防止；阻止", "example": "Washing your hands helps prevent illness.", "translation": "洗手有助于预防疾病。"},
-  {"word": "previous", "phonetic": "/ˈpriːviəs/", "meaning": "adj. 先前的；以前的", "example": "Please review the previous lesson.", "translation": "请复习上一课。"},
-  {"word": "process", "phonetic": "/ˈprəʊses/", "meaning": "n. 过程；v. 处理", "example": "Learning is a gradual process.", "translation": "学习是一个循序渐进的过程。"},
-  {"word": "produce", "phonetic": "/prəˈdjuːs/", "meaning": "v. 生产；产生", "example": "This factory produces electric cars.", "translation": "这家工厂生产电动汽车。"},
-  {"word": "promote", "phonetic": "/prəˈməʊt/", "meaning": "v. 促进；推广；晋升", "example": "The campaign promotes healthy eating.", "translation": "这项活动提倡健康饮食。"},
-  {"word": "protect", "phonetic": "/prəˈtekt/", "meaning": "v. 保护", "example": "We must protect our personal information.", "translation": "我们必须保护个人信息。"},
-  {"word": "provide", "phonetic": "/prəˈvaɪd/", "meaning": "v. 提供；供应", "example": "The library provides a quiet place to study.", "translation": "图书馆提供了一个安静的学习场所。"},
-  {"word": "purpose", "phonetic": "/ˈpɜːpəs/", "meaning": "n. 目的；用途", "example": "What is the purpose of the meeting?", "translation": "这次会议的目的是什么？"},
-  {"word": "quality", "phonetic": "/ˈkwɒləti/", "meaning": "n. 质量；品质", "example": "The company focuses on product quality.", "translation": "公司重视产品质量。"},
-  {"word": "range", "phonetic": "/reɪndʒ/", "meaning": "n. 范围；v. 变化", "example": "The shop offers a wide range of books.", "translation": "这家店提供种类繁多的书籍。"},
-  {"word": "reason", "phonetic": "/ˈriːzn/", "meaning": "n. 原因；v. 推理", "example": "There is a good reason for the delay.", "translation": "延误有充分的理由。"},
-  {"word": "recognize", "phonetic": "/ˈrekəɡnaɪz/", "meaning": "v. 认出；承认", "example": "I did not recognize him at first.", "translation": "我起初没有认出他。"},
-  {"word": "recommend", "phonetic": "/ˌrekəˈmend/", "meaning": "v. 推荐；建议", "example": "Can you recommend a useful book?", "translation": "你能推荐一本有用的书吗？"},
-  {"word": "reduce", "phonetic": "/rɪˈdjuːs/", "meaning": "v. 减少；降低", "example": "We can reduce waste by reusing bags.", "translation": "我们可以通过重复使用袋子来减少浪费。"},
-  {"word": "reflect", "phonetic": "/rɪˈflekt/", "meaning": "v. 反映；反射；深思", "example": "Our choices reflect our values.", "translation": "我们的选择反映我们的价值观。"},
-  {"word": "relate", "phonetic": "/rɪˈleɪt/", "meaning": "v. 联系；有关", "example": "How does this relate to our discussion?", "translation": "这与我们的讨论有何关联？"},
-  {"word": "require", "phonetic": "/rɪˈkwaɪə(r)/", "meaning": "v. 需要；要求", "example": "Good results require time and effort.", "translation": "好的结果需要时间和努力。"},
-  {"word": "research", "phonetic": "/rɪˈsɜːtʃ/", "meaning": "n. 研究；v. 研究", "example": "The team conducts research on clean energy.", "translation": "该团队研究清洁能源。"},
-  {"word": "resource", "phonetic": "/rɪˈsɔːs/", "meaning": "n. 资源", "example": "Water is a precious natural resource.", "translation": "水是一种宝贵的自然资源。"},
-  {"word": "respond", "phonetic": "/rɪˈspɒnd/", "meaning": "v. 回应；反应", "example": "Please respond to the email today.", "translation": "请今天回复这封邮件。"},
-  {"word": "responsible", "phonetic": "/rɪˈspɒnsəbl/", "meaning": "adj. 负责的；有责任心的", "example": "We are responsible for our own choices.", "translation": "我们要对自己的选择负责。"},
-  {"word": "result", "phonetic": "/rɪˈzʌlt/", "meaning": "n. 结果；v. 导致", "example": "Hard work often leads to good results.", "translation": "努力常能带来好结果。"},
-  {"word": "reveal", "phonetic": "/rɪˈviːl/", "meaning": "v. 揭示；透露", "example": "The survey revealed a change in habits.", "translation": "调查揭示了习惯的变化。"},
-  {"word": "risk", "phonetic": "/rɪsk/", "meaning": "n. 风险；v. 冒险", "example": "Wearing a helmet reduces the risk of injury.", "translation": "戴头盔可以降低受伤风险。"},
-  {"word": "role", "phonetic": "/rəʊl/", "meaning": "n. 角色；作用", "example": "Teachers play an important role in society.", "translation": "教师在社会中发挥着重要作用。"},
-  {"word": "salary", "phonetic": "/ˈsæləri/", "meaning": "n. 薪水", "example": "The job offers a competitive salary.", "translation": "这份工作提供有竞争力的薪水。"},
-  {"word": "satisfy", "phonetic": "/ˈsætɪsfaɪ/", "meaning": "v. 使满意；满足", "example": "The service failed to satisfy our needs.", "translation": "这项服务未能满足我们的需求。"},
-  {"word": "schedule", "phonetic": "/ˈʃedjuːl/", "meaning": "n. 时间表；v. 安排", "example": "Check your schedule before making plans.", "translation": "制定计划前先查看时间表。"},
-  {"word": "scientific", "phonetic": "/ˌsaɪənˈtɪfɪk/", "meaning": "adj. 科学的", "example": "We need scientific evidence for the claim.", "translation": "这一说法需要科学证据。"},
-  {"word": "security", "phonetic": "/sɪˈkjʊərəti/", "meaning": "n. 安全；保障", "example": "Online security is important to everyone.", "translation": "网络安全对每个人都很重要。"},
-  {"word": "select", "phonetic": "/sɪˈlekt/", "meaning": "v. 选择", "example": "Please select the best answer.", "translation": "请选择最佳答案。"},
-  {"word": "sense", "phonetic": "/sens/", "meaning": "n. 感觉；意义；v. 感觉到", "example": "Her explanation makes sense.", "translation": "她的解释合乎道理。"},
-  {"word": "separate", "phonetic": "/ˈsepəreɪt/", "meaning": "v. 分开；区分", "example": "Please separate paper from other waste.", "translation": "请将纸张与其他垃圾分开。"},
-  {"word": "serious", "phonetic": "/ˈsɪəriəs/", "meaning": "adj. 严重的；认真的", "example": "Air pollution is a serious problem.", "translation": "空气污染是个严重问题。"},
-  {"word": "service", "phonetic": "/ˈsɜːvɪs/", "meaning": "n. 服务", "example": "The hotel provides excellent service.", "translation": "这家酒店提供优质服务。"},
-  {"word": "share", "phonetic": "/ʃeə(r)/", "meaning": "v. 分享；n. 份额", "example": "We can share ideas in the meeting.", "translation": "我们可以在会上分享想法。"},
-  {"word": "significant", "phonetic": "/sɪɡˈnɪfɪkənt/", "meaning": "adj. 显著的；重要的", "example": "She made significant progress this month.", "translation": "她这个月取得了显著进步。"},
-  {"word": "similar", "phonetic": "/ˈsɪmələ(r)/", "meaning": "adj. 相似的", "example": "The two languages have similar sounds.", "translation": "这两种语言有相似的发音。"},
-  {"word": "skill", "phonetic": "/skɪl/", "meaning": "n. 技能；技巧", "example": "Writing is a skill that takes practice.", "translation": "写作是一项需要练习的技能。"},
-  {"word": "social", "phonetic": "/ˈsəʊʃl/", "meaning": "adj. 社会的；社交的", "example": "Social media helps people stay connected.", "translation": "社交媒体帮助人们保持联系。"},
-  {"word": "society", "phonetic": "/səˈsaɪəti/", "meaning": "n. 社会；协会", "example": "Education can improve society.", "translation": "教育可以改善社会。"},
-  {"word": "solution", "phonetic": "/səˈluːʃn/", "meaning": "n. 解决办法；溶液", "example": "We found a simple solution to the problem.", "translation": "我们找到了这个问题的简单解决办法。"},
-  {"word": "source", "phonetic": "/sɔːs/", "meaning": "n. 来源", "example": "Always check the source of information.", "translation": "始终核查信息的来源。"},
-  {"word": "specific", "phonetic": "/spəˈsɪfɪk/", "meaning": "adj. 具体的；特定的", "example": "Please give a specific example.", "translation": "请给出一个具体例子。"},
-  {"word": "standard", "phonetic": "/ˈstændəd/", "meaning": "n. 标准；adj. 标准的", "example": "The product meets safety standards.", "translation": "这款产品符合安全标准。"},
-  {"word": "strategy", "phonetic": "/ˈstrætədʒi/", "meaning": "n. 策略；战略", "example": "We need a clear strategy for growth.", "translation": "我们需要明确的发展策略。"},
-  {"word": "structure", "phonetic": "/ˈstrʌktʃə(r)/", "meaning": "n. 结构；v. 组织", "example": "The essay has a clear structure.", "translation": "这篇文章结构清晰。"},
-  {"word": "suffer", "phonetic": "/ˈsʌfə(r)/", "meaning": "v. 遭受；受苦", "example": "Many people suffer from back pain.", "translation": "许多人受背痛困扰。"},
-  {"word": "supply", "phonetic": "/səˈplaɪ/", "meaning": "n. 供应；v. 供给", "example": "The town needs a reliable water supply.", "translation": "这个城镇需要可靠的供水。"},
-  {"word": "support", "phonetic": "/səˈpɔːt/", "meaning": "v. 支持；n. 支持", "example": "My friends always support my decisions.", "translation": "朋友们总是支持我的决定。"},
-  {"word": "survey", "phonetic": "/ˈsɜːveɪ/", "meaning": "n. 调查", "example": "The survey asked students about their habits.", "translation": "调查询问了学生们的习惯。"},
-  {"word": "sustainable", "phonetic": "/səˈsteɪnəbl/", "meaning": "adj. 可持续的", "example": "We need sustainable ways to produce energy.", "translation": "我们需要可持续的能源生产方式。"},
-  {"word": "target", "phonetic": "/ˈtɑːɡɪt/", "meaning": "n. 目标；v. 以……为目标", "example": "We reached our sales target this month.", "translation": "我们本月达到了销售目标。"},
-  {"word": "task", "phonetic": "/tɑːsk/", "meaning": "n. 任务", "example": "Break a large task into smaller steps.", "translation": "把大任务拆分成较小的步骤。"},
-  {"word": "technology", "phonetic": "/tekˈnɒlədʒi/", "meaning": "n. 技术；科技", "example": "Technology makes communication easier.", "translation": "技术让沟通变得更容易。"},
-  {"word": "tend", "phonetic": "/tend/", "meaning": "v. 倾向于；照料", "example": "People tend to remember unusual events.", "translation": "人们往往会记住不寻常的事件。"},
-  {"word": "theory", "phonetic": "/ˈθɪəri/", "meaning": "n. 理论", "example": "We need to test the theory in practice.", "translation": "我们需要在实践中检验这个理论。"},
-  {"word": "threat", "phonetic": "/θret/", "meaning": "n. 威胁", "example": "Pollution is a threat to wildlife.", "translation": "污染是对野生动植物的威胁。"},
-  {"word": "traditional", "phonetic": "/trəˈdɪʃənl/", "meaning": "adj. 传统的", "example": "The festival celebrates traditional music.", "translation": "这个节日弘扬传统音乐。"},
-  {"word": "transport", "phonetic": "/ˈtrænspɔːt/", "meaning": "n. 交通运输", "example": "Public transport can reduce traffic.", "translation": "公共交通可以缓解交通拥堵。"},
-  {"word": "trend", "phonetic": "/trend/", "meaning": "n. 趋势；倾向", "example": "The report describes a new trend in education.", "translation": "报告描述了教育领域的新趋势。"},
-  {"word": "valuable", "phonetic": "/ˈvæljuəbl/", "meaning": "adj. 有价值的；宝贵的", "example": "Your advice was very valuable to me.", "translation": "你的建议对我很有价值。"},
-  {"word": "vary", "phonetic": "/ˈveəri/", "meaning": "v. 变化；不同", "example": "Prices vary from store to store.", "translation": "价格因商店而异。"},
-  {"word": "waste", "phonetic": "/weɪst/", "meaning": "n. 浪费；废物；v. 浪费", "example": "Do not waste food or water.", "translation": "不要浪费食物或水。"},
-  {"word": "wealth", "phonetic": "/welθ/", "meaning": "n. 财富；大量", "example": "Health is more important than wealth.", "translation": "健康比财富更重要。"},
-  {"word": "willing", "phonetic": "/ˈwɪlɪŋ/", "meaning": "adj. 愿意的", "example": "She is willing to help others.", "translation": "她乐于帮助别人。"},
-  {"word": "youth", "phonetic": "/juːθ/", "meaning": "n. 青年；青春", "example": "The program supports youth employment.", "translation": "这个项目支持青年就业。"}
+  {
+    "word": "ability",
+    "phonetic": "/əˈbɪləti/",
+    "meaning": "n. 能力；才能",
+    "example": "Practice improves your ability to communicate.",
+    "translation": "练习能提高你的沟通能力。",
+    "id": "ability",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "abroad",
+    "phonetic": "/əˈbrɔːd/",
+    "meaning": "adv. 在国外；到国外",
+    "example": "She plans to study abroad next year.",
+    "translation": "她计划明年出国留学。",
+    "id": "abroad",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "absorb",
+    "phonetic": "/əbˈzɔːb/",
+    "meaning": "v. 吸收；使专注",
+    "example": "Plants absorb water through their roots.",
+    "translation": "植物通过根部吸收水分。",
+    "id": "absorb",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "academic",
+    "phonetic": "/ˌækəˈdemɪk/",
+    "meaning": "adj. 学术的；学业的",
+    "example": "The library offers academic support.",
+    "translation": "图书馆提供学术支持。",
+    "id": "academic",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "accept",
+    "phonetic": "/əkˈsept/",
+    "meaning": "v. 接受；认可",
+    "example": "I am happy to accept your invitation.",
+    "translation": "我很高兴接受你的邀请。",
+    "id": "accept",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "access",
+    "phonetic": "/ˈækses/",
+    "meaning": "n. 使用权；通道；v. 访问",
+    "example": "Students have free access to the library.",
+    "translation": "学生可以免费使用图书馆。",
+    "id": "access",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "account",
+    "phonetic": "/əˈkaʊnt/",
+    "meaning": "n. 账户；描述；v. 解释",
+    "example": "I opened a bank account yesterday.",
+    "translation": "我昨天开了一个银行账户。",
+    "id": "account",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "accurate",
+    "phonetic": "/ˈækjərət/",
+    "meaning": "adj. 准确的；精确的",
+    "example": "We need accurate information for the report.",
+    "translation": "我们需要准确的信息来写报告。",
+    "id": "accurate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "achieve",
+    "phonetic": "/əˈtʃiːv/",
+    "meaning": "v. 实现；达到",
+    "example": "Small steps help us achieve our goals.",
+    "translation": "小小的行动帮助我们实现目标。",
+    "id": "achieve",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "adapt",
+    "phonetic": "/əˈdæpt/",
+    "meaning": "v. 适应；改编",
+    "example": "It takes time to adapt to a new city.",
+    "translation": "适应新城市需要时间。",
+    "id": "adapt",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "addition",
+    "phonetic": "/əˈdɪʃn/",
+    "meaning": "n. 增加；加法",
+    "example": "The new park is a welcome addition.",
+    "translation": "新公园的增建很受欢迎。",
+    "id": "addition",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "adequate",
+    "phonetic": "/ˈædɪkwət/",
+    "meaning": "adj. 足够的；适当的",
+    "example": "Make sure you get adequate sleep.",
+    "translation": "确保你有充足的睡眠。",
+    "id": "adequate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "adjust",
+    "phonetic": "/əˈdʒʌst/",
+    "meaning": "v. 调整；适应",
+    "example": "You can adjust the height of the chair.",
+    "translation": "你可以调整椅子的高度。",
+    "id": "adjust",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "admire",
+    "phonetic": "/ədˈmaɪə(r)/",
+    "meaning": "v. 钦佩；欣赏",
+    "example": "I admire her courage and honesty.",
+    "translation": "我钦佩她的勇气和诚实。",
+    "id": "admire",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "admit",
+    "phonetic": "/ədˈmɪt/",
+    "meaning": "v. 承认；准许进入",
+    "example": "He was willing to admit his mistake.",
+    "translation": "他愿意承认自己的错误。",
+    "id": "admit",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "adopt",
+    "phonetic": "/əˈdɒpt/",
+    "meaning": "v. 采用；收养",
+    "example": "Many schools adopt new teaching methods.",
+    "translation": "许多学校采用新的教学方法。",
+    "id": "adopt",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "advantage",
+    "phonetic": "/ədˈvɑːntɪdʒ/",
+    "meaning": "n. 优势；有利条件",
+    "example": "Experience is an advantage in this job.",
+    "translation": "经验是从事这份工作的优势。",
+    "id": "advantage",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "advertise",
+    "phonetic": "/ˈædvətaɪz/",
+    "meaning": "v. 做广告；宣传",
+    "example": "They advertise their products online.",
+    "translation": "他们在网上宣传自己的产品。",
+    "id": "advertise",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "affect",
+    "phonetic": "/əˈfekt/",
+    "meaning": "v. 影响；使感动",
+    "example": "Lack of sleep can affect your memory.",
+    "translation": "睡眠不足会影响记忆力。",
+    "id": "affect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "afford",
+    "phonetic": "/əˈfɔːd/",
+    "meaning": "v. 买得起；承担得起",
+    "example": "I cannot afford a new computer now.",
+    "translation": "我现在买不起新电脑。",
+    "id": "afford",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "alternative",
+    "phonetic": "/ɔːlˈtɜːnətɪv/",
+    "meaning": "n. 替代选择；adj. 可供选择的",
+    "example": "Cycling is an alternative to driving.",
+    "translation": "骑自行车是开车之外的另一种选择。",
+    "id": "alternative",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "amount",
+    "phonetic": "/əˈmaʊnt/",
+    "meaning": "n. 数量；总额",
+    "example": "A small amount of exercise is helpful.",
+    "translation": "少量运动也有益处。",
+    "id": "amount",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "analyze",
+    "phonetic": "/ˈænəlaɪz/",
+    "meaning": "v. 分析",
+    "example": "We need to analyze the survey results.",
+    "translation": "我们需要分析调查结果。",
+    "id": "analyze",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "announce",
+    "phonetic": "/əˈnaʊns/",
+    "meaning": "v. 宣布；公布",
+    "example": "They will announce the results tomorrow.",
+    "translation": "他们将在明天公布结果。",
+    "id": "announce",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "anxious",
+    "phonetic": "/ˈæŋkʃəs/",
+    "meaning": "adj. 焦虑的；渴望的",
+    "example": "She felt anxious before the exam.",
+    "translation": "考试前她感到焦虑。",
+    "id": "anxious",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "apologize",
+    "phonetic": "/əˈpɒlədʒaɪz/",
+    "meaning": "v. 道歉",
+    "example": "I apologize for being late.",
+    "translation": "我为迟到道歉。",
+    "id": "apologize",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "appeal",
+    "phonetic": "/əˈpiːl/",
+    "meaning": "n. 呼吁；吸引力；v. 呼吁",
+    "example": "The charity made an appeal for help.",
+    "translation": "该慈善机构发出了求助呼吁。",
+    "id": "appeal",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "appear",
+    "phonetic": "/əˈpɪə(r)/",
+    "meaning": "v. 出现；似乎",
+    "example": "Stars appear when the sky gets dark.",
+    "translation": "天黑时星星会出现。",
+    "id": "appear",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "application",
+    "phonetic": "/ˌæplɪˈkeɪʃn/",
+    "meaning": "n. 申请；应用",
+    "example": "Please send your application by Friday.",
+    "translation": "请在星期五之前提交申请。",
+    "id": "application",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "apply",
+    "phonetic": "/əˈplaɪ/",
+    "meaning": "v. 申请；应用",
+    "example": "You can apply for the job online.",
+    "translation": "你可以在网上申请这份工作。",
+    "id": "apply",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "appreciate",
+    "phonetic": "/əˈpriːʃieɪt/",
+    "meaning": "v. 感激；欣赏",
+    "example": "I really appreciate your help.",
+    "translation": "我非常感谢你的帮助。",
+    "id": "appreciate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "approach",
+    "phonetic": "/əˈprəʊtʃ/",
+    "meaning": "n. 方法；v. 接近",
+    "example": "We need a different approach to this problem.",
+    "translation": "我们需要用不同的方法解决这个问题。",
+    "id": "approach",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "appropriate",
+    "phonetic": "/əˈprəʊpriət/",
+    "meaning": "adj. 适当的；合适的",
+    "example": "Wear appropriate clothes for the interview.",
+    "translation": "面试时穿着得体。",
+    "id": "appropriate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "argue",
+    "phonetic": "/ˈɑːɡjuː/",
+    "meaning": "v. 争论；论证",
+    "example": "They argue that education should be free.",
+    "translation": "他们主张教育应该免费。",
+    "id": "argue",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "arrange",
+    "phonetic": "/əˈreɪndʒ/",
+    "meaning": "v. 安排；整理",
+    "example": "Let us arrange a meeting for Monday.",
+    "translation": "我们安排在星期一开会吧。",
+    "id": "arrange",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "aspect",
+    "phonetic": "/ˈæspekt/",
+    "meaning": "n. 方面",
+    "example": "Cost is only one aspect of the decision.",
+    "translation": "费用只是这项决定的一个方面。",
+    "id": "aspect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "assess",
+    "phonetic": "/əˈses/",
+    "meaning": "v. 评估；评价",
+    "example": "Teachers assess students in different ways.",
+    "translation": "教师以不同方式评估学生。",
+    "id": "assess",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "assist",
+    "phonetic": "/əˈsɪst/",
+    "meaning": "v. 帮助；协助",
+    "example": "Volunteers assist visitors at the museum.",
+    "translation": "志愿者在博物馆帮助参观者。",
+    "id": "assist",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "assume",
+    "phonetic": "/əˈsjuːm/",
+    "meaning": "v. 假定；承担",
+    "example": "Do not assume that everyone agrees.",
+    "translation": "不要假定所有人都同意。",
+    "id": "assume",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "atmosphere",
+    "phonetic": "/ˈætməsfɪə(r)/",
+    "meaning": "n. 大气；气氛",
+    "example": "The cafe has a friendly atmosphere.",
+    "translation": "这家咖啡馆气氛友好。",
+    "id": "atmosphere",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "attempt",
+    "phonetic": "/əˈtempt/",
+    "meaning": "n. 尝试；v. 试图",
+    "example": "He succeeded on his second attempt.",
+    "translation": "他在第二次尝试时成功了。",
+    "id": "attempt",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "attitude",
+    "phonetic": "/ˈætɪtjuːd/",
+    "meaning": "n. 态度；看法",
+    "example": "A positive attitude can make a difference.",
+    "translation": "积极的态度能带来改变。",
+    "id": "attitude",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "attract",
+    "phonetic": "/əˈtrækt/",
+    "meaning": "v. 吸引",
+    "example": "The museum attracts visitors from around the world.",
+    "translation": "这座博物馆吸引世界各地的游客。",
+    "id": "attract",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "available",
+    "phonetic": "/əˈveɪləbl/",
+    "meaning": "adj. 可获得的；有空的",
+    "example": "Free courses are available online.",
+    "translation": "网上有免费的课程。",
+    "id": "available",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "avoid",
+    "phonetic": "/əˈvɔɪd/",
+    "meaning": "v. 避免",
+    "example": "Leave early to avoid the traffic.",
+    "translation": "早点出发以避开拥堵。",
+    "id": "avoid",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "aware",
+    "phonetic": "/əˈweə(r)/",
+    "meaning": "adj. 意识到的；知道的",
+    "example": "We should be aware of the risks.",
+    "translation": "我们应该意识到这些风险。",
+    "id": "aware",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "balance",
+    "phonetic": "/ˈbæləns/",
+    "meaning": "n. 平衡；v. 使平衡",
+    "example": "Try to balance work and rest.",
+    "translation": "试着平衡工作与休息。",
+    "id": "balance",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "behavior",
+    "phonetic": "/bɪˈheɪvjə(r)/",
+    "meaning": "n. 行为；举止",
+    "example": "Parents influence their children's behavior.",
+    "translation": "父母会影响孩子的行为。",
+    "id": "behavior",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "benefit",
+    "phonetic": "/ˈbenɪfɪt/",
+    "meaning": "n. 益处；v. 使受益",
+    "example": "Regular exercise benefits both body and mind.",
+    "translation": "规律运动有益身心。",
+    "id": "benefit",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "budget",
+    "phonetic": "/ˈbʌdʒɪt/",
+    "meaning": "n. 预算；v. 做预算",
+    "example": "We must stay within our budget.",
+    "translation": "我们必须控制在预算之内。",
+    "id": "budget",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "campaign",
+    "phonetic": "/kæmˈpeɪn/",
+    "meaning": "n. 活动；运动",
+    "example": "The campaign encourages people to save energy.",
+    "translation": "这项活动鼓励人们节约能源。",
+    "id": "campaign",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "campus",
+    "phonetic": "/ˈkæmpəs/",
+    "meaning": "n. 校园",
+    "example": "There is a new library on campus.",
+    "translation": "校园里有一座新图书馆。",
+    "id": "campus",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "capable",
+    "phonetic": "/ˈkeɪpəbl/",
+    "meaning": "adj. 有能力的",
+    "example": "She is capable of solving the problem.",
+    "translation": "她有能力解决这个问题。",
+    "id": "capable",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "career",
+    "phonetic": "/kəˈrɪə(r)/",
+    "meaning": "n. 职业；职业生涯",
+    "example": "He hopes to build a career in science.",
+    "translation": "他希望在科学领域发展职业生涯。",
+    "id": "career",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "cause",
+    "phonetic": "/kɔːz/",
+    "meaning": "n. 原因；v. 导致",
+    "example": "Heavy rain can cause flooding.",
+    "translation": "大雨会导致洪水。",
+    "id": "cause",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "certain",
+    "phonetic": "/ˈsɜːtn/",
+    "meaning": "adj. 确定的；某些",
+    "example": "I am certain that she will come.",
+    "translation": "我确信她会来。",
+    "id": "certain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "challenge",
+    "phonetic": "/ˈtʃælɪndʒ/",
+    "meaning": "n. 挑战；v. 向……挑战",
+    "example": "Learning a new language is a challenge.",
+    "translation": "学习一门新语言是一项挑战。",
+    "id": "challenge",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "claim",
+    "phonetic": "/kleɪm/",
+    "meaning": "v. 声称；索取；n. 主张",
+    "example": "They claim that the product saves energy.",
+    "translation": "他们声称该产品节能。",
+    "id": "claim",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "climate",
+    "phonetic": "/ˈklaɪmət/",
+    "meaning": "n. 气候",
+    "example": "The climate here is warm and wet.",
+    "translation": "这里气候温暖湿润。",
+    "id": "climate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "combine",
+    "phonetic": "/kəmˈbaɪn/",
+    "meaning": "v. 结合；联合",
+    "example": "Try to combine theory with practice.",
+    "translation": "试着把理论与实践结合起来。",
+    "id": "combine",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "comment",
+    "phonetic": "/ˈkɒment/",
+    "meaning": "n. 评论；v. 评论",
+    "example": "Please leave a comment after reading.",
+    "translation": "请在阅读后留下评论。",
+    "id": "comment",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "communicate",
+    "phonetic": "/kəˈmjuːnɪkeɪt/",
+    "meaning": "v. 交流；传达",
+    "example": "We communicate with each other every day.",
+    "translation": "我们每天互相交流。",
+    "id": "communicate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "community",
+    "phonetic": "/kəˈmjuːnəti/",
+    "meaning": "n. 社区；群体",
+    "example": "The whole community joined the clean-up.",
+    "translation": "整个社区都参加了清洁活动。",
+    "id": "community",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "compare",
+    "phonetic": "/kəmˈpeə(r)/",
+    "meaning": "v. 比较；对比",
+    "example": "Compare prices before buying a phone.",
+    "translation": "买手机之前比较一下价格。",
+    "id": "compare",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "compete",
+    "phonetic": "/kəmˈpiːt/",
+    "meaning": "v. 竞争；比赛",
+    "example": "Several teams will compete for the prize.",
+    "translation": "几支队伍将争夺奖项。",
+    "id": "compete",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "complex",
+    "phonetic": "/ˈkɒmpleks/",
+    "meaning": "adj. 复杂的；n. 综合体",
+    "example": "The human brain is a complex system.",
+    "translation": "人脑是一个复杂的系统。",
+    "id": "complex",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "concentrate",
+    "phonetic": "/ˈkɒnsntreɪt/",
+    "meaning": "v. 集中注意力",
+    "example": "I cannot concentrate in a noisy room.",
+    "translation": "在嘈杂的房间里我无法集中注意力。",
+    "id": "concentrate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "concept",
+    "phonetic": "/ˈkɒnsept/",
+    "meaning": "n. 概念；观念",
+    "example": "The teacher explained the concept clearly.",
+    "translation": "老师清楚地解释了这个概念。",
+    "id": "concept",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "concern",
+    "phonetic": "/kənˈsɜːn/",
+    "meaning": "n. 担忧；v. 涉及；使担心",
+    "example": "Safety is our main concern.",
+    "translation": "安全是我们最关心的问题。",
+    "id": "concern",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "conclude",
+    "phonetic": "/kənˈkluːd/",
+    "meaning": "v. 得出结论；结束",
+    "example": "We conclude that the plan is practical.",
+    "translation": "我们得出结论：这项计划可行。",
+    "id": "conclude",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "condition",
+    "phonetic": "/kənˈdɪʃn/",
+    "meaning": "n. 条件；状况",
+    "example": "The car is in good condition.",
+    "translation": "这辆车状况良好。",
+    "id": "condition",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "confidence",
+    "phonetic": "/ˈkɒnfɪdəns/",
+    "meaning": "n. 信心；信任",
+    "example": "Practice gave her more confidence.",
+    "translation": "练习让她更有信心。",
+    "id": "confidence",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "confirm",
+    "phonetic": "/kənˈfɜːm/",
+    "meaning": "v. 确认；证实",
+    "example": "Please confirm the date of the meeting.",
+    "translation": "请确认会议日期。",
+    "id": "confirm",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "confuse",
+    "phonetic": "/kənˈfjuːz/",
+    "meaning": "v. 使困惑；混淆",
+    "example": "These similar names often confuse me.",
+    "translation": "这些相似的名字常让我混淆。",
+    "id": "confuse",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "connect",
+    "phonetic": "/kəˈnekt/",
+    "meaning": "v. 连接；联系",
+    "example": "The bridge connects the two villages.",
+    "translation": "这座桥连接两个村庄。",
+    "id": "connect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "consequence",
+    "phonetic": "/ˈkɒnsɪkwəns/",
+    "meaning": "n. 结果；后果",
+    "example": "Think about the consequences of your actions.",
+    "translation": "想一想你的行为会产生什么后果。",
+    "id": "consequence",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "consider",
+    "phonetic": "/kənˈsɪdə(r)/",
+    "meaning": "v. 考虑；认为",
+    "example": "Please consider all the options before you decide.",
+    "translation": "请在决定之前考虑所有选项。",
+    "id": "consider",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "consist",
+    "phonetic": "/kənˈsɪst/",
+    "meaning": "v. 组成；在于",
+    "example": "The course consists of ten lessons.",
+    "translation": "这门课程由十节课组成。",
+    "id": "consist",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "constant",
+    "phonetic": "/ˈkɒnstənt/",
+    "meaning": "adj. 不断的；不变的",
+    "example": "Constant noise can affect our health.",
+    "translation": "持续的噪声会影响我们的健康。",
+    "id": "constant",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "consume",
+    "phonetic": "/kənˈsjuːm/",
+    "meaning": "v. 消耗；消费",
+    "example": "Old machines consume more energy.",
+    "translation": "旧机器消耗更多能源。",
+    "id": "consume",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "contact",
+    "phonetic": "/ˈkɒntækt/",
+    "meaning": "n. 联系；v. 联系",
+    "example": "Please contact us if you need help.",
+    "translation": "如果需要帮助，请联系我们。",
+    "id": "contact",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "contain",
+    "phonetic": "/kənˈteɪn/",
+    "meaning": "v. 包含；容纳",
+    "example": "Fruit contains important vitamins.",
+    "translation": "水果含有重要的维生素。",
+    "id": "contain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "context",
+    "phonetic": "/ˈkɒntekst/",
+    "meaning": "n. 上下文；背景",
+    "example": "You can guess the meaning from context.",
+    "translation": "你可以根据上下文猜测词义。",
+    "id": "context",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "contribute",
+    "phonetic": "/kənˈtrɪbjuːt/",
+    "meaning": "v. 贡献；促成；投稿",
+    "example": "Everyone can contribute to the discussion.",
+    "translation": "每个人都可以在讨论中发表意见。",
+    "id": "contribute",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "convenient",
+    "phonetic": "/kənˈviːniənt/",
+    "meaning": "adj. 方便的；便利的",
+    "example": "Online shopping is convenient for busy people.",
+    "translation": "网上购物对忙碌的人很方便。",
+    "id": "convenient",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "convince",
+    "phonetic": "/kənˈvɪns/",
+    "meaning": "v. 使信服；说服",
+    "example": "The evidence convinced me that he was right.",
+    "translation": "证据让我相信他是对的。",
+    "id": "convince",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "cooperate",
+    "phonetic": "/kəʊˈɒpəreɪt/",
+    "meaning": "v. 合作；配合",
+    "example": "We must cooperate to finish on time.",
+    "translation": "我们必须合作才能按时完成。",
+    "id": "cooperate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "cope",
+    "phonetic": "/kəʊp/",
+    "meaning": "v. 应付；处理",
+    "example": "Exercise helps me cope with stress.",
+    "translation": "运动帮助我应对压力。",
+    "id": "cope",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "cost",
+    "phonetic": "/kɒst/",
+    "meaning": "n. 成本；费用；v. 花费",
+    "example": "The cost of living is rising.",
+    "translation": "生活成本正在上升。",
+    "id": "cost",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "create",
+    "phonetic": "/kriˈeɪt/",
+    "meaning": "v. 创造；创建",
+    "example": "The new factory will create more jobs.",
+    "translation": "这家新工厂会创造更多就业机会。",
+    "id": "create",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "crisis",
+    "phonetic": "/ˈkraɪsɪs/",
+    "meaning": "n. 危机",
+    "example": "The country faced an economic crisis.",
+    "translation": "这个国家面临经济危机。",
+    "id": "crisis",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "critical",
+    "phonetic": "/ˈkrɪtɪkl/",
+    "meaning": "adj. 批判性的；关键的",
+    "example": "Critical thinking is an important skill.",
+    "translation": "批判性思维是一项重要技能。",
+    "id": "critical",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "culture",
+    "phonetic": "/ˈkʌltʃə(r)/",
+    "meaning": "n. 文化",
+    "example": "Food is an important part of local culture.",
+    "translation": "食物是当地文化的重要组成部分。",
+    "id": "culture",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "curious",
+    "phonetic": "/ˈkjʊəriəs/",
+    "meaning": "adj. 好奇的",
+    "example": "Children are curious about the world.",
+    "translation": "孩子们对世界充满好奇。",
+    "id": "curious",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "damage",
+    "phonetic": "/ˈdæmɪdʒ/",
+    "meaning": "n. 损害；v. 损坏",
+    "example": "The storm caused serious damage.",
+    "translation": "暴风雨造成了严重损失。",
+    "id": "damage",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "debate",
+    "phonetic": "/dɪˈbeɪt/",
+    "meaning": "n. 辩论；v. 讨论",
+    "example": "The students held a debate about education.",
+    "translation": "学生们就教育问题进行了辩论。",
+    "id": "debate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "decline",
+    "phonetic": "/dɪˈklaɪn/",
+    "meaning": "v. 下降；婉拒；n. 下降",
+    "example": "Sales began to decline last month.",
+    "translation": "销售额从上个月开始下降。",
+    "id": "decline",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "decrease",
+    "phonetic": "/dɪˈkriːs/",
+    "meaning": "v. 减少；降低",
+    "example": "Exercise can decrease the risk of disease.",
+    "translation": "运动可以降低患病风险。",
+    "id": "decrease",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "define",
+    "phonetic": "/dɪˈfaɪn/",
+    "meaning": "v. 定义；界定",
+    "example": "How do you define success?",
+    "translation": "你如何定义成功？",
+    "id": "define",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "degree",
+    "phonetic": "/dɪˈɡriː/",
+    "meaning": "n. 学位；程度；度",
+    "example": "She earned a degree in history.",
+    "translation": "她获得了历史学学位。",
+    "id": "degree",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "delay",
+    "phonetic": "/dɪˈleɪ/",
+    "meaning": "v. 延迟；n. 延误",
+    "example": "Bad weather may delay the flight.",
+    "translation": "恶劣天气可能使航班延误。",
+    "id": "delay",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "demand",
+    "phonetic": "/dɪˈmɑːnd/",
+    "meaning": "n. 需求；v. 要求",
+    "example": "Demand for clean energy is growing.",
+    "translation": "对清洁能源的需求正在增加。",
+    "id": "demand",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "demonstrate",
+    "phonetic": "/ˈdemənstreɪt/",
+    "meaning": "v. 证明；示范",
+    "example": "The teacher demonstrated how the machine works.",
+    "translation": "老师演示了机器如何运转。",
+    "id": "demonstrate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "depend",
+    "phonetic": "/dɪˈpend/",
+    "meaning": "v. 依靠；取决于",
+    "example": "Success depends on careful preparation.",
+    "translation": "成功取决于充分的准备。",
+    "id": "depend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "describe",
+    "phonetic": "/dɪˈskraɪb/",
+    "meaning": "v. 描述；形容",
+    "example": "Can you describe what happened?",
+    "translation": "你能描述一下发生了什么吗？",
+    "id": "describe",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "desire",
+    "phonetic": "/dɪˈzaɪə(r)/",
+    "meaning": "n. 渴望；v. 想要",
+    "example": "She has a strong desire to learn.",
+    "translation": "她有强烈的求知欲。",
+    "id": "desire",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "despite",
+    "phonetic": "/dɪˈspaɪt/",
+    "meaning": "prep. 尽管",
+    "example": "They went out despite the rain.",
+    "translation": "尽管下雨，他们还是出去了。",
+    "id": "despite",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "detail",
+    "phonetic": "/ˈdiːteɪl/",
+    "meaning": "n. 细节；详情",
+    "example": "Please explain the plan in detail.",
+    "translation": "请详细解释这项计划。",
+    "id": "detail",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "determine",
+    "phonetic": "/dɪˈtɜːmɪn/",
+    "meaning": "v. 决定；确定",
+    "example": "Your choices help determine your future.",
+    "translation": "你的选择有助于决定你的未来。",
+    "id": "determine",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "develop",
+    "phonetic": "/dɪˈveləp/",
+    "meaning": "v. 发展；培养",
+    "example": "Reading helps children develop their imagination.",
+    "translation": "阅读帮助孩子培养想象力。",
+    "id": "develop",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "device",
+    "phonetic": "/dɪˈvaɪs/",
+    "meaning": "n. 装置；设备",
+    "example": "This device measures air quality.",
+    "translation": "这个装置测量空气质量。",
+    "id": "device",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "differ",
+    "phonetic": "/ˈdɪfə(r)/",
+    "meaning": "v. 不同；有区别",
+    "example": "Opinions differ on this issue.",
+    "translation": "人们对这个问题意见不同。",
+    "id": "differ",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "difficulty",
+    "phonetic": "/ˈdɪfɪkəlti/",
+    "meaning": "n. 困难",
+    "example": "He had difficulty finding a job.",
+    "translation": "他找工作遇到了困难。",
+    "id": "difficulty",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "digital",
+    "phonetic": "/ˈdɪdʒɪtl/",
+    "meaning": "adj. 数字的；数码的",
+    "example": "Digital technology has changed our lives.",
+    "translation": "数字技术改变了我们的生活。",
+    "id": "digital",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "disaster",
+    "phonetic": "/dɪˈzɑːstə(r)/",
+    "meaning": "n. 灾难",
+    "example": "The earthquake was a major disaster.",
+    "translation": "这次地震是一场重大灾难。",
+    "id": "disaster",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "discover",
+    "phonetic": "/dɪˈskʌvə(r)/",
+    "meaning": "v. 发现",
+    "example": "Scientists hope to discover new treatments.",
+    "translation": "科学家希望发现新的治疗方法。",
+    "id": "discover",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "discuss",
+    "phonetic": "/dɪˈskʌs/",
+    "meaning": "v. 讨论",
+    "example": "We will discuss the plan tomorrow.",
+    "translation": "我们明天将讨论这项计划。",
+    "id": "discuss",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "disease",
+    "phonetic": "/dɪˈziːz/",
+    "meaning": "n. 疾病",
+    "example": "Clean water helps prevent disease.",
+    "translation": "干净的水有助于预防疾病。",
+    "id": "disease",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "display",
+    "phonetic": "/dɪˈspleɪ/",
+    "meaning": "v. 展示；n. 展览",
+    "example": "The museum displays local art.",
+    "translation": "博物馆展示当地艺术作品。",
+    "id": "display",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "distance",
+    "phonetic": "/ˈdɪstəns/",
+    "meaning": "n. 距离",
+    "example": "The distance between the towns is short.",
+    "translation": "这两个城镇之间的距离很短。",
+    "id": "distance",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "distinguish",
+    "phonetic": "/dɪˈstɪŋɡwɪʃ/",
+    "meaning": "v. 区分；辨别",
+    "example": "It is hard to distinguish the twins.",
+    "translation": "很难分辨这对双胞胎。",
+    "id": "distinguish",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "distribute",
+    "phonetic": "/dɪˈstrɪbjuːt/",
+    "meaning": "v. 分发；分配",
+    "example": "Volunteers distribute food to families.",
+    "translation": "志愿者向家庭分发食物。",
+    "id": "distribute",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "diverse",
+    "phonetic": "/daɪˈvɜːs/",
+    "meaning": "adj. 多种多样的",
+    "example": "The city has a diverse population.",
+    "translation": "这座城市的人口构成多种多样。",
+    "id": "diverse",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "doubt",
+    "phonetic": "/daʊt/",
+    "meaning": "n. 怀疑；v. 怀疑",
+    "example": "There is no doubt that practice helps.",
+    "translation": "毫无疑问，练习是有帮助的。",
+    "id": "doubt",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "economic",
+    "phonetic": "/ˌiːkəˈnɒmɪk/",
+    "meaning": "adj. 经济的；经济学的",
+    "example": "Education supports economic growth.",
+    "translation": "教育促进经济增长。",
+    "id": "economic",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "economy",
+    "phonetic": "/ɪˈkɒnəmi/",
+    "meaning": "n. 经济；节约",
+    "example": "Tourism is important to the local economy.",
+    "translation": "旅游业对当地经济很重要。",
+    "id": "economy",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "educate",
+    "phonetic": "/ˈedʒukeɪt/",
+    "meaning": "v. 教育；培养",
+    "example": "Schools educate children for the future.",
+    "translation": "学校为孩子的未来提供教育。",
+    "id": "educate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "effect",
+    "phonetic": "/ɪˈfekt/",
+    "meaning": "n. 影响；效果",
+    "example": "Music can have a calming effect.",
+    "translation": "音乐可以产生舒缓的效果。",
+    "id": "effect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "effective",
+    "phonetic": "/ɪˈfektɪv/",
+    "meaning": "adj. 有效的",
+    "example": "This is an effective way to learn.",
+    "translation": "这是一种有效的学习方法。",
+    "id": "effective",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "efficient",
+    "phonetic": "/ɪˈfɪʃnt/",
+    "meaning": "adj. 高效的；有效率的",
+    "example": "We need a more efficient way to work.",
+    "translation": "我们需要一种更高效的工作方式。",
+    "id": "efficient",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "effort",
+    "phonetic": "/ˈefət/",
+    "meaning": "n. 努力",
+    "example": "Learning a language takes effort.",
+    "translation": "学习语言需要努力。",
+    "id": "effort",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "elderly",
+    "phonetic": "/ˈeldəli/",
+    "meaning": "adj. 年纪较大的",
+    "example": "The center offers help to elderly people.",
+    "translation": "这个中心为老年人提供帮助。",
+    "id": "elderly",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "employ",
+    "phonetic": "/ɪmˈplɔɪ/",
+    "meaning": "v. 雇用；使用",
+    "example": "The company employs fifty people.",
+    "translation": "这家公司雇用了五十人。",
+    "id": "employ",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "encourage",
+    "phonetic": "/ɪnˈkʌrɪdʒ/",
+    "meaning": "v. 鼓励；促进",
+    "example": "My teacher encouraged me to keep trying.",
+    "translation": "老师鼓励我继续尝试。",
+    "id": "encourage",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "energy",
+    "phonetic": "/ˈenədʒi/",
+    "meaning": "n. 能量；精力；能源",
+    "example": "We should use energy wisely.",
+    "translation": "我们应该合理利用能源。",
+    "id": "energy",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "enhance",
+    "phonetic": "/ɪnˈhɑːns/",
+    "meaning": "v. 提高；增强",
+    "example": "Reading can enhance your vocabulary.",
+    "translation": "阅读能够扩大词汇量。",
+    "id": "enhance",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "enormous",
+    "phonetic": "/ɪˈnɔːməs/",
+    "meaning": "adj. 巨大的",
+    "example": "The project requires an enormous investment.",
+    "translation": "这项工程需要巨额投资。",
+    "id": "enormous",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "ensure",
+    "phonetic": "/ɪnˈʃʊə(r)/",
+    "meaning": "v. 确保；保证",
+    "example": "Please ensure that the door is locked.",
+    "translation": "请确保门已锁好。",
+    "id": "ensure",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "entire",
+    "phonetic": "/ɪnˈtaɪə(r)/",
+    "meaning": "adj. 整个的；全部的",
+    "example": "She spent the entire day reading.",
+    "translation": "她一整天都在读书。",
+    "id": "entire",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "environment",
+    "phonetic": "/ɪnˈvaɪrənmənt/",
+    "meaning": "n. 环境",
+    "example": "Everyone can help protect the environment.",
+    "translation": "每个人都能为保护环境出一份力。",
+    "id": "environment",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "equal",
+    "phonetic": "/ˈiːkwəl/",
+    "meaning": "adj. 平等的；相等的",
+    "example": "Everyone deserves equal opportunities.",
+    "translation": "每个人都应享有平等的机会。",
+    "id": "equal",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "equipment",
+    "phonetic": "/ɪˈkwɪpmənt/",
+    "meaning": "n. 设备；装备",
+    "example": "The lab needs new equipment.",
+    "translation": "实验室需要新设备。",
+    "id": "equipment",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "essential",
+    "phonetic": "/ɪˈsenʃl/",
+    "meaning": "adj. 必不可少的；本质的",
+    "example": "Sleep is essential for good health.",
+    "translation": "睡眠对身体健康必不可少。",
+    "id": "essential",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "establish",
+    "phonetic": "/ɪˈstæblɪʃ/",
+    "meaning": "v. 建立；确立",
+    "example": "They established a school in the village.",
+    "translation": "他们在村里建了一所学校。",
+    "id": "establish",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "estimate",
+    "phonetic": "/ˈestɪmeɪt/",
+    "meaning": "v. 估计；估算",
+    "example": "We estimate that the trip will take two hours.",
+    "translation": "我们估计路程需要两小时。",
+    "id": "estimate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "evaluate",
+    "phonetic": "/ɪˈvæljueɪt/",
+    "meaning": "v. 评价；评估",
+    "example": "We need to evaluate the results carefully.",
+    "translation": "我们需要仔细评估结果。",
+    "id": "evaluate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "evidence",
+    "phonetic": "/ˈevɪdəns/",
+    "meaning": "n. 证据；依据",
+    "example": "There is clear evidence of improvement.",
+    "translation": "有明显的证据表明情况有所改善。",
+    "id": "evidence",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "exchange",
+    "phonetic": "/ɪksˈtʃeɪndʒ/",
+    "meaning": "v. 交换；n. 交流",
+    "example": "The students exchanged ideas after class.",
+    "translation": "学生们课后交流了想法。",
+    "id": "exchange",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "exist",
+    "phonetic": "/ɪɡˈzɪst/",
+    "meaning": "v. 存在",
+    "example": "Many different cultures exist in this country.",
+    "translation": "这个国家存在多种不同文化。",
+    "id": "exist",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "expand",
+    "phonetic": "/ɪkˈspænd/",
+    "meaning": "v. 扩大；扩展",
+    "example": "The company plans to expand its business.",
+    "translation": "公司计划扩大业务。",
+    "id": "expand",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "expect",
+    "phonetic": "/ɪkˈspekt/",
+    "meaning": "v. 预期；期待",
+    "example": "We expect the work to finish soon.",
+    "translation": "我们预计工作很快完成。",
+    "id": "expect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "expense",
+    "phonetic": "/ɪkˈspens/",
+    "meaning": "n. 费用；开支",
+    "example": "Travel is our biggest expense.",
+    "translation": "差旅是我们最大的开支。",
+    "id": "expense",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "experience",
+    "phonetic": "/ɪkˈspɪəriəns/",
+    "meaning": "n. 经验；经历；v. 经历",
+    "example": "Travel gives us valuable experience.",
+    "translation": "旅行给予我们宝贵的经历。",
+    "id": "experience",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "experiment",
+    "phonetic": "/ɪkˈsperɪmənt/",
+    "meaning": "n. 实验",
+    "example": "The experiment produced surprising results.",
+    "translation": "这个实验产生了令人惊讶的结果。",
+    "id": "experiment",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "expert",
+    "phonetic": "/ˈekspɜːt/",
+    "meaning": "n. 专家；adj. 熟练的",
+    "example": "Ask an expert for advice.",
+    "translation": "向专家寻求建议。",
+    "id": "expert",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "explain",
+    "phonetic": "/ɪkˈspleɪn/",
+    "meaning": "v. 解释；说明",
+    "example": "Could you explain the rule again?",
+    "translation": "你能再解释一下规则吗？",
+    "id": "explain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "explore",
+    "phonetic": "/ɪkˈsplɔː(r)/",
+    "meaning": "v. 探索；探究",
+    "example": "We want to explore new ways of learning.",
+    "translation": "我们想探索新的学习方式。",
+    "id": "explore",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "expose",
+    "phonetic": "/ɪkˈspəʊz/",
+    "meaning": "v. 暴露；使接触",
+    "example": "Do not expose your skin to strong sunlight.",
+    "translation": "不要让皮肤暴露在强烈的阳光下。",
+    "id": "expose",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "express",
+    "phonetic": "/ɪkˈspres/",
+    "meaning": "v. 表达；表示",
+    "example": "Art helps people express their feelings.",
+    "translation": "艺术帮助人们表达感受。",
+    "id": "express",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "extend",
+    "phonetic": "/ɪkˈstend/",
+    "meaning": "v. 延长；扩展",
+    "example": "The library will extend its opening hours.",
+    "translation": "图书馆将延长开放时间。",
+    "id": "extend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "extent",
+    "phonetic": "/ɪkˈstent/",
+    "meaning": "n. 程度；范围",
+    "example": "We do not know the full extent of the damage.",
+    "translation": "我们尚不清楚损害的全部程度。",
+    "id": "extent",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "extra",
+    "phonetic": "/ˈekstrə/",
+    "meaning": "adj. 额外的",
+    "example": "We need extra time to finish the task.",
+    "translation": "我们需要额外的时间来完成任务。",
+    "id": "extra",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "factor",
+    "phonetic": "/ˈfæktə(r)/",
+    "meaning": "n. 因素",
+    "example": "Price is an important factor in the decision.",
+    "translation": "价格是做决定时的重要因素。",
+    "id": "factor",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "failure",
+    "phonetic": "/ˈfeɪljə(r)/",
+    "meaning": "n. 失败；故障",
+    "example": "Failure can teach us useful lessons.",
+    "translation": "失败能教给我们有用的经验。",
+    "id": "failure",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "familiar",
+    "phonetic": "/fəˈmɪliə(r)/",
+    "meaning": "adj. 熟悉的",
+    "example": "This song sounds familiar to me.",
+    "translation": "这首歌我听起来很熟悉。",
+    "id": "familiar",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "feature",
+    "phonetic": "/ˈfiːtʃə(r)/",
+    "meaning": "n. 特点；v. 以……为特色",
+    "example": "The phone has several useful features.",
+    "translation": "这款手机有几项实用功能。",
+    "id": "feature",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "finance",
+    "phonetic": "/ˈfaɪnæns/",
+    "meaning": "n. 金融；资金；v. 资助",
+    "example": "She wants to work in finance.",
+    "translation": "她想从事金融工作。",
+    "id": "finance",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "flexible",
+    "phonetic": "/ˈfleksəbl/",
+    "meaning": "adj. 灵活的；柔韧的",
+    "example": "The company offers flexible working hours.",
+    "translation": "公司提供灵活的工作时间。",
+    "id": "flexible",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "focus",
+    "phonetic": "/ˈfəʊkəs/",
+    "meaning": "v. 集中；n. 焦点",
+    "example": "Try to focus on one task at a time.",
+    "translation": "试着一次专注于一项任务。",
+    "id": "focus",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "function",
+    "phonetic": "/ˈfʌŋkʃn/",
+    "meaning": "n. 功能；v. 运转",
+    "example": "What is the main function of this device?",
+    "translation": "这个设备的主要功能是什么？",
+    "id": "function",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "fund",
+    "phonetic": "/fʌnd/",
+    "meaning": "n. 基金；资金；v. 资助",
+    "example": "The fund supports medical research.",
+    "translation": "这项基金支持医学研究。",
+    "id": "fund",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "further",
+    "phonetic": "/ˈfɜːðə(r)/",
+    "meaning": "adj. 更多的；进一步的",
+    "example": "Contact us for further information.",
+    "translation": "如需更多信息，请联系我们。",
+    "id": "further",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "gain",
+    "phonetic": "/ɡeɪn/",
+    "meaning": "v. 获得；增加；n. 收益",
+    "example": "You can gain experience through practice.",
+    "translation": "你可以通过实践获得经验。",
+    "id": "gain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "generation",
+    "phonetic": "/ˌdʒenəˈreɪʃn/",
+    "meaning": "n. 一代；产生",
+    "example": "Each generation faces new challenges.",
+    "translation": "每一代人都面临新的挑战。",
+    "id": "generation",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "global",
+    "phonetic": "/ˈɡləʊbl/",
+    "meaning": "adj. 全球的",
+    "example": "Climate change is a global problem.",
+    "translation": "气候变化是一个全球性问题。",
+    "id": "global",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "goal",
+    "phonetic": "/ɡəʊl/",
+    "meaning": "n. 目标；进球",
+    "example": "Set a clear goal before you begin.",
+    "translation": "开始前设定一个明确的目标。",
+    "id": "goal",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "graduate",
+    "phonetic": "/ˈɡrædʒuət/",
+    "meaning": "n. 毕业生",
+    "example": "She is a recent university graduate.",
+    "translation": "她是刚毕业的大学生。",
+    "id": "graduate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "grant",
+    "phonetic": "/ɡrɑːnt/",
+    "meaning": "n. 补助金；v. 授予",
+    "example": "He received a grant for his research.",
+    "translation": "他获得了研究补助金。",
+    "id": "grant",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "guarantee",
+    "phonetic": "/ˌɡærənˈtiː/",
+    "meaning": "v. 保证；n. 保证",
+    "example": "Money does not guarantee happiness.",
+    "translation": "金钱不能保证幸福。",
+    "id": "guarantee",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "habit",
+    "phonetic": "/ˈhæbɪt/",
+    "meaning": "n. 习惯",
+    "example": "Reading before bed is a good habit.",
+    "translation": "睡前阅读是个好习惯。",
+    "id": "habit",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "handle",
+    "phonetic": "/ˈhændl/",
+    "meaning": "v. 处理；n. 把手",
+    "example": "She knows how to handle difficult situations.",
+    "translation": "她知道如何处理困难局面。",
+    "id": "handle",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "harmful",
+    "phonetic": "/ˈhɑːmfl/",
+    "meaning": "adj. 有害的",
+    "example": "Smoking is harmful to your health.",
+    "translation": "吸烟有害健康。",
+    "id": "harmful",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "identify",
+    "phonetic": "/aɪˈdentɪfaɪ/",
+    "meaning": "v. 识别；确定",
+    "example": "First, identify the cause of the problem.",
+    "translation": "首先确定问题的原因。",
+    "id": "identify",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "ignore",
+    "phonetic": "/ɪɡˈnɔː(r)/",
+    "meaning": "v. 忽视；不理会",
+    "example": "Do not ignore the warning signs.",
+    "translation": "不要忽视这些警示信号。",
+    "id": "ignore",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "impact",
+    "phonetic": "/ˈɪmpækt/",
+    "meaning": "n. 影响；冲击",
+    "example": "Technology has a major impact on society.",
+    "translation": "技术对社会有重大影响。",
+    "id": "impact",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "imply",
+    "phonetic": "/ɪmˈplaɪ/",
+    "meaning": "v. 暗示；意味着",
+    "example": "His words imply that he disagrees.",
+    "translation": "他的话暗示他不同意。",
+    "id": "imply",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "improve",
+    "phonetic": "/ɪmˈpruːv/",
+    "meaning": "v. 改善；提高",
+    "example": "Daily practice will improve your English.",
+    "translation": "每天练习会提高你的英语水平。",
+    "id": "improve",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "income",
+    "phonetic": "/ˈɪnkʌm/",
+    "meaning": "n. 收入",
+    "example": "Tourism provides income for local families.",
+    "translation": "旅游业为当地家庭提供收入。",
+    "id": "income",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "increase",
+    "phonetic": "/ɪnˈkriːs/",
+    "meaning": "v. 增加；增长",
+    "example": "Regular practice can increase your confidence.",
+    "translation": "定期练习能增强信心。",
+    "id": "increase",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "independent",
+    "phonetic": "/ˌɪndɪˈpendənt/",
+    "meaning": "adj. 独立的；自主的",
+    "example": "She became more independent at university.",
+    "translation": "她上大学后变得更加独立。",
+    "id": "independent",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "indicate",
+    "phonetic": "/ˈɪndɪkeɪt/",
+    "meaning": "v. 表明；指示",
+    "example": "The results indicate a need for change.",
+    "translation": "这些结果表明需要作出改变。",
+    "id": "indicate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "individual",
+    "phonetic": "/ˌɪndɪˈvɪdʒuəl/",
+    "meaning": "n. 个人；adj. 个别的",
+    "example": "Each individual has different needs.",
+    "translation": "每个人都有不同的需求。",
+    "id": "individual",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "industry",
+    "phonetic": "/ˈɪndəstri/",
+    "meaning": "n. 工业；行业",
+    "example": "The tourism industry creates many jobs.",
+    "translation": "旅游业创造了许多工作岗位。",
+    "id": "industry",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "influence",
+    "phonetic": "/ˈɪnfluəns/",
+    "meaning": "n. 影响；v. 影响",
+    "example": "Friends can influence our decisions.",
+    "translation": "朋友可能影响我们的决定。",
+    "id": "influence",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "information",
+    "phonetic": "/ˌɪnfəˈmeɪʃn/",
+    "meaning": "n. 信息；资料",
+    "example": "Check the information before using it.",
+    "translation": "使用信息前先核实。",
+    "id": "information",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "innovation",
+    "phonetic": "/ˌɪnəˈveɪʃn/",
+    "meaning": "n. 创新",
+    "example": "Innovation helps businesses grow.",
+    "translation": "创新帮助企业发展。",
+    "id": "innovation",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "instance",
+    "phonetic": "/ˈɪnstəns/",
+    "meaning": "n. 例子；实例",
+    "example": "For instance, you could walk to work.",
+    "translation": "例如，你可以步行上班。",
+    "id": "instance",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "instead",
+    "phonetic": "/ɪnˈsted/",
+    "meaning": "adv. 代替；反而",
+    "example": "We stayed home instead of going out.",
+    "translation": "我们没有出门，而是待在家里。",
+    "id": "instead",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "instruction",
+    "phonetic": "/ɪnˈstrʌkʃn/",
+    "meaning": "n. 指示；指导",
+    "example": "Read the instructions before starting.",
+    "translation": "开始前阅读说明。",
+    "id": "instruction",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "intend",
+    "phonetic": "/ɪnˈtend/",
+    "meaning": "v. 打算；意图",
+    "example": "I intend to finish the report today.",
+    "translation": "我打算今天完成报告。",
+    "id": "intend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "interact",
+    "phonetic": "/ˌɪntərˈækt/",
+    "meaning": "v. 互动；相互作用",
+    "example": "Students interact during group activities.",
+    "translation": "学生在小组活动中互动。",
+    "id": "interact",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "interest",
+    "phonetic": "/ˈɪntrəst/",
+    "meaning": "n. 兴趣；利息；v. 使感兴趣",
+    "example": "She has an interest in history.",
+    "translation": "她对历史感兴趣。",
+    "id": "interest",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "involve",
+    "phonetic": "/ɪnˈvɒlv/",
+    "meaning": "v. 涉及；使参与",
+    "example": "The project will involve local schools.",
+    "translation": "这个项目将让当地学校参与。",
+    "id": "involve",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "issue",
+    "phonetic": "/ˈɪʃuː/",
+    "meaning": "n. 问题；期号；v. 发布",
+    "example": "We need to discuss this important issue.",
+    "translation": "我们需要讨论这个重要问题。",
+    "id": "issue",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "knowledge",
+    "phonetic": "/ˈnɒlɪdʒ/",
+    "meaning": "n. 知识；学问",
+    "example": "Books are a rich source of knowledge.",
+    "translation": "书籍是丰富的知识来源。",
+    "id": "knowledge",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "lack",
+    "phonetic": "/læk/",
+    "meaning": "n. 缺乏；v. 缺少",
+    "example": "Lack of sleep makes it hard to concentrate.",
+    "translation": "睡眠不足让人难以集中注意力。",
+    "id": "lack",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "likely",
+    "phonetic": "/ˈlaɪkli/",
+    "meaning": "adj. 可能的；adv. 很可能",
+    "example": "It is likely to rain this afternoon.",
+    "translation": "今天下午很可能下雨。",
+    "id": "likely",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "limit",
+    "phonetic": "/ˈlɪmɪt/",
+    "meaning": "n. 限制；v. 限制",
+    "example": "We should limit the amount of waste we produce.",
+    "translation": "我们应该限制产生的垃圾量。",
+    "id": "limit",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "maintain",
+    "phonetic": "/meɪnˈteɪn/",
+    "meaning": "v. 维持；保养",
+    "example": "It is important to maintain a healthy balance.",
+    "translation": "保持健康的平衡很重要。",
+    "id": "maintain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "major",
+    "phonetic": "/ˈmeɪdʒə(r)/",
+    "meaning": "adj. 主要的；n. 专业",
+    "example": "Pollution is a major problem in many cities.",
+    "translation": "污染是许多城市的主要问题。",
+    "id": "major",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "measure",
+    "phonetic": "/ˈmeʒə(r)/",
+    "meaning": "v. 测量；n. 措施",
+    "example": "We must take measures to save water.",
+    "translation": "我们必须采取措施节约用水。",
+    "id": "measure",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "mental",
+    "phonetic": "/ˈmentl/",
+    "meaning": "adj. 心理的；精神的",
+    "example": "Exercise is good for mental health.",
+    "translation": "运动有益于心理健康。",
+    "id": "mental",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "method",
+    "phonetic": "/ˈmeθəd/",
+    "meaning": "n. 方法",
+    "example": "This method makes learning easier.",
+    "translation": "这个方法让学习更容易。",
+    "id": "method",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "natural",
+    "phonetic": "/ˈnætʃrəl/",
+    "meaning": "adj. 自然的；天然的",
+    "example": "The park protects natural habitats.",
+    "translation": "这个公园保护自然栖息地。",
+    "id": "natural",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "necessary",
+    "phonetic": "/ˈnesəsəri/",
+    "meaning": "adj. 必要的",
+    "example": "Careful planning is necessary for success.",
+    "translation": "细致的规划对成功是必要的。",
+    "id": "necessary",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "obtain",
+    "phonetic": "/əbˈteɪn/",
+    "meaning": "v. 获得；得到",
+    "example": "You can obtain information from the website.",
+    "translation": "你可以从网站获得信息。",
+    "id": "obtain",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "obvious",
+    "phonetic": "/ˈɒbviəs/",
+    "meaning": "adj. 明显的",
+    "example": "The benefits of exercise are obvious.",
+    "translation": "运动的益处显而易见。",
+    "id": "obvious",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "occur",
+    "phonetic": "/əˈkɜː(r)/",
+    "meaning": "v. 发生；出现",
+    "example": "Accidents can occur when people are tired.",
+    "translation": "人们疲劳时可能发生事故。",
+    "id": "occur",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "offer",
+    "phonetic": "/ˈɒfə(r)/",
+    "meaning": "v. 提供；n. 提议",
+    "example": "The school offers free language courses.",
+    "translation": "学校提供免费的语言课程。",
+    "id": "offer",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "opinion",
+    "phonetic": "/əˈpɪnjən/",
+    "meaning": "n. 意见；看法",
+    "example": "In my opinion, the plan is practical.",
+    "translation": "在我看来，这项计划切实可行。",
+    "id": "opinion",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "opportunity",
+    "phonetic": "/ˌɒpəˈtjuːnəti/",
+    "meaning": "n. 机会；时机",
+    "example": "Every day is an opportunity to learn.",
+    "translation": "每一天都是学习的机会。",
+    "id": "opportunity",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "participate",
+    "phonetic": "/pɑːˈtɪsɪpeɪt/",
+    "meaning": "v. 参加；参与",
+    "example": "All students can participate in the discussion.",
+    "translation": "所有学生都可以参与讨论。",
+    "id": "participate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "particular",
+    "phonetic": "/pəˈtɪkjələ(r)/",
+    "meaning": "adj. 特定的；特别的",
+    "example": "Is there a particular topic you prefer?",
+    "translation": "你有特别喜欢的话题吗？",
+    "id": "particular",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "patient",
+    "phonetic": "/ˈpeɪʃnt/",
+    "meaning": "adj. 耐心的；n. 病人",
+    "example": "Be patient with yourself when learning.",
+    "translation": "学习时请对自己多一点耐心。",
+    "id": "patient",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "perform",
+    "phonetic": "/pəˈfɔːm/",
+    "meaning": "v. 执行；表演；表现",
+    "example": "The team performed well under pressure.",
+    "translation": "团队在压力下表现良好。",
+    "id": "perform",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "persuade",
+    "phonetic": "/pəˈsweɪd/",
+    "meaning": "v. 说服；劝说",
+    "example": "I persuaded my friend to join the club.",
+    "translation": "我说服朋友加入了俱乐部。",
+    "id": "persuade",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "policy",
+    "phonetic": "/ˈpɒləsi/",
+    "meaning": "n. 政策；方针",
+    "example": "The new policy supports small businesses.",
+    "translation": "这项新政策支持小企业。",
+    "id": "policy",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "population",
+    "phonetic": "/ˌpɒpjuˈleɪʃn/",
+    "meaning": "n. 人口",
+    "example": "The population of the city is growing.",
+    "translation": "这座城市的人口正在增长。",
+    "id": "population",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "positive",
+    "phonetic": "/ˈpɒzətɪv/",
+    "meaning": "adj. 积极的；肯定的",
+    "example": "Try to stay positive during difficult times.",
+    "translation": "困难时期也尽量保持积极心态。",
+    "id": "positive",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "potential",
+    "phonetic": "/pəˈtenʃl/",
+    "meaning": "adj. 潜在的；n. 潜力",
+    "example": "Everyone has the potential to grow.",
+    "translation": "每个人都有成长的潜力。",
+    "id": "potential",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "predict",
+    "phonetic": "/prɪˈdɪkt/",
+    "meaning": "v. 预测",
+    "example": "It is hard to predict future changes.",
+    "translation": "未来的变化很难预测。",
+    "id": "predict",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "prefer",
+    "phonetic": "/prɪˈfɜː(r)/",
+    "meaning": "v. 更喜欢；宁愿",
+    "example": "I prefer walking to taking the bus.",
+    "translation": "比起坐公交车，我更喜欢步行。",
+    "id": "prefer",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "pressure",
+    "phonetic": "/ˈpreʃə(r)/",
+    "meaning": "n. 压力",
+    "example": "Students often feel pressure before exams.",
+    "translation": "学生在考试前常感到压力。",
+    "id": "pressure",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "prevent",
+    "phonetic": "/prɪˈvent/",
+    "meaning": "v. 防止；阻止",
+    "example": "Washing your hands helps prevent illness.",
+    "translation": "洗手有助于预防疾病。",
+    "id": "prevent",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "previous",
+    "phonetic": "/ˈpriːviəs/",
+    "meaning": "adj. 先前的；以前的",
+    "example": "Please review the previous lesson.",
+    "translation": "请复习上一课。",
+    "id": "previous",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "process",
+    "phonetic": "/ˈprəʊses/",
+    "meaning": "n. 过程；v. 处理",
+    "example": "Learning is a gradual process.",
+    "translation": "学习是一个循序渐进的过程。",
+    "id": "process",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "produce",
+    "phonetic": "/prəˈdjuːs/",
+    "meaning": "v. 生产；产生",
+    "example": "This factory produces electric cars.",
+    "translation": "这家工厂生产电动汽车。",
+    "id": "produce",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "promote",
+    "phonetic": "/prəˈməʊt/",
+    "meaning": "v. 促进；推广；晋升",
+    "example": "The campaign promotes healthy eating.",
+    "translation": "这项活动提倡健康饮食。",
+    "id": "promote",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "protect",
+    "phonetic": "/prəˈtekt/",
+    "meaning": "v. 保护",
+    "example": "We must protect our personal information.",
+    "translation": "我们必须保护个人信息。",
+    "id": "protect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "provide",
+    "phonetic": "/prəˈvaɪd/",
+    "meaning": "v. 提供；供应",
+    "example": "The library provides a quiet place to study.",
+    "translation": "图书馆提供了一个安静的学习场所。",
+    "id": "provide",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "purpose",
+    "phonetic": "/ˈpɜːpəs/",
+    "meaning": "n. 目的；用途",
+    "example": "What is the purpose of the meeting?",
+    "translation": "这次会议的目的是什么？",
+    "id": "purpose",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "quality",
+    "phonetic": "/ˈkwɒləti/",
+    "meaning": "n. 质量；品质",
+    "example": "The company focuses on product quality.",
+    "translation": "公司重视产品质量。",
+    "id": "quality",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "range",
+    "phonetic": "/reɪndʒ/",
+    "meaning": "n. 范围；v. 变化",
+    "example": "The shop offers a wide range of books.",
+    "translation": "这家店提供种类繁多的书籍。",
+    "id": "range",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "reason",
+    "phonetic": "/ˈriːzn/",
+    "meaning": "n. 原因；v. 推理",
+    "example": "There is a good reason for the delay.",
+    "translation": "延误有充分的理由。",
+    "id": "reason",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "recognize",
+    "phonetic": "/ˈrekəɡnaɪz/",
+    "meaning": "v. 认出；承认",
+    "example": "I did not recognize him at first.",
+    "translation": "我起初没有认出他。",
+    "id": "recognize",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "recommend",
+    "phonetic": "/ˌrekəˈmend/",
+    "meaning": "v. 推荐；建议",
+    "example": "Can you recommend a useful book?",
+    "translation": "你能推荐一本有用的书吗？",
+    "id": "recommend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "reduce",
+    "phonetic": "/rɪˈdjuːs/",
+    "meaning": "v. 减少；降低",
+    "example": "We can reduce waste by reusing bags.",
+    "translation": "我们可以通过重复使用袋子来减少浪费。",
+    "id": "reduce",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "reflect",
+    "phonetic": "/rɪˈflekt/",
+    "meaning": "v. 反映；反射；深思",
+    "example": "Our choices reflect our values.",
+    "translation": "我们的选择反映我们的价值观。",
+    "id": "reflect",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "relate",
+    "phonetic": "/rɪˈleɪt/",
+    "meaning": "v. 联系；有关",
+    "example": "How does this relate to our discussion?",
+    "translation": "这与我们的讨论有何关联？",
+    "id": "relate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "require",
+    "phonetic": "/rɪˈkwaɪə(r)/",
+    "meaning": "v. 需要；要求",
+    "example": "Good results require time and effort.",
+    "translation": "好的结果需要时间和努力。",
+    "id": "require",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "research",
+    "phonetic": "/rɪˈsɜːtʃ/",
+    "meaning": "n. 研究；v. 研究",
+    "example": "The team conducts research on clean energy.",
+    "translation": "该团队研究清洁能源。",
+    "id": "research",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "resource",
+    "phonetic": "/rɪˈsɔːs/",
+    "meaning": "n. 资源",
+    "example": "Water is a precious natural resource.",
+    "translation": "水是一种宝贵的自然资源。",
+    "id": "resource",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "respond",
+    "phonetic": "/rɪˈspɒnd/",
+    "meaning": "v. 回应；反应",
+    "example": "Please respond to the email today.",
+    "translation": "请今天回复这封邮件。",
+    "id": "respond",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "responsible",
+    "phonetic": "/rɪˈspɒnsəbl/",
+    "meaning": "adj. 负责的；有责任心的",
+    "example": "We are responsible for our own choices.",
+    "translation": "我们要对自己的选择负责。",
+    "id": "responsible",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "result",
+    "phonetic": "/rɪˈzʌlt/",
+    "meaning": "n. 结果；v. 导致",
+    "example": "Hard work often leads to good results.",
+    "translation": "努力常能带来好结果。",
+    "id": "result",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "reveal",
+    "phonetic": "/rɪˈviːl/",
+    "meaning": "v. 揭示；透露",
+    "example": "The survey revealed a change in habits.",
+    "translation": "调查揭示了习惯的变化。",
+    "id": "reveal",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "risk",
+    "phonetic": "/rɪsk/",
+    "meaning": "n. 风险；v. 冒险",
+    "example": "Wearing a helmet reduces the risk of injury.",
+    "translation": "戴头盔可以降低受伤风险。",
+    "id": "risk",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "role",
+    "phonetic": "/rəʊl/",
+    "meaning": "n. 角色；作用",
+    "example": "Teachers play an important role in society.",
+    "translation": "教师在社会中发挥着重要作用。",
+    "id": "role",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "salary",
+    "phonetic": "/ˈsæləri/",
+    "meaning": "n. 薪水",
+    "example": "The job offers a competitive salary.",
+    "translation": "这份工作提供有竞争力的薪水。",
+    "id": "salary",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "satisfy",
+    "phonetic": "/ˈsætɪsfaɪ/",
+    "meaning": "v. 使满意；满足",
+    "example": "The service failed to satisfy our needs.",
+    "translation": "这项服务未能满足我们的需求。",
+    "id": "satisfy",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "schedule",
+    "phonetic": "/ˈʃedjuːl/",
+    "meaning": "n. 时间表；v. 安排",
+    "example": "Check your schedule before making plans.",
+    "translation": "制定计划前先查看时间表。",
+    "id": "schedule",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "scientific",
+    "phonetic": "/ˌsaɪənˈtɪfɪk/",
+    "meaning": "adj. 科学的",
+    "example": "We need scientific evidence for the claim.",
+    "translation": "这一说法需要科学证据。",
+    "id": "scientific",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "security",
+    "phonetic": "/sɪˈkjʊərəti/",
+    "meaning": "n. 安全；保障",
+    "example": "Online security is important to everyone.",
+    "translation": "网络安全对每个人都很重要。",
+    "id": "security",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "select",
+    "phonetic": "/sɪˈlekt/",
+    "meaning": "v. 选择",
+    "example": "Please select the best answer.",
+    "translation": "请选择最佳答案。",
+    "id": "select",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "sense",
+    "phonetic": "/sens/",
+    "meaning": "n. 感觉；意义；v. 感觉到",
+    "example": "Her explanation makes sense.",
+    "translation": "她的解释合乎道理。",
+    "id": "sense",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "separate",
+    "phonetic": "/ˈsepəreɪt/",
+    "meaning": "v. 分开；区分",
+    "example": "Please separate paper from other waste.",
+    "translation": "请将纸张与其他垃圾分开。",
+    "id": "separate",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "serious",
+    "phonetic": "/ˈsɪəriəs/",
+    "meaning": "adj. 严重的；认真的",
+    "example": "Air pollution is a serious problem.",
+    "translation": "空气污染是个严重问题。",
+    "id": "serious",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "service",
+    "phonetic": "/ˈsɜːvɪs/",
+    "meaning": "n. 服务",
+    "example": "The hotel provides excellent service.",
+    "translation": "这家酒店提供优质服务。",
+    "id": "service",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "share",
+    "phonetic": "/ʃeə(r)/",
+    "meaning": "v. 分享；n. 份额",
+    "example": "We can share ideas in the meeting.",
+    "translation": "我们可以在会上分享想法。",
+    "id": "share",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "significant",
+    "phonetic": "/sɪɡˈnɪfɪkənt/",
+    "meaning": "adj. 显著的；重要的",
+    "example": "She made significant progress this month.",
+    "translation": "她这个月取得了显著进步。",
+    "id": "significant",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "similar",
+    "phonetic": "/ˈsɪmələ(r)/",
+    "meaning": "adj. 相似的",
+    "example": "The two languages have similar sounds.",
+    "translation": "这两种语言有相似的发音。",
+    "id": "similar",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "skill",
+    "phonetic": "/skɪl/",
+    "meaning": "n. 技能；技巧",
+    "example": "Writing is a skill that takes practice.",
+    "translation": "写作是一项需要练习的技能。",
+    "id": "skill",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "social",
+    "phonetic": "/ˈsəʊʃl/",
+    "meaning": "adj. 社会的；社交的",
+    "example": "Social media helps people stay connected.",
+    "translation": "社交媒体帮助人们保持联系。",
+    "id": "social",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "society",
+    "phonetic": "/səˈsaɪəti/",
+    "meaning": "n. 社会；协会",
+    "example": "Education can improve society.",
+    "translation": "教育可以改善社会。",
+    "id": "society",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "solution",
+    "phonetic": "/səˈluːʃn/",
+    "meaning": "n. 解决办法；溶液",
+    "example": "We found a simple solution to the problem.",
+    "translation": "我们找到了这个问题的简单解决办法。",
+    "id": "solution",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "source",
+    "phonetic": "/sɔːs/",
+    "meaning": "n. 来源",
+    "example": "Always check the source of information.",
+    "translation": "始终核查信息的来源。",
+    "id": "source",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "specific",
+    "phonetic": "/spəˈsɪfɪk/",
+    "meaning": "adj. 具体的；特定的",
+    "example": "Please give a specific example.",
+    "translation": "请给出一个具体例子。",
+    "id": "specific",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "standard",
+    "phonetic": "/ˈstændəd/",
+    "meaning": "n. 标准；adj. 标准的",
+    "example": "The product meets safety standards.",
+    "translation": "这款产品符合安全标准。",
+    "id": "standard",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "strategy",
+    "phonetic": "/ˈstrætədʒi/",
+    "meaning": "n. 策略；战略",
+    "example": "We need a clear strategy for growth.",
+    "translation": "我们需要明确的发展策略。",
+    "id": "strategy",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "structure",
+    "phonetic": "/ˈstrʌktʃə(r)/",
+    "meaning": "n. 结构；v. 组织",
+    "example": "The essay has a clear structure.",
+    "translation": "这篇文章结构清晰。",
+    "id": "structure",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "suffer",
+    "phonetic": "/ˈsʌfə(r)/",
+    "meaning": "v. 遭受；受苦",
+    "example": "Many people suffer from back pain.",
+    "translation": "许多人受背痛困扰。",
+    "id": "suffer",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "supply",
+    "phonetic": "/səˈplaɪ/",
+    "meaning": "n. 供应；v. 供给",
+    "example": "The town needs a reliable water supply.",
+    "translation": "这个城镇需要可靠的供水。",
+    "id": "supply",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "support",
+    "phonetic": "/səˈpɔːt/",
+    "meaning": "v. 支持；n. 支持",
+    "example": "My friends always support my decisions.",
+    "translation": "朋友们总是支持我的决定。",
+    "id": "support",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "survey",
+    "phonetic": "/ˈsɜːveɪ/",
+    "meaning": "n. 调查",
+    "example": "The survey asked students about their habits.",
+    "translation": "调查询问了学生们的习惯。",
+    "id": "survey",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "sustainable",
+    "phonetic": "/səˈsteɪnəbl/",
+    "meaning": "adj. 可持续的",
+    "example": "We need sustainable ways to produce energy.",
+    "translation": "我们需要可持续的能源生产方式。",
+    "id": "sustainable",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "target",
+    "phonetic": "/ˈtɑːɡɪt/",
+    "meaning": "n. 目标；v. 以……为目标",
+    "example": "We reached our sales target this month.",
+    "translation": "我们本月达到了销售目标。",
+    "id": "target",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "task",
+    "phonetic": "/tɑːsk/",
+    "meaning": "n. 任务",
+    "example": "Break a large task into smaller steps.",
+    "translation": "把大任务拆分成较小的步骤。",
+    "id": "task",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "technology",
+    "phonetic": "/tekˈnɒlədʒi/",
+    "meaning": "n. 技术；科技",
+    "example": "Technology makes communication easier.",
+    "translation": "技术让沟通变得更容易。",
+    "id": "technology",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "tend",
+    "phonetic": "/tend/",
+    "meaning": "v. 倾向于；照料",
+    "example": "People tend to remember unusual events.",
+    "translation": "人们往往会记住不寻常的事件。",
+    "id": "tend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "theory",
+    "phonetic": "/ˈθɪəri/",
+    "meaning": "n. 理论",
+    "example": "We need to test the theory in practice.",
+    "translation": "我们需要在实践中检验这个理论。",
+    "id": "theory",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "threat",
+    "phonetic": "/θret/",
+    "meaning": "n. 威胁",
+    "example": "Pollution is a threat to wildlife.",
+    "translation": "污染是对野生动植物的威胁。",
+    "id": "threat",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "traditional",
+    "phonetic": "/trəˈdɪʃənl/",
+    "meaning": "adj. 传统的",
+    "example": "The festival celebrates traditional music.",
+    "translation": "这个节日弘扬传统音乐。",
+    "id": "traditional",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "transport",
+    "phonetic": "/ˈtrænspɔːt/",
+    "meaning": "n. 交通运输",
+    "example": "Public transport can reduce traffic.",
+    "translation": "公共交通可以缓解交通拥堵。",
+    "id": "transport",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "trend",
+    "phonetic": "/trend/",
+    "meaning": "n. 趋势；倾向",
+    "example": "The report describes a new trend in education.",
+    "translation": "报告描述了教育领域的新趋势。",
+    "id": "trend",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "valuable",
+    "phonetic": "/ˈvæljuəbl/",
+    "meaning": "adj. 有价值的；宝贵的",
+    "example": "Your advice was very valuable to me.",
+    "translation": "你的建议对我很有价值。",
+    "id": "valuable",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "vary",
+    "phonetic": "/ˈveəri/",
+    "meaning": "v. 变化；不同",
+    "example": "Prices vary from store to store.",
+    "translation": "价格因商店而异。",
+    "id": "vary",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "waste",
+    "phonetic": "/weɪst/",
+    "meaning": "n. 浪费；废物；v. 浪费",
+    "example": "Do not waste food or water.",
+    "translation": "不要浪费食物或水。",
+    "id": "waste",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "wealth",
+    "phonetic": "/welθ/",
+    "meaning": "n. 财富；大量",
+    "example": "Health is more important than wealth.",
+    "translation": "健康比财富更重要。",
+    "id": "wealth",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "willing",
+    "phonetic": "/ˈwɪlɪŋ/",
+    "meaning": "adj. 愿意的",
+    "example": "She is willing to help others.",
+    "translation": "她乐于帮助别人。",
+    "id": "willing",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  },
+  {
+    "word": "youth",
+    "phonetic": "/juːθ/",
+    "meaning": "n. 青年；青春",
+    "example": "The program supports youth employment.",
+    "translation": "这个项目支持青年就业。",
+    "id": "youth",
+    "level": "cet4-common",
+    "reviewed": true,
+    "source": "Wordspace original authored lesson"
+  }
 ];
 
 const $ = id => document.getElementById(id);
@@ -1156,7 +4502,7 @@ document.querySelectorAll('[data-word-total]').forEach(el => { el.textContent = 
 const DAILY_LIMIT = 43;
 const STORAGE_KEY = 'wordspace-adaptive-v2';
 const LEGACY_KEY = 'wordspace-seven-day-v1';
-const dictionaryId = words.map(entry => entry.word).join('|');
+const dictionaryId = words.slice(0,300).map(entry => entry.word).join('|');
 const wordById = new Map(words.map(entry => [entry.word, entry]));
 let storageAvailable = true;
 let notice = '';
@@ -1171,13 +4517,7 @@ function newDay(ids) {
 }
 
 function emptyPlan(mastered = [], priority = []) {
-  const known = new Set(mastered);
-  const pending = [...new Set([...priority, ...words.map(entry => entry.word)])].filter(id => !known.has(id));
-  // 已全部掌握的旧用户仍保留最后一组作为可查看的记录，不强制重置掌握数。
-  const ids = pending.splice(0, DAILY_LIMIT);
-  const day = newDay(ids.length ? ids : words.slice(-DAILY_LIMIT).map(entry => entry.word));
-  if (!ids.length) day.first = day.ids.map(() => true);
-  return { version: 2, dictionaryId, mastered, pending, days: [day], activeDay: 0 };
+  return WordspaceCore.createPlan(words.slice(0, 300), today(), mastered, priority);
 }
 
 function validRecords(day) {
@@ -1192,20 +4532,7 @@ function validIds(ids) {
   return Array.isArray(ids) && new Set(ids).size === ids.length && ids.every(id => wordById.has(id));
 }
 
-function validPlan(saved) {
-  if (!saved || saved.version !== 2 || saved.dictionaryId !== dictionaryId ||
-      !validIds(saved.mastered) || !validIds(saved.pending) || !Array.isArray(saved.days) || !saved.days.length ||
-      !Number.isInteger(saved.activeDay) || saved.activeDay < 0 || saved.activeDay >= saved.days.length) return false;
-  const known = new Set(saved.mastered);
-  if (!saved.days.every((day, index) => day && validIds(day.ids) && day.ids.length > 0 && day.ids.length <= DAILY_LIMIT &&
-      validRecords(day) && /^\d{4}-\d{2}-\d{2}$/.test(day.date) &&
-      day.closed === (index < saved.days.length - 1) &&
-      day.ids.every((id, i) => day.first[i] !== true || known.has(id)) &&
-      day.ids.filter((_, i) => day.first[i] === false).every((id, i) => day.review[i] !== true || known.has(id)))) return false;
-  // 已掌握、当前未掌握、尚未分配三部分必须正好覆盖词库，防止漏词或重复排程。
-  const partition = [...saved.mastered, ...saved.days.at(-1).ids.filter(id => !known.has(id)), ...saved.pending];
-  return partition.length === words.length && new Set(partition).size === words.length;
-}
+function validPlan(saved) { return WordspaceCore.validatePlan(saved, words); }
 
 function migrateLegacy(raw) {
   const old = JSON.parse(raw);
@@ -1228,7 +4555,7 @@ function loadPlan() {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (raw) {
-      try { const saved = JSON.parse(raw); if (validPlan(saved)) return saved; } catch { /* 尝试旧版或新计划 */ }
+      try { const saved = JSON.parse(raw); if (validPlan(saved)) return WordspaceCore.migratePlan(saved, words); } catch { /* 尝试旧版或新计划 */ }
     }
     const legacy = localStorage.getItem(LEGACY_KEY);
     if (legacy) {
@@ -1238,20 +4565,15 @@ function loadPlan() {
   return emptyPlan();
 }
 
-let plan = loadPlan();
+let plan = null;
+let account = null;
 
 function savePlan() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(plan));
-    storageAvailable = true;
-  } catch { storageAvailable = false; }
+  if (account && plan) account.persist(plan);
   renderSaveStatus();
 }
-
 function renderSaveStatus() {
-  $('save-status').textContent = storageAvailable
-    ? '进度保存在当前浏览器。跨天打开会自动顺延，也可提前结束今天。'
-    : '浏览器未允许保存；本页仍可学习，刷新或关闭后进度可能丢失。';
+  $('save-status').textContent = account ? account.status() : '正在加载学习记录…';
 }
 
 function currentDay() { return plan.days.length - 1; }
@@ -1281,10 +4603,7 @@ function advanceDay(automatic = false) {
   const carry = session.records.ids.filter(id => !known.has(id));
   const pending = [...new Set([...carry, ...plan.pending])];
   if (!pending.length) return false;
-  session.records.closed = true;
-  plan.days.push(newDay(pending.splice(0, DAILY_LIMIT)));
-  plan.pending = pending;
-  plan.activeDay = currentDay();
+  plan = WordspaceCore.advancePlan(plan, words, today());
   notice = `${automatic ? '新的一天开始了。' : ''}${carry.length} 个未掌握词（含 ${session.unattempted} 个未学词）已优先顺延到第 ${currentDay() + 1} 天，新词依次补足，每天最多 ${DAILY_LIMIT} 词。`;
   stopSpeech();
   savePlan();
@@ -1293,7 +4612,7 @@ function advanceDay(automatic = false) {
 
 function checkRollover() {
   const session = getSession(currentDay());
-  if (session.records.date >= today() || plan.mastered.length === words.length) return false;
+  if (session.records.date >= today() || plan.mastered.length === plan.deck_ids.length) return false;
   // 未开始作答的空白日不额外消耗一天；离开多天也只在下次学习时接续一日。
   if (session.records.first.length === 0) {
     session.records.date = today();
@@ -1304,6 +4623,7 @@ function checkRollover() {
 }
 
 function prepareAction() {
+  if (!plan || !account?.canStudy()) return false;
   if (!checkRollover()) return true;
   renderAll();
   return false; // 跨天首次点击只切换日程，不把旧卡片的作答记到新卡片上。
@@ -1336,7 +4656,7 @@ function renderPlan() {
   const focusedDay = document.activeElement.closest('.day-button')?.dataset.day;
   $('day-buttons').replaceChildren(fragment);
   if (focusedDay !== undefined) $('day-buttons').querySelector(`[data-day="${focusedDay}"]`)?.focus({ preventScroll: true });
-  $('plan-progress').textContent = `已掌握 ${plan.mastered.length} / ${words.length} 词`;
+  $('plan-progress').textContent = `已掌握 ${plan.mastered.length} / ${plan.deck_ids.length} 词`;
   const session = getSession();
   $('day-description').textContent = `第 ${plan.activeDay + 1} 天 · ${session.group.length} 个词 · 预计共 ${totalDays} 个学习日，按掌握情况延长`;
   $('plan-notice').hidden = !notice;
@@ -1380,11 +4700,11 @@ function renderResults(session) {
   $('review-score').textContent = `${reviewKnown} 个`;
   $('remaining').textContent = `${remaining.length} 个`;
   $('remaining-words').textContent = remaining.length ? `${records.closed ? '当时顺延' : '继续巩固'}：${remaining.map(entry => entry.word).join(' · ')}` : '本日词汇都已掌握，继续保持！';
-  const allMastered = plan.mastered.length === words.length;
+  const allMastered = plan.mastered.length === plan.deck_ids.length;
   $('next-day').hidden = plan.activeDay === currentDay() && allMastered;
   $('next-day').textContent = plan.activeDay < currentDay() ? '回到当前学习 →' : `继续第 ${currentDay() + 2} 天 →`;
   $('again').hidden = plan.activeDay !== currentDay();
-  if (allMastered) $('result-description').textContent = `${words.length} 个词都已掌握，弹性学习计划已完成！`;
+  if (allMastered) $('result-description').textContent = `${plan.deck_ids.length} 个词都已掌握，弹性学习计划已完成！`;
 }
 
 function renderStudy() {
@@ -1552,6 +4872,7 @@ $('word-list').addEventListener('click', event => {
 $('word-search').addEventListener('input', renderVocabulary);
 $('vocabulary-scope').addEventListener('change', () => { stopSpeech(); renderVocabulary(); });
 document.addEventListener('keydown', event => {
+  if (!plan || !account?.canStudy()) return;
   const session = getSession();
   if (session.finished || session.records.closed || event.repeat || event.altKey || event.ctrlKey || event.metaKey) return;
   if (event.target.closest('input, textarea, select, [contenteditable], .day-plan, .vocabulary, .audio-controls, header, footer')) return;
@@ -1562,14 +4883,33 @@ document.addEventListener('keydown', event => {
     event.preventDefault(); answer(event.key === 'ArrowRight');
   }
 });
-function onReturn() { if (checkRollover()) renderAll(); }
+function onReturn() { if (account) void account.resume(); }
 window.addEventListener('focus', onReturn);
 window.addEventListener('pagehide', stopSpeech);
 document.addEventListener('visibilitychange', () => { if (!document.hidden) onReturn(); else stopSpeech(); });
 setInterval(() => { if (!document.hidden) onReturn(); }, 60000);
-checkRollover();
-savePlan();
-renderAll();
-  </script>
+const configuration = JSON.parse(document.getElementById('wordspace-config').textContent);
+account = WordspaceAccount.create({config: configuration, catalog: words, hooks: {
+  getPlan: () => plan,
+  setPlan: state => { plan = state; },
+  emptyPlan,
+  loadLegacy: loadPlan,
+  legacyExists: () => { try { return !!(localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_KEY)); } catch { return false; } },
+  mergeCatalog: entries => {
+    for (const entry of entries) {
+      if (!entry.reviewed || entry.id !== entry.word || !['word','phonetic','meaning','example','translation'].every(k => typeof entry[k] === 'string')) continue;
+      if (wordById.has(entry.id)) Object.assign(wordById.get(entry.id), entry);
+      else { words.push(entry); wordById.set(entry.id, entry); }
+    }
+  },
+  stop: () => { stopSpeech(); plan = null; document.querySelector('.app').classList.remove('is-studying'); },
+  render: () => { if (plan) renderAll(); },
+  status: renderSaveStatus,
+  rollover: () => { if (plan && checkRollover()) renderAll(); }
+}});
+account.boot().catch(() => { $('auth-message').textContent = '账号服务未能初始化，未上传或覆盖旧记录。请刷新或检查配置。'; });
+
+</script>
+<!-- END WORDSPACE_SCRIPTS -->
 </body>
 </html>

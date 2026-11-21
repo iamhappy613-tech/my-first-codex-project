@@ -1,0 +1,18 @@
+.account-bar { max-width:760px; margin:18px auto 0; padding:12px 16px; border:1px solid var(--line); border-radius:12px; background:#fffefa; font-size:12px; line-height:1.8; overflow-wrap:anywhere; }
+#account-label { font-weight:600; } #account-status { display:block; color:#65765d; }
+.account-actions { display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-top:8px; }
+.account-bar button,.account-panel button,.assessment button,.proposal button { min-height:44px; border:1px solid #d5dfcd; border-radius:8px; background:#f5f8ef; padding:9px 13px; font:inherit; color:var(--green); cursor:pointer; }
+.account-panel { max-width:570px; margin:35px auto; padding:25px; background:#fffefa; border:1px solid var(--line); border-radius:18px; font-size:14px; line-height:1.8; }
+.account-panel h2 { margin:0 0 12px; font-size:24px; }
+.account-panel label { display:block; margin:14px 0 5px; }
+.account-panel input { width:100%; padding:13px; border:1px solid #d5dfcd; border-radius:9px; background:#fff; font:inherit; font-size:16px; }
+.account-panel .primary-account-btn { width:100%; margin-top:18px; color:white; background:var(--green); }
+#auth-message,#admin-message { min-height:24px; white-space:pre-line; overflow-wrap:anywhere; }
+#auth-choice button { display:block; margin:10px 0; width:100%; }
+.admin-person { border-bottom:1px solid var(--line); padding:13px 0; overflow-wrap:anywhere; }.admin-person p { margin:4px 0; }
+.assessment,.proposal { max-width:570px; margin:25px auto 0; padding:18px; background:#fffefa; border:1px solid var(--line); border-radius:14px; font-size:13px; line-height:1.8; }
+.assessment h2,.proposal h2 { font-size:16px; margin:0 0 10px; }
+#assessment-word { font-family:Georgia,serif; font-size:30px; margin:16px 0; }
+#assessment-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }#assessment-options button { text-align:left; overflow-wrap:anywhere; }
+#assessment-feedback { min-height:24px; }.proposal p { white-space:pre-line; overflow-wrap:anywhere; }
+@media(max-width:700px) { .account-bar { margin-top:14px; }.account-panel { padding:20px; } }

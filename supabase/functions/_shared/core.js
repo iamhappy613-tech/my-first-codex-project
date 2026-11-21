@@ -51,12 +51,29 @@
     last.closed=true;p.days.push({date,ids:queue.splice(0,43),first:[],review:[],closed:false});p.pending=queue;p.activeDay=p.days.length-1;delete p.next_day_ids;
     return p;
   }
+  function evidenceStats(events,now=new Date().toISOString()) {
+    const groups=new Map();
+    for(const e of [...events].filter(e=>!e.assisted&&typeof e.correct==='boolean'&&Number.isFinite(Date.parse(e.created_at))).sort((a,b)=>Date.parse(a.created_at)-Date.parse(b.created_at))){
+      if(!groups.has(e.word_id))groups.set(e.word_id,[]);groups.get(e.word_id).push(e);
+    }
+    let tested_correct_count=0,delayed_pass_count=0;const due_ids=[];
+    for(const [id,rows] of groups){
+      const last=rows.at(-1);let delayed=false;
+      if(last.correct){tested_correct_count++;const previous=rows.slice(0,-1).reverse();
+        for(const e of previous){if(!e.correct)break;if(Date.parse(last.created_at)-Date.parse(e.created_at)>=86400000){delayed=true;break}}
+        if(delayed)delayed_pass_count++;
+      }
+      const due=Date.parse(last.created_at)+(last.correct?(delayed?3:1)*86400000:0);
+      if(due<=Date.parse(now))due_ids.push(id);
+    }
+    return {tested_correct_count,delayed_pass_count,due_ids};
+  }
   function summarize(p,evidence=[]) {
     const d=p.days.at(-1),missed=d.ids.filter((_,i)=>d.first[i]===false),recognized=new Set(d.ids.filter((_,i)=>d.first[i]===true));
     missed.forEach((id,i)=>{if(d.review[i]===true)recognized.add(id)});
-    const tested=new Set(evidence.filter(e=>e.correct===true&&!e.assisted).map(e=>e.word_id));
+    const stats=evidenceStats(evidence);
     return {study_day:p.days.length,study_date:d.date,deck_size:(p.deck_ids||p.dictionaryId.split('|')).length,recognized_count:p.mastered.length,
-      tested_correct_count:tested.size,today_total:d.ids.length,answered_today:d.first.length,unattempted_today:d.ids.length-d.first.length,
+      tested_correct_count:stats.tested_correct_count,delayed_pass_count:stats.delayed_pass_count,assessment_due_ids:stats.due_ids.slice(0,43),today_total:d.ids.length,answered_today:d.first.length,unattempted_today:d.ids.length-d.first.length,
       unfamiliar_ids:d.ids.filter(id=>!recognized.has(id)).slice(0,43),pending_count:p.pending.length,evidence_count:evidence.length,
       assessment_note:evidence.length?'Tests describe this sample, not an exact total vocabulary size.':'Only self-reported recognition is available; do not infer precise vocabulary size.'};
   }
@@ -70,5 +87,5 @@
     if(!catalog.some(w=>(w.id||w.word)===wordId)||!catalog.some(w=>(w.id||w.word)===choiceId))throw Error('invalid_assessment');
     return {word_id:wordId,correct:wordId===choiceId};
   }
-  root.WordspaceCore=Object.freeze({validatePlan,migratePlan,createPlan,adoptProposal,advancePlan,summarize,candidates,scoreAssessment});
+  root.WordspaceCore=Object.freeze({validatePlan,migratePlan,createPlan,adoptProposal,advancePlan,evidenceStats,summarize,candidates,scoreAssessment});
 })(globalThis);

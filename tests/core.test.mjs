@@ -35,3 +35,12 @@ test('mandatory carry and suggested words share the daily 43-word budget',()=>{
  const big=Array.from({length:100},(_,i)=>({id:`w${i}`,word:`w${i}`,reviewed:true}));const p=C.createPlan(big,'2026-11-21');
  assert.throws(()=>C.adoptProposal(p,{word_ids:['w90']},big),/daily_budget/);
 });
+test('latest unassisted recall overrides earlier correct answers; delayed passes are distinct evidence',()=>{
+ const p=C.migratePlan(old,catalog);const events=[
+  {word_id:'a',correct:true,assisted:false,created_at:'2026-11-19T00:00:00Z'},
+  {word_id:'a',correct:false,assisted:false,created_at:'2026-11-21T00:00:00Z'},
+  {word_id:'b',correct:true,assisted:false,created_at:'2026-11-18T00:00:00Z'},
+  {word_id:'b',correct:true,assisted:false,created_at:'2026-11-20T00:00:00Z'}];
+ const s=C.summarize(p,events);assert.equal(s.tested_correct_count,1);assert.equal(s.delayed_pass_count,1);
+ const stats=C.evidenceStats(events,'2026-11-21T01:00:00Z');assert(stats.due_ids.includes('a'));assert(!stats.due_ids.includes('b'));
+});

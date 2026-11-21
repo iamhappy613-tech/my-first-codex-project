@@ -1,0 +1,12 @@
+import {readFile,writeFile} from 'node:fs/promises';
+let html=await readFile('index.html','utf8');
+const original=html;
+const replace=(begin,end,content)=>{const a=html.indexOf(begin),b=html.indexOf(end,a);if(a<0||b<0)throw Error(`missing marker ${begin}`);html=html.slice(0,a+begin.length)+'\n'+content+'\n'+html.slice(b)};
+replace('/* BEGIN ACCOUNT_CSS */','/* END ACCOUNT_CSS */',await readFile('web/account.css','utf8'));
+replace('<!-- BEGIN ACCOUNT_UI -->','<!-- END ACCOUNT_UI -->',await readFile('web/account-ui.html','utf8'));
+replace('<!-- BEGIN LEARNING_UI -->','<!-- END LEARNING_UI -->',await readFile('web/learning-ui.html','utf8'));
+const data=await readFile('data/catalog.json','utf8');let study=await readFile('web/study.js','utf8');
+study=study.replace('/* WORDSPACE_CATALOG */ null',data.trim().replaceAll('<','\\u003c'));
+const scripts=[await readFile('supabase/functions/_shared/core.js','utf8'),await readFile('web/account.js','utf8'),study];
+replace('<!-- BEGIN WORDSPACE_SCRIPTS -->','<!-- END WORDSPACE_SCRIPTS -->',scripts.map(source=>'<script>\n'+source.replaceAll('</script','<\\/script')+'\n</script>').join('\n'));
+if(process.argv.includes('--check')){if(html!==original)throw Error('index.html is stale; run npm run embed');console.log('PASS: standalone HTML matches source')}else await writeFile('index.html',html);

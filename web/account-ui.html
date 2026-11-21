@@ -1,0 +1,25 @@
+<section id="account-bar" class="account-bar" aria-label="账号和同步">
+  <span id="account-label">词间 · 正在初始化</span>
+  <span id="account-status" role="status"></span>
+  <div class="account-actions"><button id="sync-now" hidden>同步</button><button id="open-coach" hidden>打开我的学习助手 ↗</button><button id="manage-users" hidden>管理人员</button><button id="download-backup" hidden>下载本机备份</button><button id="logout" hidden>退出</button></div>
+</section>
+<section id="account-gate" class="account-panel" hidden aria-labelledby="auth-title">
+  <h2 id="auth-title">登录词间</h2><p>登录后，手机和电脑可以接着学。</p>
+  <form id="auth-form"><label for="auth-email">邮箱</label><input id="auth-email" type="email" autocomplete="username" required>
+    <label for="auth-password">密码</label><input id="auth-password" type="password" minlength="8" autocomplete="current-password" required>
+    <button id="auth-signin" type="submit" class="primary-account-btn">登录</button>
+  </form>
+  <div class="account-actions"><button id="auth-signup">注册账号</button><button id="auth-recover">忘记密码</button></div>
+  <p id="auth-message" role="status"></p>
+  <div id="auth-choice" hidden>
+    <p id="choice-message"></p>
+    <button id="import-legacy" class="primary-account-btn" hidden>导入本机旧进度</button><button id="start-fresh" hidden>从头开始</button>
+    <button id="conflict-cloud" class="primary-account-btn" hidden>保留本机备份，加载云端进度</button><button id="conflict-local" hidden>确认用本机进度替换云端</button>
+  </div>
+  <form id="password-form" hidden><label for="new-password">新密码（至少 8 位）</label><input id="new-password" type="password" minlength="8" autocomplete="new-password" required><button class="primary-account-btn">保存新密码</button></form>
+</section>
+<section id="admin-panel" class="account-panel" hidden aria-labelledby="admin-title">
+  <div class="plan-heading"><h2 id="admin-title">人员管理</h2><button id="admin-close">返回学习</button></div>
+  <label for="admin-search">搜索邮箱</label><input id="admin-search" type="search" placeholder="输入邮箱关键词"><button id="admin-search-btn">搜索</button>
+  <p id="admin-message" role="status"></p><div id="admin-users"></div><div class="account-actions"><button id="admin-prev">上一页</button><span id="admin-page"></span><button id="admin-next">下一页</button></div>
+</section>
