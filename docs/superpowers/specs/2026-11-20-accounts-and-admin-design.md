@@ -8,6 +8,8 @@
 
 本文件是待确认的方案，尚未实现账号功能，也不代表后台服务已开通。技术选型和下述默认值是实现建议，并非用户已逐项确认的要求。
 
+Plus 专属 GPT 自动读取进度及推荐词汇的补充设计见 [专属学习助手方案](2026-11-21-private-gpt-learning-coach-design.md)。该路线使用 ChatGPT 内的 GPT Actions，不在网站配置单独计费的 OpenAI 模型 API。
+
 ## 现状与约束
 
 - `index.html` 是无构建步骤的静态单页，由现有 GitHub Pages 发布。
