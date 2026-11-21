@@ -31,3 +31,7 @@ test('summary separates self report from objective evidence and limits data',()=
 test('assessment grades on catalog rather than trusting client scores',()=>{
  assert.deepEqual(C.scoreAssessment(catalog,'a','b'),{word_id:'a',correct:false});assert.deepEqual(C.scoreAssessment(catalog,'a','a'),{word_id:'a',correct:true});assert.throws(()=>C.scoreAssessment(catalog,'x','x'));
 });
+test('mandatory carry and suggested words share the daily 43-word budget',()=>{
+ const big=Array.from({length:100},(_,i)=>({id:`w${i}`,word:`w${i}`,reviewed:true}));const p=C.createPlan(big,'2026-11-21');
+ assert.throws(()=>C.adoptProposal(p,{word_ids:['w90']},big),/daily_budget/);
+});

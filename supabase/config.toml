@@ -1,0 +1,7 @@
+project_id = "wordspace"
+# Both handlers authenticate every request themselves. Coach uses a separate
+# hashed connection credential; admin verifies the JWT with Auth and role RPCs.
+[functions.coach]
+verify_jwt = false
+[functions.admin]
+verify_jwt = false

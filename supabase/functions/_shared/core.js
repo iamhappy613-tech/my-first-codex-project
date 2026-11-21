@@ -37,6 +37,8 @@
     const p=migratePlan(state,catalog);if (!p) throw Error('invalid_progress');
     const chosen=proposal.word_ids,checked=new Set(catalog.filter(w=>w.reviewed===true).map(w=>w.id||w.word));
     if (!unique(chosen)||!chosen.length||chosen.length>43||chosen.some(id=>!checked.has(id)||p.mastered.includes(id))) throw Error('invalid_recommendation');
+    const carry=p.days.at(-1).ids.filter(id=>!p.mastered.includes(id));
+    if(new Set([...carry,...chosen]).size>43)throw Error('daily_budget');
     const newIds=chosen.filter(id=>!p.deck_ids.includes(id));p.deck_ids.push(...newIds);p.pending.push(...newIds);p.dictionaryId=p.deck_ids.join('|');
     p.next_day_ids=[...chosen];return p;
   }
