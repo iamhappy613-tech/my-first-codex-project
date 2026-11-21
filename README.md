@@ -4,7 +4,7 @@
 
 ## 打开预览
 
-用浏览器打开 `index.html` 即可。也可在仓库目录运行 `python3 -m http.server 8000`，再在运行服务器的机器上访问 `http://localhost:8000`。
+用浏览器打开 `index.html` 即可。安装 Node.js 后，也可在仓库目录运行 `node scripts/preview.mjs`，在同一台机器访问 `http://127.0.0.1:8000`。此预览只提供网页，不会提供仓库中的私密配置文件。
 
 线上通过 GitHub Pages 部署，后续更新推送至 `main` 后按现有 Pages 配置自动部署。
 
@@ -47,6 +47,6 @@
 
 网页新增可配置的邮箱登录、账号独立缓存、云端版本同步、冲突备份、管理员停用/恢复、客观小测及推荐草稿入口。默认保持本地模式；在真实 Supabase 项目和私有 GPT 完成配置前，不会显示伪造的登录或云端同步。
 
-完整上线步骤见 [部署说明](docs/DEPLOYMENT.md)。其中包含可先在 Plus 验证的公开模拟 Action、生产 OpenAPI 和 GPT 指令。项目没有任何 OpenAI 模型 API 调用。
+完整上线步骤见 [部署说明](docs/DEPLOYMENT.md)，测试范围和实现取舍见 [验证记录](docs/VERIFICATION.md)。其中包含可先在 Plus 验证的公开模拟 Action、生产 OpenAPI 和 GPT 指令。项目没有任何 OpenAI 模型 API 调用。
 
 开发者可运行 `npm test`、`npm run test:db`、`npm run test:browser`。网页本身仍只需打开 `index.html`。

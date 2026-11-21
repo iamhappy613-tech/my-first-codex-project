@@ -6,13 +6,13 @@ await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.
 const browser=await chromium.launch({executablePath:process.env.CHROMIUM_PATH||'/usr/bin/chromium',args:['--no-sandbox']});
 const ids={a:'00000000-0000-4000-8000-000000000001',b:'00000000-0000-4000-8000-000000000002'};
 const config={mode:'cloud',supabaseUrl:'https://db.test',publicKey:'public',coachUrl:'https://chatgpt.com/g/private-example',siteUrl:base+'/index.html',ownerId:ids.a};
-const records=new Map(),events=[],proposals=[],flags={offline:false,disabled:false,slowSave:0,saveStarted:false,refreshWrong:false,profile401A:false,profileStarted:false};let checks=0;
+const records=new Map(),events=[],proposals=[],flags={offline:false,disabled:false,slowSave:0,saveStarted:false,refreshWrong:false,profile401A:false,profileStarted:false,slowAdopt:0,adoptStarted:false,refreshExpired:false,evidenceFailureB:false};let checks=0;
 async function cloudPage(){const ctx=await browser.newContext({viewport:{width:390,height:844}});const page=await ctx.newPage();await page.clock.install({time:new Date('2026-11-21T04:00:00Z')});
  await page.route('**/index.html',async route=>{let html=await readFile('index.html','utf8');html=html.replace(/(<script id="wordspace-config" type="application\/json">)[\s\S]*?(<\/script>)/,`$1${JSON.stringify(config)}$2`);await route.fulfill({body:html,contentType:'text/html'})});
  await page.route('https://db.test/**',async route=>{
   const req=route.request(),u=new URL(req.url()),token=req.headers().authorization?.replace('Bearer token-',''),who=token&&ids[token],p=req.postDataJSON?.()||{};
   const send=(obj,status=200)=>route.fulfill({status,contentType:'application/json',body:JSON.stringify(obj)});
-  if(u.pathname==='/auth/v1/token') {const user=flags.refreshWrong?'a':p.refresh_token==='refresh-b'||p.email?.startsWith('b')?'b':'a';return send({access_token:`token-${user}`,refresh_token:`refresh-${user}`,expires_in:3600,user:{id:ids[user],email:`${user}@test.com`,email_confirmed_at:'2026-11-20'}})}
+  if(u.pathname==='/auth/v1/token') {if(p.refresh_token&&flags.refreshExpired)return send({error_code:'refresh_token_not_found',msg:'Invalid Refresh Token'},400);const user=flags.refreshWrong?'a':p.refresh_token==='refresh-b'||p.email?.startsWith('b')?'b':'a';return send({access_token:`token-${user}`,refresh_token:`refresh-${user}`,expires_in:3600,user:{id:ids[user],email:`${user}@test.com`,email_confirmed_at:'2026-11-20'}})}
   if(u.pathname==='/auth/v1/user')return who?send({id:who,email:`${token}@test.com`,email_confirmed_at:'2026-11-20'}):send({},401);
   if(u.pathname==='/auth/v1/logout')return send({});
   if(!who)return send({},401);
@@ -22,9 +22,9 @@ async function cloudPage(){const ctx=await browser.newContext({viewport:{width:3
   if(u.pathname==='/rest/v1/word_catalog')return send(catalog);
   if(u.pathname==='/rest/v1/study_progress')return send(records.has(who)?[records.get(who)]:[]);
   if(u.pathname==='/rest/v1/recommendations')return send(proposals.filter(p=>p.user_id===who&&p.status==='pending'));
-  if(u.pathname==='/rest/v1/assessment_events')return send(events.filter(e=>e.user_id===who));
-  if(u.pathname==='/rest/v1/rpc/save_progress') {flags.saveStarted=true;if(flags.slowSave)await new Promise(r=>setTimeout(r,flags.slowSave));const prev=records.get(who);if((prev?.revision||0)!==p.p_expected_revision)return send({message:'revision_conflict'},409);const row={state:p.p_state,revision:(prev?.revision||0)+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,structuredClone(row));return send(row)}
-  if(u.pathname==='/rest/v1/rpc/adopt_recommendation'){const proposal=proposals.find(x=>x.id===p.p_id&&x.user_id===who);const prev=records.get(who);if(!proposal||proposal.progress_revision!==prev.revision||p.p_expected_revision!==prev.revision)return send({},409);const row={state:WordspaceCore.adoptProposal(prev.state,proposal,catalog),revision:prev.revision+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,row);proposal.status='accepted';return send(row)}
+  if(u.pathname==='/rest/v1/assessment_events'){if(token==='b'&&flags.evidenceFailureB)return send({},503);return send(events.filter(e=>e.user_id===who))}
+  if(u.pathname==='/rest/v1/rpc/save_progress') {if(!WordspaceCore.validatePlan(p.p_state,catalog))return send({message:'invalid_progress'},400);flags.saveStarted=true;if(flags.slowSave)await new Promise(r=>setTimeout(r,flags.slowSave));const prev=records.get(who);if((prev?.revision||0)!==p.p_expected_revision)return send({message:'revision_conflict'},409);const row={state:p.p_state,revision:(prev?.revision||0)+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,structuredClone(row));return send(row)}
+  if(u.pathname==='/rest/v1/rpc/adopt_recommendation'){flags.adoptStarted=true;if(flags.slowAdopt)await new Promise(r=>setTimeout(r,flags.slowAdopt));const proposal=proposals.find(x=>x.id===p.p_id&&x.user_id===who);const prev=records.get(who);if(!proposal||proposal.progress_revision!==prev.revision||p.p_expected_revision!==prev.revision)return send({},409);const row={state:WordspaceCore.adoptProposal(prev.state,proposal,catalog),revision:prev.revision+1,updated_at:'2026-11-21T04:00:00Z'};records.set(who,row);proposal.status='accepted';return send(row)}
   if(u.pathname==='/rest/v1/rpc/dismiss_recommendation'){const x=proposals.find(x=>x.id===p.p_id&&x.user_id===who);if(x)x.status='ignored';return send(true)}
   if(u.pathname==='/rest/v1/rpc/submit_assessment'){const row={id:p.p_event_id,word_id:p.p_word_id,choice_id:p.p_choice_id,correct:p.p_word_id===p.p_choice_id,assisted:p.p_assisted,user_id:who,created_at:'2026-11-21T04:00:00Z'};events.push(row);return send(row)}
   if(u.pathname.endsWith('/admin/users'))return send({users:[{id:ids.b,email:'b@test.com',enabled:true,role:'user'}],total:1,page:1});
@@ -88,6 +88,32 @@ try {
  await page.evaluate(()=>{Storage.prototype.setItem=function(){throw new DOMException('quota','QuotaExceededError')}});
  flags.offline=true;await page.locator('#known').click();
  assert.match(await page.locator('#account-status').textContent(),/存储不可用/);flags.offline=false;checks++;
+ await ctx.close();
+ // Learning an adopted carry word later in the same day must keep a valid, reloadable plan.
+ const follow=await cloudPage();await follow.page.goto(base+'/index.html');await login(follow.page,'b');await follow.page.locator('#study-main').waitFor({state:'visible'});
+ const active=records.get(ids.b),carryIndex=active.state.days.at(-1).first.length,carry=active.state.days.at(-1).ids[carryIndex];
+ proposals.push({id:'60000000-0000-4000-8000-000000000001',user_id:ids.b,status:'pending',progress_revision:active.revision,word_ids:[carry],rationale:'Carry',expires_at:'2026-12-01T00:00:00Z'});
+ await follow.page.locator('#proposal-refresh').click();await follow.page.locator('#proposal-list').getByText('采用到下一学习日').click();await follow.page.waitForFunction(()=>document.querySelector('#account-status').textContent.includes('推荐将在'));
+ await follow.page.locator('#known').click();await follow.page.locator('#sync-now').click();await follow.page.waitForFunction(()=>account.status().includes('已同步'),undefined,{timeout:3000});
+ assert(records.get(ids.b).state.mastered.includes(carry),'answer after adoption must reach server');assert(!records.get(ids.b).state.next_day_ids.includes(carry));
+ await follow.page.reload();await follow.page.locator('#study-main').waitFor({state:'visible'});assert.equal(await follow.page.locator('#current').textContent(),String(carryIndex+2).padStart(2,'0'));checks++;
+ // Study actions are briefly locked during adoption, so its response cannot erase an answer.
+ const baseline=structuredClone(records.get(ids.b));proposals.push({id:'60000000-0000-4000-8000-000000000002',user_id:ids.b,status:'pending',progress_revision:baseline.revision,word_ids:[baseline.state.days.at(-1).ids[baseline.state.days.at(-1).first.length]],rationale:'Next',expires_at:'2026-12-01T00:00:00Z'});
+ flags.slowAdopt=700;flags.adoptStarted=false;await follow.page.locator('#proposal-refresh').click();await follow.page.locator('#proposal-list').getByText('采用到下一学习日').click();
+ while(!flags.adoptStarted)await new Promise(r=>setTimeout(r,20));
+ assert(await follow.page.locator('#known').isDisabled(),'study button must be visibly locked while adopting');await follow.page.keyboard.press('ArrowRight');
+ await new Promise(r=>setTimeout(r,800));assert.deepEqual(await follow.page.evaluate(()=>plan.days),baseline.state.days);flags.slowAdopt=0;
+ await follow.page.locator('#known').click();await follow.page.locator('#sync-now').click();await follow.page.waitForFunction(()=>account.status().includes('已同步'),undefined,{timeout:3000});assert.equal(records.get(ids.b).state.days.at(-1).first.length,baseline.state.days.at(-1).first.length+1);checks++;await follow.ctx.close();
+ // A terminal HTTP 400 refresh failure asks for login and retains this account's dirty cache.
+ const expired=await cloudPage();await expired.page.goto(base+'/index.html');await login(expired.page,'b');await expired.page.locator('#study-main').waitFor({state:'visible'});
+ flags.offline=true;await expired.page.locator('#known').click();flags.offline=false;flags.refreshExpired=true;await expired.page.clock.setSystemTime(new Date('2026-11-21T06:00:00Z'));
+ await expired.page.locator('#sync-now').click();await expired.page.locator('#account-gate').waitFor({state:'visible',timeout:3000});
+ assert.match(await expired.page.locator('#auth-message').textContent(),/登录/);assert(await expired.page.evaluate(id=>JSON.parse(localStorage.getItem(`wordspace:account:${id}`)).dirty,ids.b));assert.equal(await expired.page.evaluate(()=>localStorage.getItem('wordspace:session')),null);flags.refreshExpired=false;checks++;await expired.ctx.close();
+ // Failed evidence retrieval for a new learner must not retain the former learner's sample or due word.
+ events.push({user_id:ids.a,word_id:'accept',correct:false,assisted:false,created_at:'2026-11-21T00:00:00Z'});
+ const privacy=await cloudPage();await privacy.page.goto(base+'/index.html');await login(privacy.page,'a');await privacy.page.locator('#study-main').waitFor({state:'visible'});await privacy.page.waitForFunction(()=>document.querySelector('#assessment-stats').textContent.includes('待复测 1'));
+ await privacy.page.locator('#logout').click();flags.evidenceFailureB=true;await login(privacy.page,'b');await privacy.page.locator('#study-main').waitFor({state:'visible'});await privacy.page.waitForTimeout(100);
+ assert.match(await privacy.page.locator('#assessment-stats').textContent(),/不可用/);await privacy.page.evaluate(()=>Math.random=()=>.99);await privacy.page.locator('#assessment-start').click();assert.equal(await privacy.page.locator('#assessment-word').textContent(),catalog[990].word);flags.evidenceFailureB=false;checks++;await privacy.ctx.close();
  for(const width of [320,390,768,1280]){await local.setViewportSize({width,height:844});assert(await local.evaluate(()=>document.documentElement.scrollWidth<=innerWidth))}checks++;
  assert.deepEqual(errors,[]);await ctx.close();console.log(`PASS: ${checks} browser scenarios (local fallback, real UI auth gates, explicit import, reload, account isolation, sync/offline/conflict, admin, assessments, blocked account, responsive).`);
 }finally{await browser.close();await new Promise(r=>server.close(r))}

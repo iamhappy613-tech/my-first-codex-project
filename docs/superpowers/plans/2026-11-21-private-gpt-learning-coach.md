@@ -77,7 +77,7 @@
 - [x] Deliver private-GPT instructions enforcing fresh reads, data time/source, candidate IDs, honest tool failures and no fabricated saves.
 - [x] Provide Supabase project, migration, owner bootstrap, connection-secret hashing, mail, function deployment and GPT-editor instructions. Production activation requires real config and live checks.
 - [x] Verify OpenAPI paths against the real handler, generated HTML matches source, local browser regression, SQL permissions and secret-free artifacts.
-- [ ] Fresh whole-change review; fix material findings with failing regression tests; commit and push the verified, nonblocking default. Report external live setup and any unreviewed expansion content distinctly.
+- [x] Fresh whole-change review; fix material findings with failing regression tests; commit and push the verified, nonblocking default. Report external live setup and any unreviewed expansion content distinctly.
 
 ## Execution Notes
 

@@ -48,7 +48,9 @@
     const carry=last.ids.filter(id=>!known.has(id));
     const queue=[...new Set([...carry,...(p.next_day_ids||[]),...p.pending])].filter(id=>!known.has(id));
     if (!queue.length) return p;
-    last.closed=true;p.days.push({date,ids:queue.splice(0,43),first:[],review:[],closed:false});p.pending=queue;p.activeDay=p.days.length-1;delete p.next_day_ids;
+    const prescribed=[...new Set([...carry,...(p.next_day_ids||[])])].filter(id=>!known.has(id));
+    const ids=Array.isArray(p.next_day_ids)&&prescribed.length?prescribed.slice(0,43):queue.slice(0,43);
+    last.closed=true;p.days.push({date,ids,first:[],review:[],closed:false});p.pending=queue.filter(id=>!ids.includes(id));p.activeDay=p.days.length-1;delete p.next_day_ids;
     return p;
   }
   function evidenceStats(events,now=new Date().toISOString()) {

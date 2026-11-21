@@ -91,7 +91,7 @@ begin
  if not private.valid_state(p_state) then raise check_violation using message='invalid_progress';end if;
  perform pg_advisory_xact_lock(hashtextextended(who::text,0));
  select * into r from public.study_progress where user_id=who for update;
- if coalesce(r.revision,0)<>p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
+ if coalesce(r.revision,0) is distinct from p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
  insert into public.study_progress(user_id,state) values(who,p_state)
  on conflict(user_id) do update set state=excluded.state,revision=public.study_progress.revision+1,updated_at=now() returning * into r;
  return to_jsonb(r)-'user_id';
@@ -160,7 +160,7 @@ begin
   return to_jsonb(r)-'user_id';
  end if;
  select * into p from public.study_progress where user_id=p_owner;
- if p.revision is null or p.revision<>p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
+ if p.revision is null or p.revision is distinct from p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
  if not private.check_proposal(p,p_word_ids) then raise check_violation using message='invalid_recommendation';end if;
  insert into public.recommendations(id,user_id,progress_revision,word_ids,rationale) values(p_id,p_owner,p_expected_revision,p_word_ids,p_rationale) returning * into r;
  return to_jsonb(r)-'user_id';
@@ -173,8 +173,9 @@ begin
  select * into r from public.recommendations where id=p_id and user_id=who for update;
  if not found then raise insufficient_privilege;end if;
  select * into p from public.study_progress where user_id=who for update;
+ if p_expected_revision is null then raise sqlstate 'PT409' using message='revision_conflict';end if;
  if r.status='accepted' then return (to_jsonb(p)-'user_id')||jsonb_build_object('already_applied',true);end if;
- if r.status<>'pending' or r.expires_at<now() or r.progress_revision<>p.revision or p.revision<>p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
+ if r.status<>'pending' or r.expires_at<now() or r.progress_revision<>p.revision or p.revision is distinct from p_expected_revision then raise sqlstate 'PT409' using message='revision_conflict';end if;
  if not private.check_proposal(p,r.word_ids) then raise check_violation using message='invalid_recommendation';end if;
  v_state:=p.state;
  select array_agg(value) into deck from jsonb_array_elements_text(v_state->'deck_ids');

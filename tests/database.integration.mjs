@@ -76,3 +76,13 @@ test('two simultaneous adopts have one effect and return the same latest revisio
  const run=()=>new Promise((resolve,reject)=>{const child=spawn('docker',['exec','-i',container,'psql','-X','-q','-A','-t','-v','ON_ERROR_STOP=1','-U','postgres']);let out='',err='';child.stdout.on('data',x=>out+=x);child.stderr.on('data',x=>err+=x);child.on('close',code=>code?reject(Error(err)):resolve(JSON.parse(out.trim().split('\n').at(-1))));child.stdin.end(`begin;set local role authenticated;select set_config('request.jwt.claim.sub','${A}',true);select public.adopt_recommendation('${id}',2);commit;`)});
  const rows=await Promise.all([run(),run()]);assert(rows.every(x=>x.revision===3));assert.equal(as(A,`select count(*) from jsonb_array_elements_text((select state->'deck_ids' from public.study_progress)) x where x='accept'`),'1');
 });
+
+test('explicit NULL cannot bypass progress compare-and-swap',()=>{
+ const before=as(B,'select state::text || revision::text from public.study_progress');
+ assert.throws(()=>as(B,`select public.save_progress(NULL,${json(p)})`),/revision_conflict/);assert.equal(as(B,'select state::text || revision::text from public.study_progress'),before);
+});
+test('explicit NULL cannot bypass recommendation expected revision',()=>{
+ const id='50000000-0000-4000-8000-000000000001',rev=Number(as(A,'select revision from public.study_progress'));
+ sql(`set role service_role;select public.coach_create_recommendation('${A}','${id}',${rev},array['achieve'],'Next');reset role;`);
+ assert.throws(()=>as(A,`select public.adopt_recommendation('${id}',NULL)`),/revision_conflict/);assert.equal(Number(as(A,'select revision from public.study_progress')),rev);assert.equal(as(A,`select status from public.recommendations where id='${id}'`),'pending');
+});

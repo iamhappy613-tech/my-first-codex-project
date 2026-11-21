@@ -261,6 +261,7 @@ function answer(known) {
   const entry = session.queue[session.index];
   (session.round === 1 ? session.records.first : session.records.review).push(known);
   if (known && !plan.mastered.includes(entry.word)) plan.mastered.push(entry.word);
+  if (known && plan.next_day_ids) plan.next_day_ids = plan.next_day_ids.filter(id => id !== entry.word);
   savePlan(); renderPlan(); renderStudy();
   const updated = getSession();
   if (updated.finished) $('result-title').focus({ preventScroll: true });

@@ -18,7 +18,7 @@
 3. 在 SQL Editor 中执行 `supabase/migrations/202611210001_accounts.sql`，再执行 `supabase/seed.sql`。两份都是完整 SQL 文件。首次迁移应在新的专用项目运行；已有同名表时先检查，不要删除旧表强行通过。
 4. 在 Authentication 的 URL 配置中填写网站地址：
    - Site URL：`https://iamhappy613-tech.github.io/my-first-codex-project/index.html`
-   - 允许回跳：该地址和网站根路径。
+   - 允许回跳：该地址、网站根路径，以及稍后测试使用的 `https://iamhappy613-tech.github.io/my-first-codex-project/cloud-preview.html`。
 5. 启用 Email provider、开放注册及邮箱确认。配置真实可发送确认、找回密码邮件的发信服务。默认测试发信可能有额度/收件人限制，不能以管理员收到一封邮件就断言公众注册可用。邮件密码只填 Supabase 安全配置。
 
 免费方案、函数及邮件都有各自限制，具体以服务商当前规则为准。本项目不会自动升级收费方案。
@@ -82,16 +82,36 @@ node scripts/configure.mjs --url https://YOUR_PROJECT.supabase.co --key YOUR_PUB
 
 此时仍不启用云端入口，方便先准备。脚本同时替换生产 `gpt/openapi.json` 的服务地址。
 
-完成迁移、函数和邮件配置后，先本地预览云端入口：
+完成迁移、函数和邮件配置后，生成一个独立的云端测试页，保留正式首页的本地模式：
+
+```sh
+node scripts/configure.mjs --url https://YOUR_PROJECT.supabase.co --key YOUR_PUBLIC_KEY --owner YOUR-VERIFIED-USER-UUID --enable-cloud --output cloud-preview.html
+```
+
+提交公开的 `cloud-preview.html` 并推送 main，等待 Pages 更新后打开：
+`https://iamhappy613-tech.github.io/my-first-codex-project/cloud-preview.html`。
+
+测试页和正式网站拥有相同来源，管理员函数 CORS 能接受它，邮件回跳也指向测试页。该页只含公开项目配置，不含连接口令；不要通过通用静态服务器提供整个仓库。
+
+**本人账号第一次云端登录，必须在以前背单词的同一浏览器、同一设备，打开这个原网站来源的测试页。** 先确认“导入本机旧进度”，完成同步再使用另一设备。不要先在 localhost 或另一个浏览器为本人创建空云端进度，否则后续不会自动覆盖云端已有记录。如果已经创建了空记录，停止初始化并保留旧本机数据，先处理备份与导入，不要清空浏览器存储。
+
+注册、邮件和管理员检查使用单独测试账号；它们可以在其他浏览器打开该测试页。至少验证两账号互不串进度、不能提权，停用后不能读写，恢复后记录仍在；同时验证注册确认、找回密码邮件都回到测试页。
+
+本机查看网页外观时，可直接打开 HTML，或使用安全预览：
+
+```sh
+node scripts/preview.mjs
+```
+
+访问 `http://127.0.0.1:8000`。此服务器只提供 `index.html`，绑定本机回环地址；它不用于生产云端 CORS、邮件回跳及旧数据导入验收。
+
+所有真实检查通过后，再启用正式首页：
 
 ```sh
 node scripts/configure.mjs --url https://YOUR_PROJECT.supabase.co --key YOUR_PUBLIC_KEY --owner YOUR-VERIFIED-USER-UUID --enable-cloud
-python3 -m http.server 8000
 ```
 
-在该电脑浏览器打开本地端口，使用已创建的本人账号测试登录。首次导入旧记录要在**原来背单词的浏览器和原网址**进行；本地端口与正式网址的浏览器存储互不相通。
-
-至少验证本人和另一测试账号：互不串进度、不能提权，停用后不能读写，恢复后记录仍在。验证注册确认、找回密码邮件和生产回跳。完成后再提交公开配置并推送 main；任何检查失败先保留本地模式，不发布无法登录的入口。
+提交并推送 main 后，邮件回跳恢复为正式首页。通过测试的云端进度会继续使用。移除临时 `cloud-preview.html` 并在后台移除测试回跳地址。任何检查失败先保留正式首页的本地模式，不发布无法登录的入口。
 
 ## 六、配置真实私有 GPT
 

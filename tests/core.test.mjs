@@ -54,3 +54,10 @@ test('candidate pagination reaches later expansion words without repeating extra
  const first=C.candidates(p,big,[],1).filter(w=>!p.deck_ids.includes(w.id));const second=C.candidates(p,big,[],2).filter(w=>!p.deck_ids.includes(w.id));
  assert(second.length>0);assert(second.every(w=>!first.some(v=>v.id===w.id)));
 });
+
+test('a lighter adopted day keeps only mandatory carry and chosen words',()=>{
+ const big=Array.from({length:100},(_,i)=>({id:`w${i}`,word:`w${i}`,reviewed:true}));const p=C.createPlan(big,'2026-11-21');
+ p.mastered=p.days[0].ids.slice(0,38);p.days[0].first=Array(38).fill(true);
+ const adopted=C.adoptProposal(p,{word_ids:['w80','w81']},big),next=C.advancePlan(adopted,big,'2026-11-22');
+ assert.deepEqual(next.days[1].ids,['w38','w39','w40','w41','w42','w80','w81']);assert.equal(next.pending.length,55);assert(C.validatePlan(next,big));
+});

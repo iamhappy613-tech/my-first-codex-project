@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://YOUR_PROJECT.supabase.co/functions/v1/coach"
+      "url": "https://pgdiezrnifgebwacwcrp.supabase.co/functions/v1/coach"
     }
   ],
   "security": [

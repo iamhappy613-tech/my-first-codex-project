@@ -1,11 +1,11 @@
 (function(root){
  'use strict';
  const C=root.WordspaceCore,$=id=>document.getElementById(id),copy=x=>JSON.parse(JSON.stringify(x));
- class ApiError extends Error {constructor(status,message){super(message);this.status=status}}
+ class ApiError extends Error {constructor(status,message,code){super(message);this.status=status;this.code=code}}
  function create({config,catalog,hooks,storage,fetch=root.fetch.bind(root)}) {
   if(!storage){try{storage=root.localStorage}catch{storage={getItem:()=>null,setItem:()=>{throw Error('storage_unavailable')},removeItem:()=>{}}}}
   const cloud=config.mode==='cloud';let session=null,user=null,profile=null,epoch=0,revision=0,dirty=false,changes=0,ready=false;
-  let evidence=[];let cacheOK=true;let syncPromise=null,refreshPromise=null,timer=null,pendingEvents=[],syncedAt='',message='',conflict=null,adminPage=1,question=null;
+  let evidence=[];let cacheOK=true;let syncPromise=null,refreshPromise=null,timer=null,pendingEvents=[],syncedAt='',message='',conflict=null,adminPage=1,question=null,adopting=false;
   const SESSION='wordspace:session',localKey='wordspace:local:v3',cacheKey=id=>`wordspace:account:${id}`;
   const read=k=>{try{return JSON.parse(storage.getItem(k)||'null')}catch{return null}};
   const write=(k,v)=>{try{storage.setItem(k,JSON.stringify(v));return true}catch{return false}};
@@ -13,7 +13,9 @@
   const display=(id,text)=>{$(id).textContent=text};
   const notify=text=>{message=cloud&&!cacheOK?('浏览器存储不可用，未同步修改在关闭后可能丢失。 '+text.replace('本机记录已保留。','')):text;display('account-status',message);hooks.status?.()};
   function cache(extra={}){if(user&&ready){const previous=read(cacheKey(user.id));const backup=extra.conflictBackup||previous?.conflictBackup;cacheOK=write(cacheKey(user.id),{state:copy(hooks.getPlan()),revision,dirty,pendingEvents:copy(pendingEvents),syncedAt,...(backup?{conflictBackup:backup}:{}),...extra});$('download-backup').hidden=!backup;}}
+  function setStudyBusy(value){adopting=value;$('known').disabled=value;$('unknown').disabled=value;}
   function lock(text=''){
+   setStudyBusy(false);evidence=[];display('assessment-stats','检测记录尚未加载。');
    ready=false;question=null;hooks.stop();$('assessment-options').replaceChildren();display('assessment-word','');display('assessment-feedback','');$('proposal-list').replaceChildren();$('download-backup').hidden=true;$('study-main').hidden=true;$('account-gate').hidden=false;$('admin-panel').hidden=true;
    $('admin-users').replaceChildren();$('manage-users').hidden=true;$('open-coach').hidden=true;display('auth-message',text);
   }
@@ -31,14 +33,14 @@
   async function publicRequest(path,payload,token){
    const response=await fetch(config.supabaseUrl+path,{method:payload===undefined?'GET':'POST',headers:{apikey:config.publicKey,'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},...(payload===undefined?{}:{body:JSON.stringify(payload)}),signal:AbortSignal.timeout(12000)});
    let data;try{data=await response.json()}catch{data=null}
-   if(!response.ok)throw new ApiError(response.status,data?.message||data?.error_description||data?.msg||data?.error||'请求未成功');return data;
+   if(!response.ok)throw new ApiError(response.status,data?.message||data?.error_description||data?.msg||data?.error||'请求未成功',data?.error_code||data?.code);return data;
   }
   async function freshToken(){
    if(!session)throw new ApiError(401,'请重新登录');
    if(session.expiresAt>Date.now()+60000)return session.access_token;
    if(!refreshPromise){const e=epoch,previous=session;refreshPromise=publicRequest('/auth/v1/token?grant_type=refresh_token',{refresh_token:previous.refresh_token}).then(data=>{
     if(epoch!==e)throw Error('账号已切换');if((user?.id||previous.userId)&&data.user?.id!==(user?.id||previous.userId))throw new ApiError(401,'登录会话身份变化，请重新登录。');storeSession(data);return session.access_token;
-   }).finally(()=>{if(epoch===e)refreshPromise=null})}
+   }).catch(error=>{if(['refresh_token_not_found','refresh_token_already_used','refresh_token_expired','invalid_refresh_token','session_not_found','session_expired','user_not_found','user_banned','bad_jwt'].includes(error.code))throw new ApiError(401,'登录已失效，请重新登录。');throw error}).finally(()=>{if(epoch===e)refreshPromise=null})}
    return refreshPromise;
   }
   async function api(path,payload){const e=epoch,token=await freshToken();const data=await publicRequest(path,payload,token);if(e!==epoch)throw Error('账号已切换');return data}
@@ -84,6 +86,7 @@
   async function flush(){
    if(!cloud||!ready||!user||conflict)return false;
    if(syncPromise)return syncPromise;
+   if(!dirty&&!pendingEvents.length)return true;
    const e=epoch;let success=false;syncPromise=(async()=>{
     try{
      if(dirty){const change=changes,state=copy(hooks.getPlan());const result=await api('/rest/v1/rpc/save_progress',{p_expected_revision:revision,p_state:state});
@@ -123,13 +126,14 @@
   async function resume(){
    const operationEpoch=epoch;
    if(!cloud){hooks.rollover();return}
-   if(!ready||!session||!user)return;
+   if(!ready||!session||!user||adopting)return;
    try{const row=(await api(`/rest/v1/profiles?id=eq.${encodeURIComponent(user.id)}&select=id,email,role,enabled`))[0];if(!row?.enabled){cache();lock('账号已停用，请联系管理员。');return}
-    profile=row;if(dirty||pendingEvents.length){await flush();if(!ready)return}
+    if(adopting)return;profile=row;if(dirty||pendingEvents.length){await flush();if(!ready)return}
     const remote=(await api(`/rest/v1/study_progress?user_id=eq.${encodeURIComponent(user.id)}&select=state,revision,updated_at`))[0];
+    if(adopting)return;
     if(remote&&remote.revision!==revision){if(dirty)return;revision=remote.revision;syncedAt=remote.updated_at;showStudy(remote.state);notify('已同步最新云端进度')}
     hooks.rollover();void refreshProposals();
-   }catch(error){if(operationEpoch!==epoch)return;if(error.status===401){cache();lock('登录已失效，请重新登录。')}else notify('网络暂不可用，继续保留本机进度。')}
+   }catch(error){if(operationEpoch!==epoch)return;if(error.status===401){cache();remove(SESSION);session=null;lock('登录已失效，请重新登录；本机待同步记录已保留。')}else notify('网络暂不可用，继续保留本机进度。')}
   }
   async function manageUsers(){
    if(profile?.role!=='admin')return;$('admin-panel').hidden=false;$('study-main').hidden=true;
@@ -142,18 +146,19 @@
    }catch(error){display('admin-message',authError(error))}
   }
   async function refreshEvidence(){
-   if(cloud){if(!ready||!user)return;try{evidence=await api('/rest/v1/assessment_events?select=word_id,correct,assisted,created_at&order=created_at.desc&limit=100')}catch{return}}
+   const evidenceEpoch=epoch;
+   if(cloud){if(!ready||!user)return;evidence=[];display('assessment-stats','正在读取本账号的检测记录…');try{const rows=await api('/rest/v1/assessment_events?select=word_id,correct,assisted,created_at&order=created_at.desc&limit=100');if(evidenceEpoch!==epoch||!ready)return;evidence=rows}catch{if(evidenceEpoch===epoch&&ready){evidence=[];display('assessment-stats','检测记录暂不可用，可继续学习或稍后重试。')}return}}
    else evidence=read('wordspace:local:evidence')||[];
    const stats=C.evidenceStats(evidence);
    display('assessment-stats',`近期检测：最新答对 ${stats.tested_correct_count} 词，延迟复测通过 ${stats.delayed_pass_count} 词，待复测 ${stats.due_ids.length} 词。仅反映已有样本。`);
   }
   function startAssessment(){
-   if(cloud&&!ready)return;const pool=catalog.filter(w=>w.reviewed!==false);const due=C.evidenceStats(evidence).due_ids.find(id=>id!==question?.word?.id);const chosen=pool.find(w=>w.id===due)||pool[Math.floor(Math.random()*pool.length)];const options=[chosen,...pool.filter(w=>w.id!==chosen.id).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
+   if(cloud&&(!ready||adopting))return;const pool=catalog.filter(w=>w.reviewed!==false);const due=C.evidenceStats(evidence).due_ids.find(id=>id!==question?.word?.id);const chosen=pool.find(w=>w.id===due)||pool[Math.floor(Math.random()*pool.length)];const options=[chosen,...pool.filter(w=>w.id!==chosen.id).sort(()=>Math.random()-.5).slice(0,3)].sort(()=>Math.random()-.5);
    question={id:crypto.randomUUID(),word:chosen,done:false};display('assessment-word',chosen.word);display('assessment-feedback','请选择中文释义；选定后再显示答案。');$('assessment-options').replaceChildren();
    for(const option of options){const button=document.createElement('button');button.textContent=option.meaning;button.addEventListener('click',()=>void answerAssessment(option));$('assessment-options').append(button)}
   }
   async function answerAssessment(option){
-   if(!question||question.done||(cloud&&!ready))return;question.done=true;const result=C.scoreAssessment(catalog,question.word.id,option.id);$('assessment-options').querySelectorAll('button').forEach(b=>b.disabled=true);
+   if(!question||question.done||(cloud&&(!ready||adopting)))return;question.done=true;const result=C.scoreAssessment(catalog,question.word.id,option.id);$('assessment-options').querySelectorAll('button').forEach(b=>b.disabled=true);
    const payload={p_event_id:question.id,p_word_id:question.word.id,p_choice_id:option.id,p_assisted:false};
    display('assessment-feedback',`${result.correct?'答对了':'再记一遍'}：${question.word.meaning}。${cloud?'检测结果待同步。':'检测只保存在本机。'}`);
    if(cloud){pendingEvents.push(payload);cache();notify('待同步检测结果');await flush();await refreshEvidence()}
@@ -165,7 +170,7 @@
     $('proposal-list').replaceChildren();display('proposal-message',rows.length?'推荐只在你采用后用于下一学习日。':'暂未收到推荐。可前往专属 GPT 请求安排下一次学习。');
     for(const proposal of rows){const block=document.createElement('div'),text=document.createElement('p');text.textContent=`${proposal.word_ids.join(' · ')}\n${proposal.rationale}`;const adopt=document.createElement('button');adopt.textContent='采用到下一学习日';const ignore=document.createElement('button');ignore.textContent='忽略';
      adopt.disabled=proposal.progress_revision!==revision||new Date(proposal.expires_at)<new Date();if(adopt.disabled){const stale=document.createElement('p');stale.textContent='进度已变化或建议过期，请让助手重新生成。';block.append(stale)}
-     adopt.addEventListener('click',async()=>{adopt.disabled=true;try{if(!await flush())throw Error('请先同步当前作答');const updated=await api('/rest/v1/rpc/adopt_recommendation',{p_id:proposal.id,p_expected_revision:revision});revision=updated.revision;syncedAt=updated.updated_at;dirty=false;showStudy(updated.state);notify('已同步 · 推荐将在下一学习日生效');await refreshProposals()}catch(error){display('proposal-message',error.status===409?'建议已过期，请重新生成。':authError(error))}});
+     adopt.addEventListener('click',async()=>{if(adopting)return;const e=epoch;adopt.disabled=true;setStudyBusy(true);try{if(!await flush())throw Error('请先同步当前作答');const updated=await api('/rest/v1/rpc/adopt_recommendation',{p_id:proposal.id,p_expected_revision:revision});if(e!==epoch)return;revision=updated.revision;syncedAt=updated.updated_at;dirty=false;showStudy(updated.state);notify('已同步 · 推荐将在下一学习日生效');await refreshProposals()}catch(error){if(e===epoch)display('proposal-message',error.status===409?'建议已过期，请重新生成。':authError(error))}finally{if(e===epoch)setStudyBusy(false)}});
      ignore.addEventListener('click',async()=>{try{await api('/rest/v1/rpc/dismiss_recommendation',{p_id:proposal.id});await refreshProposals()}catch(error){display('proposal-message',authError(error))}});
      block.append(text,adopt,ignore);$('proposal-list').append(block)
     }
@@ -191,7 +196,7 @@
    if(!session)return;
    try{if(isRecovery){user=await api('/auth/v1/user');$('password-form').hidden=false;$('auth-form').hidden=true;display('auth-message','请设置新密码。');return}await loadUser()}catch(e){if(bootEpoch!==epoch)return;lock(authError(e));if(e.status===401){session=null;remove(SESSION)}}
   }
-  return {boot,persist,flush,resume,status:()=>message,canStudy:()=>ready};
+  return {boot,persist,flush,resume,status:()=>message,canStudy:()=>ready&&!adopting};
  }
  root.WordspaceAccount={create};
 })(globalThis);
