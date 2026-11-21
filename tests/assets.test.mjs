@@ -29,7 +29,7 @@ test('preview binds loopback and refuses hidden credentials and arbitrary repo p
   const url=await new Promise((resolve,reject)=>{let out='';child.stdout.on('data',x=>{out+=x;const m=out.match(/http:\/\/127\.0\.0\.1:\d+/);if(m)resolve(m[0])});child.on('exit',code=>reject(Error(`preview exited ${code}`)));child.on('error',reject)});
   assert.equal(await (await fetch(url)).text(),'<p>public page</p>');
   for(const path of ['/.env.coach.local','/supabase/seed.sql','/../.env.coach.local','/%2eenv.coach.local'])assert.equal((await fetch(url+path)).status,404);
- }finally{child?.kill();await rm(dir,{recursive:true,force:true})}
+ }finally{if(child?.pid&&child.exitCode===null&&child.signalCode===null){const closed=new Promise(resolve=>child.once('close',resolve));child.kill();await closed}await rm(dir,{recursive:true,force:true})}
 });
 
 test('cloud staging output preserves live local page and uses its own same-origin email callback',async()=>{
