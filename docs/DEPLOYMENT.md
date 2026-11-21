@@ -17,7 +17,7 @@
 2. 在 Connect / Settings → API Keys 获取 **Project URL** 和 **Publishable key**（旧版为 anon key）。这两项可用于网页，不能用 secret/service_role key 替代。
 3. 在 SQL Editor 中执行 `supabase/migrations/202611210001_accounts.sql`，再执行 `supabase/seed.sql`。两份都是完整 SQL 文件。首次迁移应在新的专用项目运行；已有同名表时先检查，不要删除旧表强行通过。
 4. 在 Authentication 的 URL 配置中填写网站地址：
-   - Site URL：`https://iamhappy613-tech.github.io/my-first-codex-project/index.html`
+   - 测试阶段 Site URL：`https://iamhappy613-tech.github.io/my-first-codex-project/cloud-preview.html`；正式首页启用云端后再改为 `https://iamhappy613-tech.github.io/my-first-codex-project/index.html`。
    - 允许回跳：该地址、网站根路径，以及稍后测试使用的 `https://iamhappy613-tech.github.io/my-first-codex-project/cloud-preview.html`。
 5. 启用 Email provider、开放注册及邮箱确认。配置真实可发送确认、找回密码邮件的发信服务。默认测试发信可能有额度/收件人限制，不能以管理员收到一封邮件就断言公众注册可用。邮件密码只填 Supabase 安全配置。
 
@@ -44,10 +44,10 @@ where id = 'YOUR-VERIFIED-USER-UUID';
 
 ```sh
 npm ci
-npx supabase login
+npx --yes supabase@3.2.0 login
 ```
 
-Supabase CLI 登录在你自己的终端和浏览器完成，不把访问令牌发到聊天里。项目 Ref 是 Project URL 中的项目标识。
+Supabase CLI 登录在你自己的终端和浏览器完成，不把访问令牌发到聊天里。项目 Ref 是 Project URL 中的项目标识。下面固定使用已核对参数的 CLI 3.2.0：项目通过 `--remote=项目Ref` 指定，函数使用 `--use-api` 在服务端打包，无需在电脑运行 Docker。
 
 生成连接凭据：
 
@@ -63,9 +63,9 @@ node scripts/connection-secret.mjs --owner YOUR-VERIFIED-USER-UUID --site https:
 如果文件已存在，脚本拒绝覆盖，避免误换正在使用的凭据。更换凭据前保存现有配置并同时更新后台和私有 GPT。
 
 ```sh
-npx supabase secrets set --project-ref YOUR_PROJECT_REF --env-file .env.functions.local
-npx supabase functions deploy admin --project-ref YOUR_PROJECT_REF
-npx supabase functions deploy coach --project-ref YOUR_PROJECT_REF
+npx --yes supabase@3.2.0 secrets set --remote=YOUR_PROJECT_REF --env-file .env.functions.local
+npx --yes supabase@3.2.0 functions deploy admin --remote=YOUR_PROJECT_REF --use-api --no-verify-jwt
+npx --yes supabase@3.2.0 functions deploy coach --remote=YOUR_PROJECT_REF --use-api --no-verify-jwt
 ```
 
 项目运行时的 SUPABASE_URL、SUPABASE_ANON_KEY、SUPABASE_SERVICE_ROLE_KEY 由平台注入。服务端权限密钥不得放进 `index.html`、GPT 指令或 OpenAPI 文件。
@@ -111,7 +111,7 @@ node scripts/preview.mjs
 node scripts/configure.mjs --url https://YOUR_PROJECT.supabase.co --key YOUR_PUBLIC_KEY --owner YOUR-VERIFIED-USER-UUID --enable-cloud
 ```
 
-提交并推送 main 后，邮件回跳恢复为正式首页。通过测试的云端进度会继续使用。移除临时 `cloud-preview.html` 并在后台移除测试回跳地址。任何检查失败先保留正式首页的本地模式，不发布无法登录的入口。
+提交并推送 main 后，将 Auth Site URL 改为正式首页，网页注册和找回密码的邮件回跳也恢复为正式首页。通过测试的云端进度会继续使用。移除临时 `cloud-preview.html` 并在后台移除测试回跳地址。任何检查失败先保留正式首页的本地模式，不发布无法登录的入口。
 
 ## 六、配置真实私有 GPT
 
